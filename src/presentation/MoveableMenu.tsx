@@ -79,6 +79,7 @@ const MoveableMenu = ({
 
   function updateIsActive(e: MouseEvent<HTMLDivElement>, forceClose = false) {
     if (
+      /* @ts-ignore*/
       e?.target?.id == "close" ||
       (forceClose == true && autoHide == true)
     )

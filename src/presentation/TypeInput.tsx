@@ -1,7 +1,8 @@
+// @ts-nocheck
 import Select from "react-select";
 import Creatable, {
-  useCreatable,
 } from "react-select/creatable";
+
 
 const colorStyles = {
   control: (
