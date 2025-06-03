@@ -10,7 +10,7 @@ export interface RallyTypeObject extends SupabaseTable {
     high_score_rally: number
 }
 
-export interface peopleObject extends SupabaseTable {
+export interface PeopleObject extends SupabaseTable {
     name: string,
     age: number,
 }
