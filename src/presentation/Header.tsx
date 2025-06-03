@@ -105,6 +105,7 @@ export default function Header ({ }) {
       console.log("added", name);
       await getData();
     } catch (error) {
+      /*@ts-ignore*/
       alert(error?.message);
     }
   }
@@ -147,6 +148,7 @@ export default function Header ({ }) {
       );
       setEditActive(false);
     } catch (error) {
+      /*@ts-ignore*/
       alert(error.message);
     }
   }
@@ -175,6 +177,7 @@ export default function Header ({ }) {
               <label>Rally type</label>
             </div>
             <TypeInput
+            /*@ts-ignore*/
               onChange={(val) => setRallyType(val)}
               options={rallyOptions}
               disabled={false}
@@ -197,6 +200,7 @@ export default function Header ({ }) {
                 placeholder="0"
                 value={hits || ""}
                 onChange={(e) =>
+                  /*@ts-ignore*/
                   setHits(e.target.value)
                 }
                 type="number"
@@ -214,6 +218,8 @@ export default function Header ({ }) {
             <CreatableTypeInput
               onChange={(val) => setPeopleId(val?.value || null)}
               onCreate={(val) => addPeople(val)}
+              
+              /*@ts-ignore*/
               options={peopleOptions}
               disabled={false}
               defaultValue={"Isaac Drury"}
