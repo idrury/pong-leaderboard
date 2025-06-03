@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reacticons/ionicons": "^7.1.0",
     "@supabase/supabase-js": "^2.49.9",
     "bootstrap": "^5.3.6",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-select": "^5.10.1",
+    "react-spinners": "^0.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
