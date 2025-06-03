@@ -9,33 +9,35 @@ function RecentScores ({ rally }: RecentScoresProps) {
   console.log('RecentScores rally prop:', rally);
 
   return (
-    <div style={{
+    <div 
+    className='w100 pl'
+    style={{
+      width: "95%",
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: '100%',
-      minWidth: '350px',
-      padding: '12px 16px',
-      marginBottom: '8px',
+      marginBottom: '5px',
       backgroundColor: '#2d3748',
       color: 'white',
-      borderRadius: '6px',
+      borderRadius: '3px',
       border: '1px solid #4a5568'
     }}>
       {/* Left side content */}
-      <div style={{ flex: 1 }}>
-        <div style={{
+      <div>
+        <p className='pt1 pl1 m0' style={{
           fontWeight: 'bold',
           fontSize: '16px',
-          marginBottom: '2px'
+          marginBottom: '2px',
+          textAlign: "start"
         }}>
           {rally.rally_type || 'Subheading'}
-        </div>
-        <div style={{
+        </p>
+        <div className='' style={{
           fontSize: '14px',
-          color: '#a0aec0'
+          color: '#a0aec0',
+           textAlign: "start"
         }}>
-          {rally.people?.name || 'Cras justo odio'}
+          <p className='pb1 pl1 m0'>{rally.people?.name || 'Cras justo odio'}</p>
         </div>
       </div>
 
