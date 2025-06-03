@@ -216,7 +216,7 @@ function App () {
               onMouseEnter={(e) => {
                 const tooltip = document.createElement('div');
                 tooltip.innerHTML = `
-                  <img src="../public/lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
+                  <img src="../lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
                   Hello There
                 `;
                 tooltip.style.cssText = `
