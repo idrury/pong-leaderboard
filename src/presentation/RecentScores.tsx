@@ -1,6 +1,4 @@
 import '.././App.css'
-import ListGroup from 'react-bootstrap/ListGroup';
-import Badge from 'react-bootstrap/Badge';
 import type { RallyObject } from '../Types';
 
 interface RecentScoresProps {
@@ -11,19 +9,54 @@ function RecentScores ({ rally }: RecentScoresProps) {
   console.log('RecentScores rally prop:', rally);
 
   return (
-    <>
-      <ListGroup style={{ minWidth: '300px' }}>
-        <ListGroup.Item className="d-flex justify-content-between align-items-center p-3">
-          <div>
-            <div className="fw-bold">{rally.rally_type || 'Unknown Type'}</div>
-            <div className="text-muted small">Person: {rally.people?.name || 'No player'}</div>
-          </div>
-          <Badge bg="primary" pill className="fs-4 px-4 py-2">
-            {rally.num_hits}
-          </Badge>
-        </ListGroup.Item>
-      </ListGroup>
-    </>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      minWidth: '350px',
+      padding: '12px 16px',
+      marginBottom: '8px',
+      backgroundColor: '#2d3748',
+      color: 'white',
+      borderRadius: '6px',
+      border: '1px solid #4a5568'
+    }}>
+      {/* Left side content */}
+      <div style={{ flex: 1 }}>
+        <div style={{
+          fontWeight: 'bold',
+          fontSize: '16px',
+          marginBottom: '2px'
+        }}>
+          {rally.rally_type || 'Subheading'}
+        </div>
+        <div style={{
+          fontSize: '14px',
+          color: '#a0aec0'
+        }}>
+          {rally.people?.name || 'Cras justo odio'}
+        </div>
+      </div>
+
+      {/* Right side number */}
+      <div style={{
+        backgroundColor: '#3182ce',
+        color: 'white',
+        borderRadius: '50%',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: '14px',
+        marginLeft: '16px',
+        flexShrink: 0
+      }}>
+        {rally.num_hits}
+      </div>
+    </div>
   )
 }
 

@@ -127,10 +127,14 @@ function App () {
               />
             ))}
           </div>
-          <div className="recent-scores-container" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-            {allRallies.map((rally, index) => (
-              <RecentScores key={index} rally={rally} />
-            ))}
+
+          <div>
+            <h1 style={{ alignContent: 'center', alignItems: 'flex-start' }}>Recnt scores</h1>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+              {allRallies.map((rally, index) => (
+                <RecentScores key={index} rally={rally} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
