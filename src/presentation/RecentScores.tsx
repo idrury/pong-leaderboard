@@ -10,7 +10,13 @@ function RecentScores ({ rally }: RecentScoresProps) {
 
   const playerName = rally.people?.name || 'Cras justo odio';
   const isStarPlayer = playerName === 'James Mann' || playerName === 'Isaac Drury' || playerName === 'isaac drury';
-
+  const isJesusChrist = playerName === 'Jesus' || playerName === 'Jesus Christ' || playerName === 'jesus christ' || playerName === 'jesus';
+  const isPingPong = playerName === 'Ping Pong' || playerName === 'Ping' || playerName === 'Pong' || playerName === 'pingpongathon';
+  const isNate = playerName === 'Nate' || playerName === 'nate' || playerName === 'Nat' || playerName === 'nat';
+  const isJerry = playerName === 'Jerry' || playerName === 'jerry' || playerName === '';
+  const isDaniel = playerName === 'Daniel' || playerName === 'daniel' || playerName === 'Daniel Ambrose' || playerName === 'daniel ambrose';
+  const isIsaacMann = playerName === 'Isaac Mann' || playerName === 'isaac mann';
+  const isIsaacHegedus = playerName === 'Isaac Hegedus' || playerName === 'isaac hegedus';
   return (
     <div
       className='w100 pl'
@@ -55,7 +61,76 @@ function RecentScores ({ rally }: RecentScoresProps) {
           ⭐
         </div>
       )}
-
+      {isJesusChrist && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          👑
+        </div>
+      )}
+      {isPingPong && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          🏓
+        </div>
+      )}
+      {isNate && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          🏓
+        </div>
+      )}
+      {isJerry && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          🏓
+        </div>
+      )}
+      {isDaniel && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          🏓
+        </div>
+      )}
+      {isIsaacMann && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          🎂
+        </div>
+      )}
+      {isIsaacHegedus && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          🎂
+        </div>
+      )}
       {/* Right side number */}
       <div style={{
         backgroundColor: 'var(--primaryColor)',
