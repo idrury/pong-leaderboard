@@ -15,7 +15,7 @@ function HighscoreCard ({ recordType, highestRally }: HighscoreCardProps) {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div>
         <Card style={{ flexDirection: 'row', width: '18rem', border: '1px solid #ccc', margin: '20px' }}>
           <Card.Body>
             <Card.Title className='record'>{recordType}</Card.Title>

@@ -41,11 +41,11 @@ function RecentScores ({ rally }: RecentScoresProps) {
 
       {/* Right side number */}
       <div style={{
-        backgroundColor: '#3182ce',
+        backgroundColor: 'var(--primaryColor)',
         color: 'white',
         borderRadius: '50%',
-        width: '32px',
-        height: '32px',
+        width: '38px',
+        height: '38px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
