@@ -9,22 +9,22 @@ function RecentScores ({ rally }: RecentScoresProps) {
   // console.log('RecentScores rally prop:', rally);
 
   const playerName = rally.people?.name || 'Cras justo odio';
-  const isStarPlayer = playerName === 'James Mann' || playerName === 'Isaac Drury';
+  const isStarPlayer = playerName === 'James Mann' || playerName === 'Isaac Drury' || playerName === 'isaac drury';
 
   return (
-    <div 
-    className='w100 pl'
-    style={{
-      width: "95%",
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '5px',
-      backgroundColor: '#2d3748',
-      color: 'white',
-      borderRadius: '3px',
-      border: '1px solid #4a5568'
-    }}>
+    <div
+      className='w100 pl'
+      style={{
+        width: "95%",
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '5px',
+        backgroundColor: '#2d3748',
+        color: 'white',
+        borderRadius: '3px',
+        border: '1px solid #4a5568'
+      }}>
       {/* Left side content */}
       <div>
         <p className='pt1 pl1 m0' style={{
@@ -38,7 +38,7 @@ function RecentScores ({ rally }: RecentScoresProps) {
         <div className='' style={{
           fontSize: '14px',
           color: '#a0aec0',
-           textAlign: "start"
+          textAlign: "start"
         }}>
           <p className='pb1 pl1 m0'>{rally.people?.name || 'Cras justo odio'}</p>
         </div>
