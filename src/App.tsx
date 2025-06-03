@@ -14,7 +14,7 @@ import type {
 } from "./Types";
 import { useStopwatch } from "react-timer-hook";
 
-function App() {
+function App () {
   const [rallies, setRallies] =
     useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] =
@@ -32,7 +32,7 @@ function App() {
     reset();
   }
 
-  async function fetchData() {
+  async function fetchData () {
     try {
       const people = await fetchPeople();
       console.log("Fetched people:", people);
@@ -54,7 +54,7 @@ function App() {
     }
   }
 
-  function findHighestRally(
+  function findHighestRally (
     rallies: RallyObject[]
   ): RallyObject | null {
     if (!rallies || rallies.length === 0) {
@@ -87,7 +87,7 @@ function App() {
     return highestRally;
   }
 
-  function findHighestRallyByType(
+  function findHighestRallyByType (
     rallies: RallyObject[],
     rallyTypes: RallyTypeObject[]
   ) {
@@ -111,9 +111,9 @@ function App() {
           (rally) => {
             return (
               rally.rally_type ===
-                rallyType.name ||
+              rallyType.name ||
               rally.rally_type ===
-                rallyType.id.toString()
+              rallyType.id.toString()
             );
           }
         );
@@ -137,14 +137,14 @@ function App() {
         const highestRally =
           ralliesToCheck.length > 0
             ? ralliesToCheck.reduce(
-                (highest, current) => {
-                  return current.num_hits >
-                    highest.num_hits
-                    ? current
-                    : highest;
-                },
-                ralliesToCheck[0]
-              )
+              (highest, current) => {
+                return current.num_hits >
+                  highest.num_hits
+                  ? current
+                  : highest;
+              },
+              ralliesToCheck[0]
+            )
             : null;
 
         return {
@@ -194,9 +194,9 @@ function App() {
   const allHighestRallies =
     rallies && rallyTypes
       ? findHighestRallyByType(
-          rallies,
-          rallyTypes
-        )
+        rallies,
+        rallyTypes
+      )
       : [];
   const allRallies =
     rallies && rallyTypes ? rallies : [];
@@ -207,7 +207,39 @@ function App() {
         <Header />
         <div className="row">
           <div className="w100">
-            <h2 className="ml2 mt2 pt2 pl2 m0 textLeft">
+            <h2
+              className="ml2 mt2 pt2 pl2 m0 textLeft"
+              style={{
+                cursor: 'help',
+                position: 'relative',
+              }}
+              onMouseEnter={(e) => {
+                const tooltip = document.createElement('div');
+                tooltip.innerHTML = `
+                  <img src="../public/lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
+                  Hello There
+                `;
+                tooltip.style.cssText = `
+                  position: absolute;
+                  background: #333;
+                  color: white;
+                  padding: 5px 10px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  top: -30px;
+                  left: 0;
+                  z-index: 1000;
+                  white-space: nowrap;
+                  display: flex;
+                  align-items: center;
+                `;
+                e.currentTarget.appendChild(tooltip);
+              }}
+              onMouseLeave={(e) => {
+                const tooltip = e.currentTarget.querySelector('div');
+                if (tooltip) tooltip.remove();
+              }}
+            >
               High scores
             </h2>
 
