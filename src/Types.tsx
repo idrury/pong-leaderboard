@@ -21,8 +21,8 @@ export interface RallyObject extends SupabaseTable {
 }
 
 export type InputOption = {
-  value: any;
-  label: any;
+    value: any;
+    label: any;
 };
 
 export type ErrorLabelType = {

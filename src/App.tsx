@@ -65,7 +65,7 @@ function App () {
       // Filter rallies that match this rally type
       // Note: Currently rally_type field in rallies is null in your data
       const matchingRallies = rallies.filter(rally => {
-        return rally.rally_types === rallyType.name || rally.rally_types === rallyType.id.toString();
+        return rally.rally_type === rallyType.name || rally.rally_type === rallyType.id.toString();
       });
 
       // If no matching rallies found due to null rally_type, 
@@ -105,44 +105,32 @@ function App () {
     }
   }, [rallies, rallyTypes]);
 
-  const records = [
-    {
-      type: 'rec1',
-      number: 100,
-      name: 'Player1'
-    },
-    {
-      type: 'rec2',
-      number: 100,
-      name: 'Player2'
-    },
-    {
-      type: 'rec3',
-      number: 100,
-      name: 'Player3'
-    },
-  ];
   // Compute allHighestRallies from rallies and rallyTypes
   const allHighestRallies = (rallies && rallyTypes) ? findHighestRallyByType(rallies, rallyTypes) : [];
+  const allRallies = (rallies && rallyTypes) ? rallies : [];
 
   return (
     <>
-      <div className='w100'>
-        <Header />
-        {allHighestRallies.map((item, index) => (
-          <HighscoreCard
-            key={index}
-            recordType={item.rallyType}
-            highestRally={{
-              num_hits: String(item.highestHits)
-            }}
-          />
-        ))}
-      </div>
       <div>
-        {records.map((record, index) => (
-          <RecentScores key={index} record={record} />
-        ))}
+        <Header />
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
+          <div style={{ display: "flex-start" }}>
+            {allHighestRallies.map((item, index) => (
+              <HighscoreCard
+                key={index}
+                recordType={item.rallyType}
+                highestRally={{
+                  num_hits: String(item.highestHits)
+                }}
+              />
+            ))}
+          </div>
+          <div className="recent-scores-container" style={{ display: "flex-end", justifyContent: "right" }}>
+            {allRallies.map((rally, index) => (
+              <RecentScores key={index} rally={rally} />
+            ))}
+          </div>
+        </div>
       </div>
     </>
   )
