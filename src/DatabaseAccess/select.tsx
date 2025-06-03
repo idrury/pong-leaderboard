@@ -8,9 +8,13 @@ import { supabase } from "./SupabaseClient";
 /**************************************
  * Fetch all rallies from the database
  */
-export async function fetchRallies (): Promise<RallyObject[]> {
-
-  const { data, error } = await supabase.from("rallys").select("*, people(*)");
+export async function fetchRallies(): Promise<
+  RallyObject[]
+> {
+  const { data, error } = await supabase
+    .from("rallys")
+    .select("*, people(*)")
+    .order("created_at", { ascending: false });
 
   if (error) {
     alert(error.message);
@@ -19,16 +23,17 @@ export async function fetchRallies (): Promise<RallyObject[]> {
   // console.log("Fetched rallies:", data);
 
   return data;
-
-
 }
 
 /**************************************
  * Fetch all rally types from the database
  */
-export async function fetchRallyTypes (): Promise<RallyTypeObject[]> {
-
-  const { data, error } = await supabase.from("rally_types").select();
+export async function fetchRallyTypes(): Promise<
+  RallyTypeObject[]
+> {
+  const { data, error } = await supabase
+    .from("rally_types")
+    .select();
 
   if (error) {
     alert(error.message);
@@ -36,16 +41,17 @@ export async function fetchRallyTypes (): Promise<RallyTypeObject[]> {
   }
 
   return data;
-
-
 }
 
 /***************
  *
  */
-export async function fetchPeople (): Promise<PeopleObject[]> {
-
-  const { data, error } = await supabase.from("people").select();
+export async function fetchPeople(): Promise<
+  PeopleObject[]
+> {
+  const { data, error } = await supabase
+    .from("people")
+    .select();
 
   if (error) {
     alert(error.message);
@@ -54,7 +60,6 @@ export async function fetchPeople (): Promise<PeopleObject[]> {
 
   return data;
 }
-
 
 /*****************************************
  * Insert a new person
@@ -63,7 +68,7 @@ export async function fetchPeople (): Promise<PeopleObject[]> {
  * @returns A boolean if successful
  * @thorws Error if unsuccessful
  */
-export async function insertPerson (
+export async function insertPerson(
   name: string,
   age?: number
 ): Promise<boolean> {
@@ -86,14 +91,18 @@ export async function insertPerson (
  * @returns True if successful
  * @throws Error if fails
  */
-export async function insertRally (
+export async function insertRally(
   hits: number,
   peopleId: number,
   rallyType: string
 ): Promise<boolean> {
   const { error } = await supabase
     .from("rallys")
-    .insert({ num_hits: hits, people: peopleId, rally_type: rallyType });
+    .insert({
+      num_hits: hits,
+      people: peopleId,
+      rally_type: rallyType,
+    });
 
   if (error) {
     throw error;
@@ -109,7 +118,7 @@ export async function insertRally (
  * @returns True if sucessful
  * @throws Error if fails
  */
-export async function insertRallyType (
+export async function insertRallyType(
   name: string,
   tags: number
 ): Promise<boolean> {
