@@ -1,9 +1,10 @@
+import type { PeopleObject, RallyObject, RallyTypeObject } from "../Types";
 import { supabase } from "./SupabaseClient";
 
 /**************************************
  * Fetch all rallies from the database
  */
-export async function fetchRallies(): Promise<any> {
+export async function fetchRallies(): Promise<RallyObject[]> {
 
     const {data, error} = await supabase.from("rallys").select();
 
@@ -12,7 +13,6 @@ export async function fetchRallies(): Promise<any> {
       throw error;
     }
 
-    console.log("D", data);
     return data;
 
 
@@ -23,7 +23,7 @@ export async function fetchRallies(): Promise<any> {
 /**************************************
  * Fetch all rally types from the database
  */
-export async function fetchRallyTypes(): Promise<any> {
+export async function fetchRallyTypes(): Promise<RallyTypeObject[]> {
 
     const {data, error} = await supabase.from("rally_types").select();
 
@@ -32,7 +32,6 @@ export async function fetchRallyTypes(): Promise<any> {
       throw error;
     }
 
-    console.log("D", data);
     return data;
 
 
@@ -42,7 +41,7 @@ export async function fetchRallyTypes(): Promise<any> {
 /***************
  * 
  */
-export async function fetchPeople(): Promise<any> {
+export async function fetchPeople(): Promise<PeopleObject[]> {
 
     const {data, error} = await supabase.from("people").select();
 
@@ -51,8 +50,5 @@ export async function fetchPeople(): Promise<any> {
       throw error;
     }
 
-    console.log("D", data);
     return data;
-
-
 }
