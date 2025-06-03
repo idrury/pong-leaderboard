@@ -127,22 +127,26 @@ function App () {
 
   return (
     <>
-      <div className='w100'>
-        <Header />
-        {allHighestRallies.map((item, index) => (
-          <HighscoreCard
-            key={index}
-            recordType={item.rallyType}
-            highestRally={{
-              num_hits: String(item.highestHits)
-            }}
-          />
-        ))}
-      </div>
       <div>
-        {records.map((record, index) => (
-          <RecentScores key={index} record={record} />
-        ))}
+        <Header />
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
+          <div style={{ display: "flex-start" }}>
+            {allHighestRallies.map((item, index) => (
+              <HighscoreCard
+                key={index}
+                recordType={item.rallyType}
+                highestRally={{
+                  num_hits: String(item.highestHits)
+                }}
+              />
+            ))}
+          </div>
+          <div className="recent-scores-container" style={{ display: "flex-end", justifyContent: "right" }}>
+            {records.map((record, index) => (
+              <RecentScores key={index} record={record} />
+            ))}
+          </div>
+        </div>
       </div>
     </>
   )

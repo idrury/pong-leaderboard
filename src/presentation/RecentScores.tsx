@@ -14,10 +14,9 @@ function RecentScores ({ record }: RecentScoresProps) {
 
   return (
     <>
-      <ListGroup as="ol" numbered>
+      <ListGroup>
         <ListGroup.Item
           as="li"
-          className="d-flex justify-content-between align-items-start"
         >
           {record.type}
           <div className="ms-2 me-auto">

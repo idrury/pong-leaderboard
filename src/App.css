@@ -58,11 +58,6 @@
 }
 
 .recent-scores-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2rem;
   border-width: 1px;
   border-style: solid;
   border-color: #ccc;
