@@ -216,7 +216,7 @@ export default function Header ({ }) {
               onCreate={(val) => addPeople(val)}
               options={peopleOptions}
               disabled={false}
-              defaultValue={""}
+              defaultValue={"Isaac Drury"}
               placeholder="no name selected"
             />
           </div>
