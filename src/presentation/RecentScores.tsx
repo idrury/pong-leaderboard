@@ -6,7 +6,7 @@ interface RecentScoresProps {
 }
 
 function RecentScores ({ rally }: RecentScoresProps) {
-  console.log('RecentScores rally prop:', rally);
+  // console.log('RecentScores rally prop:', rally);
 
   return (
     <div style={{

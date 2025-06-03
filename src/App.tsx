@@ -16,12 +16,13 @@ function App () {
   }, []);
   async function fetchData () {
     try {
-      const people = await fetchPeople();
-      console.log('Fetched people:', people);
+      // const people = await fetchPeople();
+      // console.log('Fetched people:', people);
 
       const rallies = await fetchRallies();
-      console.log('Fetched rallies:', rallies); const rallyTypes = await fetchRallyTypes();
-      console.log('Fetched rally types:', rallyTypes);
+      // console.log('Fetched rallies:', rallies); 
+      const rallyTypes = await fetchRallyTypes();
+      // console.log('Fetched rally types:', rallyTypes);
       setRallies(rallies);
       setRallyTypes(rallyTypes);
     } catch (error) {
@@ -37,9 +38,9 @@ function App () {
 
     // Log all rally hits
     // console.log('All rally hits:');
-    rallies.forEach((rally, index) => {
-      console.log(`Rally ${index}: ${rally.num_hits} hits`, rally);
-    });
+    // rallies.forEach((rally, index) => {
+    //   console.log(`Rally ${index}: ${rally.num_hits} hits`, rally);
+    // });
 
     // Sort rallies by num_hits in descending order and get the highest one
     const sortedRallies = [...rallies].sort((a, b) => b.num_hits - a.num_hits);
@@ -89,7 +90,7 @@ function App () {
       };
     });
 
-    console.log('All highest rallies by type:', allHighestRallies);
+    // console.log('All highest rallies by type:', allHighestRallies);
     return allHighestRallies;
   }
 
@@ -97,11 +98,11 @@ function App () {
   useEffect(() => {
     if (rallies && rallies.length > 0) {
       const highestRally = findHighestRally(rallies);
-      console.log('Rally with most hits:', highestRally);
+      // console.log('Rally with most hits:', highestRally);
 
       if (rallyTypes && rallyTypes.length > 0) {
         const allHighestRallies = findHighestRallyByType(rallies, rallyTypes);
-        console.log('All highest rallies by type:', allHighestRallies);
+        // console.log('All highest rallies by type:', allHighestRallies);
       }
     }
   }, [rallies, rallyTypes]);
@@ -129,7 +130,7 @@ function App () {
           </div>
 
           <div>
-            <h1 style={{ alignContent: 'center', alignItems: 'flex-start' }}>Recnt scores</h1>
+            <h1 style={{ alignContent: 'center', alignItems: 'flex-start' }}>Recent scores</h1>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
               {allRallies.map((rally, index) => (
                 <RecentScores key={index} rally={rally} />

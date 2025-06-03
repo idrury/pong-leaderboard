@@ -11,7 +11,7 @@ interface HighscoreCardProps {
 }
 
 function HighscoreCard ({ recordType, highestRally }: HighscoreCardProps) {
-  console.log('HighscoreCardProps:', highestRally);
+  // console.log('HighscoreCardProps:', highestRally);
 
   return (
     <>
