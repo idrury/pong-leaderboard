@@ -3,10 +3,13 @@ import '.././App.css'
 import Card from 'react-bootstrap/Card';
 
 interface HighscoreCardProps {
-  recordType: string;
+  highestRally: {
+    num_hits: string; // highscore name
+  }
+  recordType: string; // type of highscore
 }
 
-function HighscoreCard ({ recordType }: HighscoreCardProps) {
+function HighscoreCard ({ recordType, highestRally }: HighscoreCardProps) {
 
   return (
     <>
@@ -15,7 +18,7 @@ function HighscoreCard ({ recordType }: HighscoreCardProps) {
           <Card.Body>
             <Card.Title className='record'>{recordType}</Card.Title>
             <Card.Text className='number'>
-              NUMBER
+              {highestRally.num_hits}
             </Card.Text>
             <Card.Text className='name'>
               NAME
