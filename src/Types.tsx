@@ -7,7 +7,6 @@ interface SupabaseTable {
 export interface RallyTypeObject extends SupabaseTable {
     name: string,
     tags: string[],
-    high_score_rally: number
 }
 
 export interface PeopleObject extends SupabaseTable {
@@ -18,5 +17,5 @@ export interface PeopleObject extends SupabaseTable {
 export interface RallyObject extends SupabaseTable {
     hits: number,
     people_ids: number[],
-    rally_type: number
+    rally_type: string
 }

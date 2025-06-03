@@ -6,6 +6,7 @@ import './App.css'
 import { fetchPeople, fetchRallies, fetchRallyTypes } from './DatabaseAccess/select'
 import HighscoreCard from './presentation/HighscoreCard';
 import RecentScores from './presentation/RecentScores';
+import Header from './presentation/Header'
 
 
 function App () {
@@ -32,7 +33,8 @@ function App () {
 
   return (
     <>
-      <div>
+      <div className='w100'>
+        <Header/>
         {record_types.map((recordType, index) => (
           <HighscoreCard key={index} recordType={recordType} />
         ))}

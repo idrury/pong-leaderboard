@@ -66,3 +66,31 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.flex {
+  display: flex;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.w100 {
+  width: 100%
+}
+
+.w50 {
+  width: 50%;
+}
+
+.boxed {
+  padding: 5;
+  background-color: #535bf2;
+  border-radius: 3px;
+}
