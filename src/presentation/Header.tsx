@@ -235,14 +235,16 @@ export default function Header ({ }) {
           </button>
         </form>
       </EditMenu>
-      <div className="row boxed between w100 pt2 pb2">
-        <p style={{ fontWeight: 500 }} className="pl2">Ping-Pong-A-Thon</p>
-        <div>
+
+      <div className="boxed between w100 pt1 pb1">
+        <div></div>
+        <p style={{ fontWeight: 500, fontSize: 'large' }}>Ping-Pong-A-Thon</p>
+        <div style={{ display: 'flex', alignItems: 'center', }}>
           <button className="accentButton" onClick={() => setEditActive(true)}>
             + Add rally
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
