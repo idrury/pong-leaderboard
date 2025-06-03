@@ -8,6 +8,9 @@ interface RecentScoresProps {
 function RecentScores ({ rally }: RecentScoresProps) {
   // console.log('RecentScores rally prop:', rally);
 
+  const playerName = rally.people?.name || 'Cras justo odio';
+  const isStarPlayer = playerName === 'James Mann' || playerName === 'Isaac Drury';
+
   return (
     <div style={{
       display: 'flex',
@@ -35,9 +38,21 @@ function RecentScores ({ rally }: RecentScoresProps) {
           fontSize: '14px',
           color: '#a0aec0'
         }}>
-          {rally.people?.name || 'Cras justo odio'}
+          {playerName}
         </div>
       </div>
+
+      {/* Star icon for special players */}
+      {isStarPlayer && (
+        <div style={{
+          color: '#ffd700',
+          fontSize: '18px',
+          marginRight: '8px',
+          marginLeft: '-32px',
+        }}>
+          ⭐
+        </div>
+      )}
 
       {/* Right side number */}
       <div style={{
