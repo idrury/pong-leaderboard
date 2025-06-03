@@ -93,7 +93,7 @@ export async function insertRally(
 ): Promise<boolean> {
   const { error } = await supabase
     .from("rallys")
-    .insert({ num_hits: hits, people_id: peopleId, rally_type: rallyType });
+    .insert({ num_hits: hits, people: peopleId, rally_type: rallyType });
 
   if (error) {
     throw error;
