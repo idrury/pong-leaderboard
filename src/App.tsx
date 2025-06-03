@@ -30,6 +30,7 @@ function App() {
   console.log(totalSeconds);
 
   if (totalSeconds > 10) {
+  if (totalSeconds > 10) {
     fetchData();
     reset();
   }

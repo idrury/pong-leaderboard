@@ -18,7 +18,7 @@ import TypeInput, {
 import IonIcon from "@reacticons/ionicons";
 import ErrorLabel from "./ErrorLabel";
 
-export default function Header({}) {
+export default function Header ({ }) {
   const [editActive, setEditActive] =
     useState(false);
 
@@ -43,7 +43,7 @@ export default function Header({}) {
   /*****************************
    * Refresh the required data
    */
-  async function getData() {
+  async function getData () {
     try {
       setRallyOptions(
         createRallyTypes(await fetchRallyTypes())
@@ -52,7 +52,7 @@ export default function Header({}) {
       setPeopleOptions(
         createInputOptions(people)
       );
-    } catch (error) {}
+    } catch (error) { }
   }
 
   /************************************
@@ -61,7 +61,7 @@ export default function Header({}) {
    * @param people The list of people
    * @returns The new InputOption array
    */
-  function createInputOptions(
+  function createInputOptions (
     people: PeopleObject[]
   ) {
     const returnArray = new Array<InputOption>();
@@ -81,7 +81,7 @@ export default function Header({}) {
    * @param types The raw list of types
    * @returns A new InputOption array
    */
-  function createRallyTypes(
+  function createRallyTypes (
     types: RallyTypeObject[]
   ) {
     const returnArray = new Array<InputOption>();
@@ -99,7 +99,7 @@ export default function Header({}) {
    * Add a new person entry
    * @param name The name of the person or group
    */
-  async function addPeople(name: string) {
+  async function addPeople (name: string) {
     try {
       await insertPerson(name);
       console.log("added", name);
@@ -112,7 +112,7 @@ export default function Header({}) {
   /**************************
    * Add a new rally
    */
-  async function addRally() {
+  async function addRally () {
     if (!rallyType) {
       setError({
         active: true,
@@ -153,14 +153,14 @@ export default function Header({}) {
 
   return (
     <div>
-            <EditMenu
+      <EditMenu
         width={300}
         height={500}
         isActive={editActive}
         setIsActive={() => setEditActive(false)}
       >
         <div className="row middle">
-          <IonIcon name="add-circle" className="mr2"/>
+          <IonIcon name="add-circle" className="mr2" />
           <h3>Add Rally</h3>
         </div>
         <form
@@ -235,14 +235,16 @@ export default function Header({}) {
           </button>
         </form>
       </EditMenu>
-      <div className="row boxed between w100 pt2 pb2">
-        <p style={{fontWeight: 500}} className="pl2">Ping-Pong-A-Thon</p>
-        <div>
+
+      <div className="boxed between w100 pt1 pb1">
+        <div></div>
+        <p style={{ fontWeight: 500, fontSize: 'large' }}>Ping-Pong-A-Thon</p>
+        <div style={{ display: 'flex', alignItems: 'center', }}>
           <button className="accentButton" onClick={() => setEditActive(true)}>
             + Add rally
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
