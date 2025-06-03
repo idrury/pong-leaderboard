@@ -4,16 +4,17 @@ import { supabase } from "./SupabaseClient";
 /**************************************
  * Fetch all rallies from the database
  */
-export async function fetchRallies(): Promise<RallyObject[]> {
+export async function fetchRallies (): Promise<RallyObject[]> {
 
-    const {data, error} = await supabase.from("rallys").select();
+  const { data, error } = await supabase.from("rallys").select();
 
-    if(error) {
-      alert(error.message);
-      throw error;
-    }
+  if (error) {
+    alert(error.message);
+    throw error;
+  }
+  console.log("Fetched rallies:", data);
 
-    return data;
+  return data;
 
 
 }
@@ -23,16 +24,16 @@ export async function fetchRallies(): Promise<RallyObject[]> {
 /**************************************
  * Fetch all rally types from the database
  */
-export async function fetchRallyTypes(): Promise<RallyTypeObject[]> {
+export async function fetchRallyTypes (): Promise<RallyTypeObject[]> {
 
-    const {data, error} = await supabase.from("rally_types").select();
+  const { data, error } = await supabase.from("rally_types").select();
 
-    if(error) {
-      alert(error.message);
-      throw error;
-    }
+  if (error) {
+    alert(error.message);
+    throw error;
+  }
 
-    return data;
+  return data;
 
 
 }
@@ -41,14 +42,14 @@ export async function fetchRallyTypes(): Promise<RallyTypeObject[]> {
 /***************
  * 
  */
-export async function fetchPeople(): Promise<PeopleObject[]> {
+export async function fetchPeople (): Promise<PeopleObject[]> {
 
-    const {data, error} = await supabase.from("people").select();
+  const { data, error } = await supabase.from("people").select();
 
-    if(error) {
-      alert(error.message);
-      throw error;
-    }
+  if (error) {
+    alert(error.message);
+    throw error;
+  }
 
-    return data;
+  return data;
 }
