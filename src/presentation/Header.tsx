@@ -229,7 +229,7 @@ export default function Header ({ }) {
               /*@ts-ignore*/
               options={peopleOptions}
               disabled={false}
-              defaultValue={"Isaac Drury"}
+              defaultValue={""}
               placeholder="no name selected"
             />
           </div>
