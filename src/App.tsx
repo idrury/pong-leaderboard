@@ -11,20 +11,20 @@ function App () {
 
   const [rallies, setRallies] = useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] = useState<RallyTypeObject[]>();
-  const {totalSeconds, reset} = useStopwatch({autoStart: true});
+  const { totalSeconds, reset } = useStopwatch({ autoStart: true });
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  console.log(totalSeconds)
+  // console.log(totalSeconds)
 
-  if(totalSeconds > 10) {
+  if (totalSeconds > 10) {
     fetchData();
     reset();
   }
 
-  
+
 
   async function fetchData () {
     try {
