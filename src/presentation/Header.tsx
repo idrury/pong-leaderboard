@@ -138,7 +138,14 @@ export default function Header ({ }) {
       });
       return;
     }
-
+    if (hits >= 100000) {
+      setError({
+        active: true,
+        text: "Hey! Don't you be cheating! Greg Lawrie would be disappointed in you.",
+        selector: "hits",
+      });
+      return;
+    }
     try {
       setError({ active: false });
       await insertRally(
