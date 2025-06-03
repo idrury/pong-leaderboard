@@ -14,7 +14,7 @@
   --smallAccent: #444444;
   --mediumAccent: #aaaaaa;
   --lightBackground: #181818;
-  --primaryColor: #ebc273ff;
+  --primaryColor: #0097b2;
   --secondaryColor: #fcf3d7;
   --warningColor: #d98f53;
   --safeColor: #7fe06c;
@@ -52,20 +52,40 @@
   color: var(--text);
 }
 
-
-.lightHover:hover {
-  background-color: var(--smallAccent);
-  cursor: pointer;
-}
-.boldLabel {
-  font-family: "Poppins", sans-serif;
-  text-transform: uppercase;
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.8em;
-  line-height: 1.4;
+label {
+  text-align: start !important;
+  justify-content: start;
+  font-size: 10pt !important;
 }
 
+/** Cards **/
+.card {
+  background-color: var(--primaryColor);
+  border-radius: 3px;
+}
+
+ .card-title {
+  color: var(--text) !important;
+}
+
+.card-text {
+  color: var(--text) !important;
+}
+
+.card .name {
+  font-weight: 400;
+  font-size: 10pt;
+}
+
+.card .number {
+  margin: 15px 0 0 0;
+  font-size: 50pt;
+}
+
+.card .record {
+  font-weight: 400;
+  font-size: 10pt;
+}
 
 .danger {
   box-shadow: 3px 3px 0px 1px var(--dangerColor);
@@ -391,12 +411,11 @@ th {
 
 
 /* --- BUTTON ---*/
-
 button {
   color: var(--text);
 
   font-family: "Inter", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 10pt;
   text-wrap: "wrap";
   line-height: 1.2em;
@@ -501,7 +520,7 @@ option {
 
 .accentButton {
   background-color: var(--primaryColor);
-  color: #222222;
+  color: #eeeeee;
 }
 
 .accentButton:hover {

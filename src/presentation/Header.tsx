@@ -152,7 +152,7 @@ export default function Header({}) {
   }
 
   return (
-    <div className="row boxed between w100">
+    <div className="row boxed between w100 pt2 pb2">
       <EditMenu
         width={300}
         height={500}
@@ -167,16 +167,18 @@ export default function Header({}) {
             addRally();
           }}
         >
-          <div>
-            <label>Type</label>
+          <div className="mb2">
+            <div className="row mb1">
+              <label>Type</label>
+            </div>
+            <TypeInput
+              onChange={(val) => setRallyType(val)}
+              options={rallyOptions}
+              disabled={false}
+              defaultValue={""}
+              placeholder="select a rally type"
+            />
           </div>
-          <TypeInput
-            onChange={(val) => setRallyType(val)}
-            options={rallyOptions}
-            disabled={false}
-            defaultValue={""}
-            placeholder="select a rally type"
-          />
           <ErrorLabel
             active={
               error.selector == "rally_type"
@@ -184,16 +186,19 @@ export default function Header({}) {
             text={error.text || ""}
             color="var(--dangerColor)"
           />
-          <div>
-            <label>Number of hits</label>
-            <input
-              placeholder="0"
-              value={hits || ""}
-              onChange={(e) =>
-                setHits(e.target.value)
-              }
-              type="number"
-            />
+
+          <div className="mb2">
+            <div className="row mb1"><label>Number of hits</label></div>
+            <div className="pr2 mr2">
+              <input
+                placeholder="0"
+                value={hits || ""}
+                onChange={(e) =>
+                  setHits(e.target.value)
+                }
+                type="number"
+              />
+            </div>
           </div>
           <ErrorLabel
             active={error.selector == "hits"}
@@ -201,8 +206,8 @@ export default function Header({}) {
             color="var(--dangerColor)"
           />
 
-          <div>
-            <label>name or group</label>
+          <div className="mb2">
+            <div className="row mb1"><label>Name (or group)</label></div>
             <CreatableTypeInput
               onChange={(val) => setPeopleId(val?.value || null)}
               onCreate={(val) => addPeople(val)}
@@ -227,11 +232,13 @@ export default function Header({}) {
           </button>
         </form>
       </EditMenu>
-      <p>Ping-Pong-A-Thon</p>
+      <p style={{fontWeight: 500}} className="pl2">Ping-Pong-A-Thon</p>
 
-      <button onClick={() => setEditActive(true)}>
-        +
-      </button>
+      <div>
+        <button className="accentButton" onClick={() => setEditActive(true)}>
+          + Add rally
+        </button>
+      </div>
     </div>
   );
 }
