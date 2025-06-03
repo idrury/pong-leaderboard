@@ -97,72 +97,41 @@ function App () {
       rallies.length === 0 ||
       rallyTypes.length === 0
     ) {
-      // console.log(
-      //   "No rallies or rally types available"
-      // );
       return [];
     }
 
     const allHighestRallies = rallyTypes.map(
       (rallyType) => {
         // Filter rallies that match this rally type
-        // Note: Currently rally_type field in rallies is null in your data
         const matchingRallies = rallies.filter(
           (rally) => {
             return (
-              rally.rally_type ===
-              rallyType.name ||
-              rally.rally_type ===
-              rallyType.id.toString()
+              rally.rally_type === rallyType.name ||
+              rally.rally_type === rallyType.id.toString()
             );
           }
         );
 
-        // If no matching rallies found due to null rally_type,
-        // we'll temporarily assign rallies based on index for demonstration
-        let ralliesToCheck = matchingRallies;
-        if (matchingRallies.length === 0) {
-          // Temporary logic: assign rallies to types by index until database is fixed
-          const typeIndex = rallyTypes.findIndex(
-            (rt) => rt.id === rallyType.id
-          );
-          ralliesToCheck = rallies.filter(
-            (_, index) =>
-              index % rallyTypes.length ===
-              typeIndex
-          );
-        }
-
         // Find the highest rally among matching rallies
-        const highestRally =
-          ralliesToCheck.length > 0
-            ? ralliesToCheck.reduce(
-              (highest, current) => {
-                return current.num_hits >
-                  highest.num_hits
-                  ? current
-                  : highest;
-              },
-              ralliesToCheck[0]
-            )
-            : null;
+        const highestRally = matchingRallies.length > 0
+          ? matchingRallies.reduce(
+            (highest, current) => {
+              return current.num_hits > highest.num_hits
+                ? current
+                : highest;
+            },
+            matchingRallies[0]
+          )
+          : null;
 
         return {
           rallyType: rallyType.name,
-          highestHits: highestRally
-            ? highestRally.num_hits
-            : 0,
-          person: highestRally
-            ? highestRally.people?.name || null
-            : null,
+          highestHits: highestRally ? highestRally.num_hits : 0,
+          person: highestRally ? highestRally.people?.name || null : null,
         };
       }
     );
 
-    // console.log(
-    //   "All highest rallies by type:",
-    //   allHighestRallies
-    // );
     return allHighestRallies;
   }
 
