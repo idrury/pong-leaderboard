@@ -16,7 +16,7 @@ export interface PeopleObject extends SupabaseTable {
 
 export interface RallyObject extends SupabaseTable {
     num_hits: number,
-    people_id: number,
+    people: PeopleObject,
     rally_types: string
 }
 
@@ -24,3 +24,9 @@ export type InputOption = {
   value: any;
   label: any;
 };
+
+export type ErrorLabelType = {
+    selector?: string;
+    active: boolean;
+    text?: string;
+}

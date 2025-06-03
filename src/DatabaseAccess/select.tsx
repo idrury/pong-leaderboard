@@ -10,7 +10,7 @@ import { supabase } from "./SupabaseClient";
  */
 export async function fetchRallies (): Promise<RallyObject[]> {
 
-  const { data, error } = await supabase.from("rallys").select();
+  const { data, error } = await supabase.from("rallys").select("*, people(*)");
 
   if (error) {
     alert(error.message);
@@ -81,19 +81,19 @@ export async function insertPerson(
 /********************************
  * Insert a new rally
  * @param hits The number of hits of the rally
- * @param people_ids The ids of people to add
- * @param rallyTypeId The id of the rally type
+ * @param people_id The ids of people to add
+ * @param rallyType The name of the rally type
  * @returns True if successful
  * @throws Error if fails
  */
 export async function insertRally(
-  hits: string,
-  people_ids: number,
-  rallyTypeId: number
+  hits: number,
+  peopleId: number,
+  rallyType: string
 ): Promise<boolean> {
   const { error } = await supabase
-    .from("people")
-    .insert({ hits: hits, people_ids: people_ids, rally_type: rallyTypeId });
+    .from("rallys")
+    .insert({ num_hits: hits, people_id: peopleId, rally_type: rallyType });
 
   if (error) {
     throw error;
@@ -114,7 +114,7 @@ export async function insertRallyType(
   tags: number
 ): Promise<boolean> {
   const { error } = await supabase
-    .from("people")
+    .from("rally_types")
     .insert({ name: name, tags: tags });
 
   if (error) {
