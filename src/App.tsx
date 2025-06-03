@@ -5,15 +5,27 @@ import HighscoreCard from './presentation/HighscoreCard';
 import RecentScores from './presentation/RecentScores';
 import Header from './presentation/Header'
 import type { RallyObject, RallyTypeObject } from './Types';
+import { useStopwatch } from 'react-timer-hook';
 
 function App () {
 
   const [rallies, setRallies] = useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] = useState<RallyTypeObject[]>();
+  const {totalSeconds, reset} = useStopwatch({autoStart: true});
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log(totalSeconds)
+
+  if(totalSeconds > 10) {
+    fetchData();
+    reset();
+  }
+
+  
+
   async function fetchData () {
     try {
       const people = await fetchPeople();

@@ -91,6 +91,10 @@ label {
   box-shadow: 3px 3px 0px 1px var(--dangerColor);
 }
 
+h3 {
+  text-align: start;
+}
+
 input {
   font-family: "Inter", sans-serif;
   color: var(--text);

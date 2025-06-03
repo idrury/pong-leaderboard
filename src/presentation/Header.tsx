@@ -152,14 +152,17 @@ export default function Header({}) {
   }
 
   return (
-    <div className="row boxed between w100 pt2 pb2">
-      <EditMenu
+    <div>
+            <EditMenu
         width={300}
         height={500}
         isActive={editActive}
         setIsActive={() => setEditActive(false)}
       >
-        <h3>Add Rally</h3>
+        <div className="row middle">
+          <IonIcon name="add-circle" className="mr2"/>
+          <h3>Add Rally</h3>
+        </div>
         <form
           action="submit"
           onSubmit={(f) => {
@@ -169,7 +172,7 @@ export default function Header({}) {
         >
           <div className="mb2">
             <div className="row mb1">
-              <label>Type</label>
+              <label>Rally type</label>
             </div>
             <TypeInput
               onChange={(val) => setRallyType(val)}
@@ -232,12 +235,13 @@ export default function Header({}) {
           </button>
         </form>
       </EditMenu>
-      <p style={{fontWeight: 500}} className="pl2">Ping-Pong-A-Thon</p>
-
-      <div>
-        <button className="accentButton" onClick={() => setEditActive(true)}>
-          + Add rally
-        </button>
+      <div className="row boxed between w100 pt2 pb2">
+        <p style={{fontWeight: 500}} className="pl2">Ping-Pong-A-Thon</p>
+        <div>
+          <button className="accentButton" onClick={() => setEditActive(true)}>
+            + Add rally
+          </button>
+        </div>
       </div>
     </div>
   );
