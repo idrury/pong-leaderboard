@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+.record {
+  font-weight: bold;
+  color:black;
+}
+
+.number {
+  font-weight: bold;
+  font-size: x-large;
+  color: black;
+}
+
+.name {
+  font-weight: bold;
+  color: grey;
+}
