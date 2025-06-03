@@ -65,11 +65,11 @@ export async function fetchPeople (): Promise<PeopleObject[]> {
  */
 export async function insertPerson(
   name: string,
-  age: number
+  age?: number
 ): Promise<boolean> {
   const { error } = await supabase
     .from("people")
-    .insert({ name: name, age: age });
+    .insert({ name: name, age: age || null});
 
   if (error) {
     throw error;
