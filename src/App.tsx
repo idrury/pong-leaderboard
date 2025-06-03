@@ -84,7 +84,8 @@ function App () {
 
       return {
         rallyType: rallyType.name,
-        highestHits: highestRally ? highestRally.num_hits : 0
+        highestHits: highestRally ? highestRally.num_hits : 0,
+        person: highestRally ? highestRally.people?.name || null : null
       };
     });
 
@@ -120,7 +121,9 @@ function App () {
                 key={index}
                 recordType={item.rallyType}
                 highestRally={{
-                  num_hits: String(item.highestHits)
+                  num_hits: String(item.highestHits),
+                  person: item.person || ''
+
                 }}
               />
             ))}

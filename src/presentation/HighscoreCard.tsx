@@ -5,11 +5,13 @@ import Card from 'react-bootstrap/Card';
 interface HighscoreCardProps {
   highestRally: {
     num_hits: string; // highscore name
+    person: string;
   }
   recordType: string; // type of highscore
 }
 
 function HighscoreCard ({ recordType, highestRally }: HighscoreCardProps) {
+  console.log('HighscoreCardProps:', highestRally);
 
   return (
     <>
@@ -21,7 +23,7 @@ function HighscoreCard ({ recordType, highestRally }: HighscoreCardProps) {
               {highestRally.num_hits}
             </Card.Text>
             <Card.Text className='name'>
-              NAME
+              {highestRally.person}
             </Card.Text>
           </Card.Body>
         </Card>
