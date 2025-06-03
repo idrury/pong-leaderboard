@@ -1,28 +1,25 @@
 import '.././App.css'
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
+import type { RallyObject } from '../Types';
 
 interface RecentScoresProps {
-  rally: {
-    num_hits: number;
-    rally_type: string | null;
-  };
+  rally: RallyObject;
 }
 
 function RecentScores ({ rally }: RecentScoresProps) {
+  console.log('RecentScores rally prop:', rally);
 
   return (
     <>
-      <ListGroup>
-        <ListGroup.Item
-          as="li"
-        >
-          {rally.rally_type || 'Unknown'}
-          <div className="ms-2 me-auto">
-            <div className="fw-bold">Subheading</div>
+      <ListGroup style={{ minWidth: '300px' }}>
+        <ListGroup.Item className="d-flex justify-content-between align-items-center p-3">
+          <div>
+            <div className="fw-bold">{rally.rally_type || 'Unknown Type'}</div>
+            <div className="text-muted small">Person: {rally.people?.name || 'No player'}</div>
           </div>
-          <Badge bg="primary" pill>
-            Score: {rally.num_hits}
+          <Badge bg="primary" pill className="fs-4 px-4 py-2">
+            {rally.num_hits}
           </Badge>
         </ListGroup.Item>
       </ListGroup>

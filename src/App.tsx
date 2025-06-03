@@ -115,7 +115,7 @@ function App () {
       <div>
         <Header />
         <div style={{ display: "flex", justifyContent: "space-between", padding: "20px" }}>
-          <div style={{ display: "flex-start" }}>
+          <div style={{ display: "flex" }}>
             {allHighestRallies.map((item, index) => (
               <HighscoreCard
                 key={index}
@@ -123,12 +123,11 @@ function App () {
                 highestRally={{
                   num_hits: String(item.highestHits),
                   person: item.person || ''
-
                 }}
               />
             ))}
           </div>
-          <div className="recent-scores-container" style={{ display: "flex-end", justifyContent: "right" }}>
+          <div className="recent-scores-container" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
             {allRallies.map((rally, index) => (
               <RecentScores key={index} rally={rally} />
             ))}
