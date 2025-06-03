@@ -102,7 +102,7 @@ export default function Header ({ }) {
   async function addPeople (name: string) {
     try {
       await insertPerson(name);
-      console.log("added", name);
+      // console.log("added", name);
       await getData();
     } catch (error) {
       /*@ts-ignore*/
@@ -177,7 +177,7 @@ export default function Header ({ }) {
               <label>Rally type</label>
             </div>
             <TypeInput
-            /*@ts-ignore*/
+              /*@ts-ignore*/
               onChange={(val) => setRallyType(val)}
               options={rallyOptions}
               disabled={false}
@@ -218,7 +218,7 @@ export default function Header ({ }) {
             <CreatableTypeInput
               onChange={(val) => setPeopleId(val?.value || null)}
               onCreate={(val) => addPeople(val)}
-              
+
               /*@ts-ignore*/
               options={peopleOptions}
               disabled={false}
