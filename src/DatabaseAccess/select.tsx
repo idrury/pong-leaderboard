@@ -8,30 +8,27 @@ import { supabase } from "./SupabaseClient";
 /**************************************
  * Fetch all rallies from the database
  */
-export async function fetchRallies(): Promise<
-  RallyObject[]
-> {
-  const { data, error } = await supabase
-    .from("rallys")
-    .select();
+export async function fetchRallies (): Promise<RallyObject[]> {
+
+  const { data, error } = await supabase.from("rallys").select();
 
   if (error) {
     alert(error.message);
     throw error;
   }
+  console.log("Fetched rallies:", data);
 
   return data;
+
+
 }
 
 /**************************************
  * Fetch all rally types from the database
  */
-export async function fetchRallyTypes(): Promise<
-  RallyTypeObject[]
-> {
-  const { data, error } = await supabase
-    .from("rally_types")
-    .select();
+export async function fetchRallyTypes (): Promise<RallyTypeObject[]> {
+
+  const { data, error } = await supabase.from("rally_types").select();
 
   if (error) {
     alert(error.message);
@@ -39,17 +36,16 @@ export async function fetchRallyTypes(): Promise<
   }
 
   return data;
+
+
 }
 
 /***************
  *
  */
-export async function fetchPeople(): Promise<
-  PeopleObject[]
-> {
-  const { data, error } = await supabase
-    .from("people")
-    .select();
+export async function fetchPeople (): Promise<PeopleObject[]> {
+
+  const { data, error } = await supabase.from("people").select();
 
   if (error) {
     alert(error.message);
