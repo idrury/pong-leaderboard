@@ -248,7 +248,6 @@ export default function Header ({ }) {
           </button>
         </form>
       </EditMenu>
-
       <div className="boxed between w100 pt1 pb1">
         <div></div>
         <p

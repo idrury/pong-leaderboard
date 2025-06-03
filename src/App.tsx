@@ -203,6 +203,7 @@ function App () {
         <div className="row">
           <div className="w100">
             <h2
+              onClick={() => window.open('https://www.youtube.com/watch?v=U8wLBOlCKPU', '_blank')}
               className="ml2 mt2 pt2 pl2 m0 textLeft"
               style={{
                 cursor: 'help',

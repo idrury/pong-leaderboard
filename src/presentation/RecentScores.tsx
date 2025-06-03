@@ -112,23 +112,39 @@ function RecentScores ({ rally }: RecentScoresProps) {
         </div>
       )}
       {isIsaacMann && (
-        <div style={{
-          color: '#ffd700',
-          fontSize: '18px',
-          marginRight: '8px',
-          marginLeft: '-32px',
-        }}>
-          🎂
+        <div
+          onClick={() => window.open('https://www.youtube.com/watch?v=wo_D2TYJj6E', '_blank')}
+          style={{
+            color: '#ffd700',
+            fontSize: '18px',
+            marginRight: '8px',
+            marginLeft: '-32px',
+          }}>
+          🥪
         </div>
       )}
       {isIsaacHegedus && (
-        <div style={{
-          color: '#ffd700',
-          fontSize: '18px',
-          marginRight: '8px',
-          marginLeft: '-32px',
-        }}>
-          🎂
+        <div
+          onClick={() => window.open('https://www.youtube.com/watch?v=HcOnFbKjSyo', '_blank')}
+          style={{
+            color: '#ffd700',
+            fontSize: '18px',
+            marginRight: '8px',
+            marginLeft: '-32px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+          <img
+            src="/white-history.png"
+            alt="white history"
+            style={{
+              width: '18px',
+              height: '18px',
+              marginRight: '4px'
+            }}
+          />
+
         </div>
       )}
       {/* Right side number */}
