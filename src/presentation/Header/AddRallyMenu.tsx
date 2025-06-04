@@ -3,15 +3,33 @@ import EditMenu from "../EditMenu";
 import ErrorLabel from "../ErrorLabel";
 import { CreatableTypeInput } from "../TypeInput";
 import { useEffect, useState } from "react";
-import { ActivatableElement, ErrorLabelType, InputOption, PeopleObject, PopSavedModalFn, RallyTypeObject } from "../../Types";
-import { fetchPeople, fetchRallyTypes, insertPerson, insertRally, insertRallyType } from "../../DatabaseAccess/select";
+import {
+  ActivatableElement,
+  ErrorLabelType,
+  InputOption,
+  PasswordType,
+  PeopleObject,
+  PopSavedModalFn,
+  RallyTypeObject,
+} from "../../Types";
+import {
+  fetchPeople,
+  fetchRallyTypes,
+  insertPerson,
+  insertRally,
+  insertRallyType,
+} from "../../DatabaseAccess/select";
+import PasswordMenu from "./PasswordMenu";
 
-interface AddRallyMenuProps extends ActivatableElement{
-    activateSaved: PopSavedModalFn;
-    promptPassword: () => void;
-};
+interface AddRallyMenuProps extends ActivatableElement {
+  activateSaved: PopSavedModalFn;
+}
 
-export default function AddRallyMenu({active, onClose, activateSaved, promptPassword}:AddRallyMenuProps) {
+export default function AddRallyMenu({
+  active,
+  onClose,
+  activateSaved,
+}: AddRallyMenuProps) {
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<string>();
@@ -22,6 +40,10 @@ export default function AddRallyMenu({active, onClose, activateSaved, promptPass
   const [error, setError] = useState<ErrorLabelType>({
     active: false,
   });
+
+  const [passwordActive, setPasswordActive] = useState(false);
+  const [passwordType, setPasswordType] = useState<PasswordType | undefined>();
+  const [pendingValue, setPendingValue] = useState<string>();
 
   useEffect(() => {
     getData();
@@ -63,7 +85,6 @@ export default function AddRallyMenu({active, onClose, activateSaved, promptPass
    * @returns A new InputOption array
    */
   function createRallyTypes(types: RallyTypeObject[]) {
-
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
@@ -90,20 +111,37 @@ export default function AddRallyMenu({active, onClose, activateSaved, promptPass
     }
   }
 
-  async function addRallyType(rallyType: string, secured = false) {
-    if(!rallyType){ activateSaved("Please enter a rally type", undefined, true); return; };
+  /********************************************
+   * Handle inserting a new rally type to the database
+   * @param rallyType The rally type to add
+   * @param secured
+   * @returns
+   */
+  async function addRallyType(rallyType: string, secured=false) {
+    console.log(rallyType);
+    if (!rallyType) {
+      activateSaved("Please enter a rally type", undefined, true);
+      return;
+    }
 
-    if(!secured) {
-        promptPassword();
+    if (!secured) {
+        setPasswordType("add_rally_type");
+        setPendingValue(rallyType);
+        setPasswordActive(true);
         return;
     }
 
     try {
-        await insertRallyType(rallyType);
-        activateSaved("New rally type added!");
+      await insertRallyType(rallyType);
+      activateSaved("New rally type added!");
+      await getData();
     } catch (error) {
-        console.error(error)
-        activateSaved("An issue occured adding the rally.", "Refresh the page and try again!", true);
+      console.error(error);
+      activateSaved(
+        "An issue occured adding the rally.",
+        "Refresh the page and try again!",
+        true
+      );
     }
   }
 
@@ -146,9 +184,7 @@ export default function AddRallyMenu({active, onClose, activateSaved, promptPass
     try {
       setError({ active: false });
       await insertRally(hits, peopleId as number, rallyType);
-      activateSaved(
-        "New rally added!"
-      );
+      activateSaved("New rally added!");
       onClose();
     } catch (error) {
       /*@ts-ignore*/
@@ -157,96 +193,110 @@ export default function AddRallyMenu({active, onClose, activateSaved, promptPass
   }
 
   return (
-    <EditMenu
-      width={300}
-      height={500}
-      isActive={active}
-      setIsActive={() => onClose()}
-    >
-      <div className="row middle">
-        <IonIcon name="add-circle" className="mr2" />
-        <h3>Add Rally</h3>
-      </div>
-      <form
-        action="submit"
-        onSubmit={(f) => {
-          f.preventDefault();
-          addRally();
+    <div>
+      <PasswordMenu
+        active={passwordActive}
+        type={passwordType}
+        onClose={() => setPasswordActive(false)}
+        onSuccess={(type) => {
+            if(type === "add_rally_type") {
+              addRallyType(pendingValue || "", true);
+            } else if (type === "add_high_rally") {
+                console.error("High rally not implemented yet");
+            }
         }}
+      />
+      <EditMenu
+        width={300}
+        height={500}
+        isActive={active}
+        setIsActive={() => onClose()}
       >
-        <div className="mb2">
-          <div className="row mb1">
-            <label>Rally type</label>
-          </div>
-          <CreatableTypeInput
-            onCreate={(val) => {
-              addRallyType(val);
-              setRallyType(val);
-            }}
-            onChange={(val) => setRallyType(val)}
-            /*@ts-ignore*/
-            options={rallyOptions}
-            disabled={false}
-            defaultValue={""}
-            placeholder="select a rally type"
-          />
+        <div className="row middle">
+          <IonIcon name="add-circle" className="mr2" />
+          <h3>Add Rally</h3>
         </div>
-        <ErrorLabel
-          active={error.selector == "rally_type"}
-          text={error.text || ""}
-          color="var(--dangerColor)"
-        />
-
-        <div className="mb2">
-          <div className="row mb1">
-            <label>Number of hits</label>
-          </div>
-          <div className="pr2 mr2">
-            <input
-              placeholder="0"
-              value={hits || ""}
-              onChange={(e) =>
-                /*@ts-ignore*/
-                setHits(e.target.value)
-              }
-              type="number"
+        <form
+          action="submit"
+          onSubmit={(f) => {
+            f.preventDefault();
+            addRally();
+          }}
+        >
+          <div className="mb2">
+            <div className="row mb1">
+              <label>Rally type</label>
+            </div>
+            <CreatableTypeInput
+              onCreate={(val) => {
+                addRallyType(val);
+                setRallyType(val);
+              }}
+              onChange={(val) => setRallyType(val)}
+              /*@ts-ignore*/
+              options={rallyOptions}
+              disabled={false}
+              defaultValue={""}
+              placeholder="select a rally type"
             />
           </div>
-        </div>
-        <ErrorLabel
-          active={error.selector == "hits"}
-          text={error.text || ""}
-          color="var(--dangerColor)"
-        />
-
-        <div className="mb2">
-          <div className="row mb1">
-            <label>Name (or group)</label>
-          </div>
-          <CreatableTypeInput
-            onChange={(val) => setPeopleId(val?.value || null)}
-            onCreate={(val) => addPeople(val)}
-            /*@ts-ignore*/
-            options={peopleOptions}
-            disabled={false}
-            defaultValue={""}
-            placeholder="no name selected"
+          <ErrorLabel
+            active={error.selector == "rally_type"}
+            text={error.text || ""}
+            color="var(--dangerColor)"
           />
-        </div>
-        <ErrorLabel
-          active={error.selector == "people"}
-          text={error.text || ""}
-          color="var(--dangerColor)"
-        />
 
-        <button
-          type="submit"
-          className="row center middle w100 accentButton p0 mt2"
-        >
-          <IonIcon name="add" className="mr2" />
-          <p>Rally</p>
-        </button>
-      </form>
-    </EditMenu>
+          <div className="mb2">
+            <div className="row mb1">
+              <label>Number of hits</label>
+            </div>
+            <div className="pr2 mr2">
+              <input
+                placeholder="0"
+                value={hits || ""}
+                onChange={(e) =>
+                  /*@ts-ignore*/
+                  setHits(e.target.value)
+                }
+                type="number"
+              />
+            </div>
+          </div>
+          <ErrorLabel
+            active={error.selector == "hits"}
+            text={error.text || ""}
+            color="var(--dangerColor)"
+          />
+
+          <div className="mb2">
+            <div className="row mb1">
+              <label>Name (or group)</label>
+            </div>
+            <CreatableTypeInput
+              onChange={(val) => setPeopleId(val?.value || null)}
+              onCreate={(val) => addPeople(val)}
+              /*@ts-ignore*/
+              options={peopleOptions}
+              disabled={false}
+              defaultValue={""}
+              placeholder="no name selected"
+            />
+          </div>
+          <ErrorLabel
+            active={error.selector == "people"}
+            text={error.text || ""}
+            color="var(--dangerColor)"
+          />
+
+          <button
+            type="submit"
+            className="row center middle w100 accentButton p0 mt2"
+          >
+            <IonIcon name="add" className="mr2" />
+            <p>Rally</p>
+          </button>
+        </form>
+      </EditMenu>
+    </div>
   );
 }

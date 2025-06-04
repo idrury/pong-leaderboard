@@ -1,7 +1,6 @@
 import { useState } from "react";
 import AddRallyMenu from "./AddRallyMenu";
 import { PopSavedModalFn } from "../../Types";
-import PasswordMenu from "./PasswordMenu";
 
 interface HeaderProps {
   activeSavedModal: PopSavedModalFn;
@@ -9,24 +8,16 @@ interface HeaderProps {
 
 export default function Header({ activeSavedModal }: HeaderProps) {
   const [editActive, setEditActive] = useState(false);
-  const [passwordActive, setPasswordActive] = useState(false);
-  const [passwordSuccessFn, setPasswordSuccessFn] = useState<() => void>();
+
 
   return (
     <div>
-      <PasswordMenu
-        active={passwordActive}
-        onClose={() => setPasswordActive(false)}
-        onSuccess={() => {setPasswordActive(false); passwordSuccessFn?.()}}
-      />
       <AddRallyMenu
         active={editActive}
         onClose={() => setEditActive(false)}
         activateSaved={activeSavedModal}
-        promptPassword={() => setPasswordActive(true)}
       />
       <div className="boxed between w100 pt1 pb1">
-        <div></div>
         <p
           onClick={() =>
             window.open(

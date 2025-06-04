@@ -49,3 +49,5 @@ export type PopSavedModalFn = (
   body?: string,
   isError?: boolean
 ) => void;
+
+export type PasswordType =  "add_rally_type" | "add_high_rally" | undefined;
