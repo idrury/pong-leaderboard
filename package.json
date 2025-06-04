@@ -13,7 +13,9 @@
   "dependencies": {
     "@reacticons/ionicons": "^7.1.0",
     "@supabase/supabase-js": "^2.49.9",
+    "@types/luxon": "^3.6.2",
     "bootstrap": "^5.3.6",
+    "luxon": "^3.6.1",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",

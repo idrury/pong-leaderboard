@@ -5,7 +5,7 @@ import {
   fetchRallyTypes,
 } from "../../DatabaseAccess/select";
 import HighscoreCard from "../HighscoreCard";
-import RecentScores from "../RecentScores";
+import RecentScores from "../RecentScores/RecentScores";
 import Header from "../Header/Header";
 import {
   PopSavedModalFn,

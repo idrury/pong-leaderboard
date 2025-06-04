@@ -1069,6 +1069,9 @@ Layout
   text-align: start !important;
 }
 
+.textRight {
+  text-align: end !important;
+}
 .textCenter {
   text-align: center !important;
 }
