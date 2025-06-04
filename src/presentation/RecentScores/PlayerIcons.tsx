@@ -35,10 +35,7 @@ export default function PlayerIcons({
       {isPingPong && (
         <div
           style={{
-            color: "#ffd700",
             fontSize: "18px",
-            marginRight: "8px",
-            marginLeft: "-32px",
           }}
         >
           🏓

@@ -19,6 +19,7 @@ export default function Header({ activeSavedModal }: HeaderProps) {
       />
       <div className="boxed between w100 pt1 pb1">
         <p
+        className="pl2"
           onClick={() =>
             window.open(
               "https://www.youtube.com/watch?v=xvFZjo5PgG0",
@@ -35,7 +36,7 @@ export default function Header({ activeSavedModal }: HeaderProps) {
         </p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <button
-            className="accentButton"
+            className="accentButton mr2"
             onClick={() => setEditActive(true)}
           >
             + Add rally

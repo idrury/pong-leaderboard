@@ -93,7 +93,7 @@ function App() {
           state={savedModal.state}
         />
         <Header activeSavedModal={popSavedModal} />
-        <div className="row">
+        <div className="row shrinkWrap">
           <div className="w100">
             <h2
               onClick={() =>
@@ -102,7 +102,7 @@ function App() {
                   "_blank"
                 )
               }
-              className="ml2 mt2 pt2 pl2 m0 textLeft"
+              className="mb2 mt2 pt2 pl2 m0 textLeft"
               style={{
                 cursor: "help",
                 position: "relative",
@@ -137,7 +137,11 @@ function App() {
               High scores
             </h2>
 
-            <div className="row wrap w100">
+            <div className="row wrap w100"  style={{
+              maxHeight: "90vh",
+              overflow: "auto",
+              minWidth: 300
+            }}>
               {allHighestRallies.map((item, index) => (
                 <HighscoreCard
                   key={index}
@@ -156,9 +160,10 @@ function App() {
             style={{
               maxHeight: "90vh",
               overflow: "auto",
+              minWidth: 300
             }}
           >
-            <h2 className="textLeft">Recent scores</h2>
+            <h2 className="textLeft">Recent rallies</h2>
             <div>
               {allRallies.map((rally, index) => (
                 <RecentScores key={index} rally={rally} />
