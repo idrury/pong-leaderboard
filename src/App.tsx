@@ -6,7 +6,7 @@ import {
 } from "./DatabaseAccess/select";
 import HighscoreCard from "./presentation/HighscoreCard";
 import RecentScores from "./presentation/RecentScores";
-import Header from "./presentation/Header";
+import Header from "./presentation/Header/Header";
 import type { RallyObject, RallyTypeObject } from "./Types";
 import { useStopwatch } from "react-timer-hook";
 

@@ -1,7 +1,13 @@
-
+/**A table from the supabase database */
 interface SupabaseTable {
     id: number,
     created_at: Date,
+}
+
+/** An item that can be shown or hidden */
+export interface ActivatableElement {
+    active: boolean;
+    onClose: () => void;
 }
 
 export interface RallyTypeObject extends SupabaseTable {
