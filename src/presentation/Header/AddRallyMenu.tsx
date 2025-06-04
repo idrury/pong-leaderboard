@@ -42,8 +42,10 @@ export default function AddRallyMenu({
   });
 
   const [passwordActive, setPasswordActive] = useState(false);
-  const [passwordType, setPasswordType] = useState<PasswordType | undefined>();
-  const [pendingValue, setPendingValue] = useState<string>();
+  const [passwordType, setPasswordType] = useState<
+    PasswordType | undefined
+  >();
+  const [pendingValue, setPendingValue] = useState<any>();
 
   useEffect(() => {
     getData();
@@ -54,6 +56,7 @@ export default function AddRallyMenu({
    */
   async function getData() {
     try {
+      // console.log('p', await checkPin(1, '00000'));
       setRallyOptions(createRallyTypes(await fetchRallyTypes()));
       const people = await fetchPeople();
       setPeopleOptions(createInputOptions(people));
@@ -117,7 +120,7 @@ export default function AddRallyMenu({
    * @param secured
    * @returns
    */
-  async function addRallyType(rallyType: string, secured=false) {
+  async function addRallyType(rallyType: string, secured = false) {
     console.log(rallyType);
     if (!rallyType) {
       activateSaved("Please enter a rally type", undefined, true);
@@ -125,10 +128,10 @@ export default function AddRallyMenu({
     }
 
     if (!secured) {
-        setPasswordType("add_rally_type");
-        setPendingValue(rallyType);
-        setPasswordActive(true);
-        return;
+      setPasswordType("add_rally_type");
+      setPendingValue(rallyType);
+      setPasswordActive(true);
+      return;
     }
 
     try {
@@ -148,7 +151,7 @@ export default function AddRallyMenu({
   /**************************
    * Add a new rally
    */
-  async function addRally() {
+  async function addRally(secured = false) {
     if (!rallyType) {
       setError({
         active: true,
@@ -173,7 +176,13 @@ export default function AddRallyMenu({
       });
       return;
     }
-    if (hits >= 100000) {
+    if(hits > 1000 && hits < 30000 && !secured) {
+        setPasswordType("add_high_rally");
+        setPendingValue(hits);
+        setPasswordActive(true);
+        return;
+    }
+    if (hits >= 30000) {
       setError({
         active: true,
         text: "Hey! Don't you be cheating! Greg Lawrie would be disappointed in you.",
@@ -183,7 +192,7 @@ export default function AddRallyMenu({
     }
     try {
       setError({ active: false });
-      await insertRally(hits, peopleId as number, rallyType);
+      await insertRally(pendingValue || hits, peopleId as number, rallyType);
       activateSaved("New rally added!");
       onClose();
     } catch (error) {
@@ -192,19 +201,27 @@ export default function AddRallyMenu({
     }
   }
 
+  /**********************************
+   * What to do when the password is successfully entered
+   * @param type The type of request
+   */
+  function onPasswordSuccess(type: PasswordType) {
+    setPasswordActive(false);
+    if (type === "add_rally_type")
+      addRallyType(pendingValue || "", true);
+    else if (type === "add_high_rally")
+     addRally(true);
+
+    setPendingValue(undefined);
+  }
+
   return (
     <div>
       <PasswordMenu
         active={passwordActive}
         type={passwordType}
         onClose={() => setPasswordActive(false)}
-        onSuccess={(type) => {
-            if(type === "add_rally_type") {
-              addRallyType(pendingValue || "", true);
-            } else if (type === "add_high_rally") {
-                console.error("High rally not implemented yet");
-            }
-        }}
+        onSuccess={(type) => onPasswordSuccess(type)}
       />
       <EditMenu
         width={300}
@@ -232,7 +249,7 @@ export default function AddRallyMenu({
                 addRallyType(val);
                 setRallyType(val);
               }}
-              onChange={(val) => setRallyType(val)}
+              onChange={(val) => setRallyType(val.value)}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}
