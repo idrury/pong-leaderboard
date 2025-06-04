@@ -1,5 +1,3 @@
-// import type CardText from 'react-bootstrap/esm/CardText';
-import '.././App.css'
 import Card from 'react-bootstrap/Card';
 
 interface HighscoreCardProps {

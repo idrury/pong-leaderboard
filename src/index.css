@@ -52,6 +52,22 @@
   color: var(--text);
 }
 
+/** text */
+p {
+  font-size: 10pt;
+  color: var(--text);
+}
+
+h2 {
+  font-size: 10pt;
+  color: var(--text);
+}
+
+h3 {
+    font-size: 12pt;
+}
+
+
 label {
   text-align: start !important;
   justify-content: start;

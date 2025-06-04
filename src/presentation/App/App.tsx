@@ -3,12 +3,19 @@ import "./App.css";
 import {
   fetchRallies,
   fetchRallyTypes,
-} from "./DatabaseAccess/select";
-import HighscoreCard from "./presentation/HighscoreCard";
-import RecentScores from "./presentation/RecentScores";
-import Header from "./presentation/Header/Header";
-import type { RallyObject, RallyTypeObject } from "./Types";
+} from "../../DatabaseAccess/select";
+import HighscoreCard from "../HighscoreCard";
+import RecentScores from "../RecentScores";
+import Header from "../Header/Header";
+import {
+  PopSavedModalFn,
+  SavedModalType,
+  type RallyObject,
+  type RallyTypeObject,
+} from "../../Types";
 import { useStopwatch } from "react-timer-hook";
+import { findHighestRallyByType } from "./AppFunctions";
+import SavedModal from "../SavedModal";
 
 function App() {
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -16,13 +23,22 @@ function App() {
   const { totalSeconds, reset } = useStopwatch({
     autoStart: true,
   });
+  const [savedModal, setSavedModal] = useState<SavedModalType>({
+    active: false,
+  });
 
+  const allHighestRallies =
+    rallies && rallyTypes
+      ? findHighestRallyByType(rallies, rallyTypes)
+      : [];
+  const allRallies = rallies && rallyTypes ? rallies : [];
   useEffect(() => {
     fetchData();
   }, []);
 
+  /** Re-fetch the rallies every 10 secs */
   if (totalSeconds > 10) {
-    fetchData();
+    getAllRallies();
     reset();
   }
 
@@ -30,79 +46,53 @@ function App() {
    * Get rally data from the DB
    */
   async function fetchData() {
+    console.log("Fetching data...");
     try {
-      const rallies = await fetchRallies();
-
       const rallyTypes = await fetchRallyTypes();
-      setRallies(rallies);
       setRallyTypes(rallyTypes);
+      getAllRallies();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
-  /*******************************
-   * Loop through all rally types and 
-   * find the highest rally for each type
-   * @param rallies The rallies to get
-   * @param rallyTypes The types of rallies
-   * @returns An array of objects containing the highest rally for each type
+  /*********************************
+   * Get all rallies from the DB
    */
-  function findHighestRallyByType(
-    rallies: RallyObject[],
-    rallyTypes: RallyTypeObject[]
-  ) {
-    if (
-      !rallies ||
-      !rallyTypes ||
-      rallies.length === 0 ||
-      rallyTypes.length === 0
-    ) {
-      return [];
+  async function getAllRallies() {
+    console.log("Fetching rallies...");
+    try {
+      setRallies(await fetchRallies());
+    } catch (error) {
+      console.error("Error occured fetching rallies:", error);
     }
-
-    const allHighestRallies = rallyTypes.map((rallyType) => {
-      // Filter rallies that match this rally type
-      const matchingRallies = rallies.filter((rally) => {
-        return (
-          rally.rally_type === rallyType.name ||
-          rally.rally_type === rallyType.id.toString()
-        );
-      });
-
-      // Find the highest rally among matching rallies
-      const highestRally =
-        matchingRallies.length > 0
-          ? matchingRallies.reduce((highest, current) => {
-              return current.num_hits > highest.num_hits
-                ? current
-                : highest;
-            }, matchingRallies[0])
-          : null;
-
-      return {
-        rallyType: rallyType.name,
-        highestHits: highestRally ? highestRally.num_hits : 0,
-        person: highestRally
-          ? highestRally.people?.name || null
-          : null,
-      };
-    });
-
-    return allHighestRallies;
   }
 
-  // Compute allHighestRallies from rallies and rallyTypes
-  const allHighestRallies =
-    rallies && rallyTypes
-      ? findHighestRallyByType(rallies, rallyTypes)
-      : [];
-  const allRallies = rallies && rallyTypes ? rallies : [];
+  /** Activate the saved popup box */
+  const popSavedModal: PopSavedModalFn = (
+    header,
+    body,
+    isError = false
+  ) => {
+    setSavedModal({
+      active: true,
+      header: header,
+      body: body,
+      state: isError ? "fail" : "success",
+    });
+  };
 
   return (
     <>
       <div className="w100">
-        <Header />
+        <SavedModal
+          active={savedModal.active}
+          onClose={() => setSavedModal({ active: false })}
+          header={savedModal.header}
+          body={savedModal.body}
+          state={savedModal.state}
+        />
+        <Header activeSavedModal={popSavedModal} />
         <div className="row">
           <div className="w100">
             <h2

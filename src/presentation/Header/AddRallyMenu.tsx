@@ -3,12 +3,14 @@ import EditMenu from "../EditMenu";
 import ErrorLabel from "../ErrorLabel";
 import TypeInput, { CreatableTypeInput } from "../TypeInput";
 import { useEffect, useState } from "react";
-import { ActivatableElement, ErrorLabelType, InputOption, PeopleObject, RallyTypeObject } from "../../Types";
+import { ActivatableElement, ErrorLabelType, InputOption, PeopleObject, PopSavedModalFn, RallyTypeObject } from "../../Types";
 import { fetchPeople, fetchRallyTypes, insertPerson, insertRally } from "../../DatabaseAccess/select";
 
-interface AddRallyMenuProps extends ActivatableElement{};
+interface AddRallyMenuProps extends ActivatableElement{
+    activateSaved: PopSavedModalFn;
+};
 
-export default function AddRallyMenu({active, onClose}:AddRallyMenuProps) {
+export default function AddRallyMenu({active, onClose, activateSaved}:AddRallyMenuProps) {
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<string>();
@@ -28,7 +30,6 @@ export default function AddRallyMenu({active, onClose}:AddRallyMenuProps) {
    * Refresh the required data
    */
   async function getData() {
-    console.log("getting data");
     try {
       setRallyOptions(createRallyTypes(await fetchRallyTypes()));
       const people = await fetchPeople();
@@ -126,6 +127,9 @@ export default function AddRallyMenu({active, onClose}:AddRallyMenuProps) {
     try {
       setError({ active: false });
       await insertRally(hits, peopleId as number, rallyType);
+      activateSaved(
+        "New rally added!"
+      );
       onClose();
     } catch (error) {
       /*@ts-ignore*/

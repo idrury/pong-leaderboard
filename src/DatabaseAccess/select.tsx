@@ -14,7 +14,8 @@ export async function fetchRallies(): Promise<
   const { data, error } = await supabase
     .from("rallys")
     .select("*, people(*)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(50);
 
   if (error) {
     alert(error.message);

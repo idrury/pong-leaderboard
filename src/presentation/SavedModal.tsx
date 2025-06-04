@@ -7,7 +7,7 @@ interface SavedModalProps extends ActivatableElement {
   timeout?: number;
   header?: string;
   body?: string;
-  state?: "success" | "error";
+  state?: "success" | "fail";
 }
 
 export default function SavedModal({

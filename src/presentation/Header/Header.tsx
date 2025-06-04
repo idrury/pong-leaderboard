@@ -1,12 +1,17 @@
 import { useState } from "react";
 import AddRallyMenu from "./AddRallyMenu";
+import { PopSavedModalFn } from "../../Types";
 
-export default function Header ({ }) {  
+interface HeaderProps{
+  activeSavedModal: PopSavedModalFn;
+}
+
+export default function Header ({activeSavedModal}:HeaderProps) {  
     const [editActive, setEditActive] = useState(false);
 
   return (
     <div>
-      <AddRallyMenu active={editActive} onClose={() => setEditActive(false)}/>
+      <AddRallyMenu active={editActive} onClose={() => setEditActive(false)} activateSaved={activeSavedModal}/>
       <div className="boxed between w100 pt1 pb1">
         <div></div>
         <p

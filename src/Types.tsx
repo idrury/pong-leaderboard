@@ -36,3 +36,16 @@ export type ErrorLabelType = {
     active: boolean;
     text?: string;
 }
+
+export type SavedModalType = {
+  active: boolean;
+  header?: string;
+  body?: string;
+  state?: "success" | "fail";
+};
+
+export type PopSavedModalFn = (
+  header: string,
+  body?: string,
+  isError?: boolean
+) => void;
