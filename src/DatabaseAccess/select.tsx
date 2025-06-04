@@ -121,7 +121,7 @@ export async function insertRally(
  */
 export async function insertRallyType(
   name: string,
-  tags: number
+  tags?: string[]
 ): Promise<boolean> {
   const { error } = await supabase
     .from("rally_types")

@@ -64,7 +64,9 @@ h2 {
 }
 
 h3 {
-    font-size: 12pt;
+    font-size: 120;
+    color: var(--text);
+
 }
 
 

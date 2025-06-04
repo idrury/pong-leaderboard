@@ -1,16 +1,17 @@
 import IonIcon from "@reacticons/ionicons";
 import EditMenu from "../EditMenu";
 import ErrorLabel from "../ErrorLabel";
-import TypeInput, { CreatableTypeInput } from "../TypeInput";
+import { CreatableTypeInput } from "../TypeInput";
 import { useEffect, useState } from "react";
 import { ActivatableElement, ErrorLabelType, InputOption, PeopleObject, PopSavedModalFn, RallyTypeObject } from "../../Types";
-import { fetchPeople, fetchRallyTypes, insertPerson, insertRally } from "../../DatabaseAccess/select";
+import { fetchPeople, fetchRallyTypes, insertPerson, insertRally, insertRallyType } from "../../DatabaseAccess/select";
 
 interface AddRallyMenuProps extends ActivatableElement{
     activateSaved: PopSavedModalFn;
+    promptPassword: () => void;
 };
 
-export default function AddRallyMenu({active, onClose, activateSaved}:AddRallyMenuProps) {
+export default function AddRallyMenu({active, onClose, activateSaved, promptPassword}:AddRallyMenuProps) {
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<string>();
@@ -62,6 +63,7 @@ export default function AddRallyMenu({active, onClose, activateSaved}:AddRallyMe
    * @returns A new InputOption array
    */
   function createRallyTypes(types: RallyTypeObject[]) {
+
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
@@ -85,6 +87,23 @@ export default function AddRallyMenu({active, onClose, activateSaved}:AddRallyMe
     } catch (error) {
       /*@ts-ignore*/
       alert(error?.message);
+    }
+  }
+
+  async function addRallyType(rallyType: string, secured = false) {
+    if(!rallyType){ activateSaved("Please enter a rally type", undefined, true); return; };
+
+    if(!secured) {
+        promptPassword();
+        return;
+    }
+
+    try {
+        await insertRallyType(rallyType);
+        activateSaved("New rally type added!");
+    } catch (error) {
+        console.error(error)
+        activateSaved("An issue occured adding the rally.", "Refresh the page and try again!", true);
     }
   }
 
@@ -159,9 +178,13 @@ export default function AddRallyMenu({active, onClose, activateSaved}:AddRallyMe
           <div className="row mb1">
             <label>Rally type</label>
           </div>
-          <TypeInput
-            /*@ts-ignore*/
+          <CreatableTypeInput
+            onCreate={(val) => {
+              addRallyType(val);
+              setRallyType(val);
+            }}
             onChange={(val) => setRallyType(val)}
+            /*@ts-ignore*/
             options={rallyOptions}
             disabled={false}
             defaultValue={""}
