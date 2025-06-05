@@ -15,7 +15,7 @@
   --mediumAccent: #aaaaaa;
   --lightBackground: #181818;
   --primaryColor: #0097b2;
-  --secondaryColor: #fcf3d7;
+  --secondaryColor: #d9b759;
   --warningColor: #d98f53;
   --safeColor: #7fe06c;
   --dangerColor: #bd3d3d;
@@ -582,7 +582,7 @@ option {
 
 .boxedAccent {
   border-radius: 3px;
-  padding: 0.8em 0.6em;
+  padding: 10px;
 
   background: var(--primaryColor);
   color: #111111;
@@ -593,6 +593,21 @@ option {
 .boxedAccent:hover {
   background-color: var(--primaryColor) !important;
 }
+
+.boxedSecondary {
+  border-radius: 3px;
+  padding: 10px;
+
+  background: var(--secondaryColor);
+  color: #111111;
+
+  transition: 0.2s;
+}
+
+.boxedSecondary:hover {
+  background-color: var(--secondaryColor) !important;
+}
+
 
 .outline {
   border-radius: 3px;
@@ -1105,6 +1120,10 @@ Layout
 .sticky {
   position: sticky;
   top: 0;
+}
+
+.bold {
+  font-weight: 600;
 }
 
 @media (max-width: 1200px) {

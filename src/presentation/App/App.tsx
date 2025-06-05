@@ -4,19 +4,24 @@ import {
   fetchRallies,
   fetchRallyTypes,
 } from "../../DatabaseAccess/select";
-import HighscoreCard from "../HighscoreCard";
+import HighscoreCard from "../HighScores/HighscoreCard";
 import RecentScores from "../RecentScores/RecentScores";
 import Header from "../Header/Header";
 import {
+  HighestRallyType,
   PopSavedModalFn,
   SavedModalType,
   type RallyObject,
   type RallyTypeObject,
 } from "../../Types";
 import { useStopwatch } from "react-timer-hook";
-import { findHighestRallyByType } from "./AppFunctions";
 import SavedModal from "../SavedModal";
 import IonIcon from "@reacticons/ionicons";
+import {
+  findHighestRallyByType,
+  getHighestMins,
+} from "./AppFunctions";
+import { PacmanLoader } from "react-spinners";
 
 function App() {
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -27,12 +32,12 @@ function App() {
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
   });
-
-  const allHighestRallies =
-    rallies && rallyTypes
-      ? findHighestRallyByType(rallies, rallyTypes)
-      : [];
+  const [highestRallies, setHighestRallies] = useState<
+    HighestRallyType[]
+  >([]);
   const allRallies = rallies && rallyTypes ? rallies : [];
+  const [maxHits, setMaxHits] = useState(0);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -51,7 +56,7 @@ function App() {
     try {
       const rallyTypes = await fetchRallyTypes();
       setRallyTypes(rallyTypes);
-      getAllRallies();
+      await getAllRallies();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -63,7 +68,15 @@ function App() {
   async function getAllRallies() {
     console.log("Fetching rallies...");
     try {
-      setRallies(await fetchRallies());
+      const rallies = await fetchRallies();
+      const highestRallies = findHighestRallyByType(
+        rallies,
+        rallyTypes || []
+      );
+
+      setRallies(rallies);
+      setHighestRallies(highestRallies);
+      setMaxHits(getHighestMins(highestRallies));
     } catch (error) {
       console.error("Error occured fetching rallies:", error);
     }
@@ -119,51 +132,64 @@ function App() {
         <Header activeSavedModal={popSavedModal} />
         <div className="row shrinkWrap">
           <div className="w100">
-            <div className="row middle ml2">
-              <IonIcon name="analytics" className="mt2" />
-              <h2
-                onClick={() =>
-                  window.open(
-                    "https://www.youtube.com/watch?v=U8wLBOlCKPU",
-                    "_blank"
-                  )
-                }
-                className="mb2 mt2 pt2 pl2 m0 textLeft"
-                style={{
-                  textTransform: "uppercase",
-                  cursor: "help",
-                  position: "relative",
-                }}
-                onMouseEnter={(e) => showToolTip(e)}
-                onMouseLeave={(e) => {
-                  const tooltip =
-                    e.currentTarget.querySelector("div");
-                  if (tooltip) tooltip.remove();
-                }}
+            {highestRallies.length === 0 ? (
+              <div
+                className="col middle center mediumFade"
+                style={{ minHeight: "60vh" }}
               >
-                High scores
-              </h2>
-            </div>
-
-            <div
-              className="row wrap w100"
-              style={{
-                maxHeight: "90vh",
-                overflow: "auto",
-                minWidth: 300,
-              }}
-            >
-              {allHighestRallies.map((item, index) => (
-                <HighscoreCard
-                  key={index}
-                  recordType={item.rallyType}
-                  highestRally={{
-                    num_hits: String(item.highestHits),
-                    person: item.person || "",
+                <PacmanLoader color="var(--primaryColor)" />
+                <p
+                  className="bold mt2"
+                  style={{ color: "var(--primaryColor)" }}
+                >
+                  Loading your scores...
+                </p>
+              </div>
+            ) : (
+              <div>
+                <div className="row middle ml2">
+                  <IonIcon name="analytics" className="mt2" />
+                  <h2
+                    onClick={() =>
+                      window.open(
+                        "https://www.youtube.com/watch?v=U8wLBOlCKPU",
+                        "_blank"
+                      )
+                    }
+                    className="mb2 mt2 pt2 pl2 m0 textLeft"
+                    style={{
+                      textTransform: "uppercase",
+                      cursor: "help",
+                      position: "relative",
+                    }}
+                    onMouseEnter={(e) => showToolTip(e)}
+                    onMouseLeave={(e) => {
+                      const tooltip =
+                        e.currentTarget.querySelector("div");
+                      if (tooltip) tooltip.remove();
+                    }}
+                  >
+                    High scores
+                  </h2>
+                </div>
+                <div
+                  className="row wrap w100 mediumFade"
+                  style={{
+                    maxHeight: "90vh",
+                    overflow: "auto",
+                    minWidth: 300,
                   }}
-                />
-              ))}
-            </div>
+                >
+                  {highestRallies.map((rally, index) => (
+                    <HighscoreCard
+                      key={index}
+                      highestRally={rally}
+                      maxHits={maxHits}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div

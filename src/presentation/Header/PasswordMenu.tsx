@@ -71,6 +71,7 @@ export default function PasswordMenu({
         >
           <div className="pr2 mr2">
             <input
+            autoFocus
               placeholder="Password"
               autoComplete="new-password"
               type="password"

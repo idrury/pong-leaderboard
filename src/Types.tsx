@@ -26,6 +26,13 @@ export interface RallyObject extends SupabaseTable {
     rally_type: string
 }
 
+export interface HighestRallyType {
+    rallyType: string;
+    highestHits: number;
+    person: string | null;
+    time: number;
+}
+
 export type InputOption = {
     value: any;
     label: any;

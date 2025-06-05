@@ -111,7 +111,7 @@ export default function AddRallyMenu({
       await getData();
     } catch (error) {
       /*@ts-ignore*/
-       console.error(error?.message);
+      console.error(error?.message);
     }
   }
 
@@ -201,7 +201,7 @@ export default function AddRallyMenu({
       activateSaved("New rally added!");
       onClose();
     } catch (error) {
-       console.error((error as QueryError).message);
+      console.error((error as QueryError).message);
     }
   }
 
@@ -233,10 +233,25 @@ export default function AddRallyMenu({
         setIsActive={() => onClose()}
       >
         <div className="row middle">
-          <IonIcon name="add-circle" className="h2Icon"/>
+          <IonIcon name="add-circle" className="h2Icon" />
           <h2>Add Rally</h2>
         </div>
-        <p className="textLeft mb2 pb2">Enter the details of your rally!</p>
+        <div
+          className="boxedSecondary mb2 row middle"
+          style={{
+            maxWidth: 300,
+            background: "var(--secondaryColor)",
+          }}
+        >
+          <IonIcon name="information-circle" className="mr1" />
+          <p
+            className="textLeft bold"
+            style={{ color: "var(--background)" }}
+          >
+            Add your rallies here to track them!
+          </p>
+        </div>
+        <br/>
         <form
           action="submit"
           onSubmit={(f) => {
