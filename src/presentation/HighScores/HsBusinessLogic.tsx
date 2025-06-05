@@ -1,7 +1,9 @@
 export function timeToHex(minsHeldFor: number, max: number): string {
-  const r = minsHeldFor  <=5 ? 20 : Math.round((minsHeldFor / max) * 20);
-  const g = minsHeldFor <=5 ? 150 :  Math.round((minsHeldFor / max) * 150);
-  const b = minsHeldFor <=5 ? 180 :  Math.round((minsHeldFor / max) * 180);
+  const clampedMins  = Math.max(0, max - minsHeldFor);
+
+  const r = clampedMins <= 5 ? 2 : Math.round((clampedMins / max) * 20);
+  const g = clampedMins <= 5 ? 15 : Math.round((clampedMins / max) * 150);
+  const b = clampedMins <= 5 ? 18 : Math.round((clampedMins / max) * 180);
 
   return `rgb(${r},${g},${b})`;
 }
