@@ -20,6 +20,7 @@ import {
   insertRallyType,
 } from "../../DatabaseAccess/select";
 import PasswordMenu from "./PasswordMenu";
+import { QueryError } from "@supabase/supabase-js";
 
 interface AddRallyMenuProps extends ActivatableElement {
   activateSaved: PopSavedModalFn;
@@ -110,7 +111,7 @@ export default function AddRallyMenu({
       await getData();
     } catch (error) {
       /*@ts-ignore*/
-      alert(error?.message);
+       console.error(error?.message);
     }
   }
 
@@ -176,11 +177,11 @@ export default function AddRallyMenu({
       });
       return;
     }
-    if(hits > 1000 && hits < 30000 && !secured) {
-        setPasswordType("add_high_rally");
-        setPendingValue(hits);
-        setPasswordActive(true);
-        return;
+    if (hits > 1000 && hits < 30000 && !secured) {
+      setPasswordType("add_high_rally");
+      setPendingValue(hits);
+      setPasswordActive(true);
+      return;
     }
     if (hits >= 30000) {
       setError({
@@ -192,12 +193,15 @@ export default function AddRallyMenu({
     }
     try {
       setError({ active: false });
-      await insertRally(pendingValue || hits, peopleId as number, rallyType);
+      await insertRally(
+        pendingValue || hits,
+        peopleId as number,
+        rallyType
+      );
       activateSaved("New rally added!");
       onClose();
     } catch (error) {
-      /*@ts-ignore*/
-      alert(error.message);
+       console.error((error as QueryError).message);
     }
   }
 
@@ -209,8 +213,7 @@ export default function AddRallyMenu({
     setPasswordActive(false);
     if (type === "add_rally_type")
       addRallyType(pendingValue || "", true);
-    else if (type === "add_high_rally")
-     addRally(true);
+    else if (type === "add_high_rally") addRally(true);
 
     setPendingValue(undefined);
   }
@@ -230,9 +233,10 @@ export default function AddRallyMenu({
         setIsActive={() => onClose()}
       >
         <div className="row middle">
-          <IonIcon name="add-circle" className="mr2" />
-          <h3>Add Rally</h3>
+          <IonIcon name="add-circle" className="h2Icon"/>
+          <h2>Add Rally</h2>
         </div>
+        <p className="textLeft mb2 pb2">Enter the details of your rally!</p>
         <form
           action="submit"
           onSubmit={(f) => {
@@ -241,7 +245,8 @@ export default function AddRallyMenu({
           }}
         >
           <div className="mb2">
-            <div className="row mb1">
+            <div className="row mb1 middle">
+              <IonIcon name="bowling-ball" className="mr1" />
               <label>Rally type</label>
             </div>
             <CreatableTypeInput
@@ -264,8 +269,9 @@ export default function AddRallyMenu({
           />
 
           <div className="mb2">
-            <div className="row mb1">
-              <label>Number of hits</label>
+            <div className="row mb1 middle">
+              <IonIcon name="stats-chart" className="mr1" />
+              <label className="">Number of hits</label>
             </div>
             <div className="pr2 mr2">
               <input
@@ -286,7 +292,8 @@ export default function AddRallyMenu({
           />
 
           <div className="mb2">
-            <div className="row mb1">
+            <div className="row mb1 middle">
+              <IonIcon name="person-circle" className="mr1" />
               <label>Name (or group)</label>
             </div>
             <CreatableTypeInput
@@ -309,8 +316,8 @@ export default function AddRallyMenu({
             type="submit"
             className="row center middle w100 accentButton p0 mt2"
           >
-            <IonIcon name="add" className="mr2" />
-            <p>Rally</p>
+            <IonIcon name="add-circle" className="mr1 pt2 pb2" />
+            Rally
           </button>
         </form>
       </EditMenu>

@@ -18,10 +18,9 @@ export async function fetchRallies(): Promise<
     .limit(50);
 
   if (error) {
-    alert(error.message);
+    console.error(error.message);
     throw error;
   }
-  // console.log("Fetched rallies:", data);
 
   return data;
 }
@@ -37,7 +36,7 @@ export async function fetchRallyTypes(): Promise<
     .select();
 
   if (error) {
-    alert(error.message);
+     console.error(error.message);
     throw error;
   }
 
@@ -55,7 +54,7 @@ export async function fetchPeople(): Promise<
     .select();
 
   if (error) {
-    alert(error.message);
+    console.error(error.message);
     throw error;
   }
 

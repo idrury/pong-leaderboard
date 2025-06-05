@@ -16,6 +16,7 @@ import {
 import { useStopwatch } from "react-timer-hook";
 import { findHighestRallyByType } from "./AppFunctions";
 import SavedModal from "../SavedModal";
+import IonIcon from "@reacticons/ionicons";
 
 function App() {
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -82,38 +83,13 @@ function App() {
     });
   };
 
-  return (
-    <>
-      <div className="w100">
-        <SavedModal
-          active={savedModal.active}
-          onClose={() => setSavedModal({ active: false })}
-          header={savedModal.header}
-          body={savedModal.body}
-          state={savedModal.state}
-        />
-        <Header activeSavedModal={popSavedModal} />
-        <div className="row shrinkWrap">
-          <div className="w100">
-            <h2
-              onClick={() =>
-                window.open(
-                  "https://www.youtube.com/watch?v=U8wLBOlCKPU",
-                  "_blank"
-                )
-              }
-              className="mb2 mt2 pt2 pl2 m0 textLeft"
-              style={{
-                cursor: "help",
-                position: "relative",
-              }}
-              onMouseEnter={(e) => {
-                const tooltip = document.createElement("div");
-                tooltip.innerHTML = `
+  function showToolTip(e: React.MouseEvent<HTMLHeadingElement>) {
+    const tooltip = document.createElement("div");
+    tooltip.innerHTML = `
                   <img src="../lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
                   Hello There
                 `;
-                tooltip.style.cssText = `
+    tooltip.style.cssText = `
                   position: absolute;
                   background: #333;
                   color: white;
@@ -127,21 +103,56 @@ function App() {
                   display: flex;
                   align-items: center;
                 `;
-                e.currentTarget.appendChild(tooltip);
-              }}
-              onMouseLeave={(e) => {
-                const tooltip = e.currentTarget.querySelector("div");
-                if (tooltip) tooltip.remove();
+    e.currentTarget.appendChild(tooltip);
+  }
+
+  return (
+    <>
+      <div className="w100">
+        <SavedModal
+          active={savedModal.active}
+          onClose={() => setSavedModal({ active: false })}
+          header={savedModal.header}
+          body={savedModal.body}
+          state={savedModal.state}
+        />
+        <Header activeSavedModal={popSavedModal} />
+        <div className="row shrinkWrap">
+          <div className="w100">
+            <div className="row middle ml2">
+              <IonIcon name="analytics" className="mt2" />
+              <h2
+                onClick={() =>
+                  window.open(
+                    "https://www.youtube.com/watch?v=U8wLBOlCKPU",
+                    "_blank"
+                  )
+                }
+                className="mb2 mt2 pt2 pl2 m0 textLeft"
+                style={{
+                  textTransform: "uppercase",
+                  cursor: "help",
+                  position: "relative",
+                }}
+                onMouseEnter={(e) => showToolTip(e)}
+                onMouseLeave={(e) => {
+                  const tooltip =
+                    e.currentTarget.querySelector("div");
+                  if (tooltip) tooltip.remove();
+                }}
+              >
+                High scores
+              </h2>
+            </div>
+
+            <div
+              className="row wrap w100"
+              style={{
+                maxHeight: "90vh",
+                overflow: "auto",
+                minWidth: 300,
               }}
             >
-              High scores
-            </h2>
-
-            <div className="row wrap w100"  style={{
-              maxHeight: "90vh",
-              overflow: "auto",
-              minWidth: 300
-            }}>
               {allHighestRallies.map((item, index) => (
                 <HighscoreCard
                   key={index}
@@ -160,10 +171,16 @@ function App() {
             style={{
               maxHeight: "90vh",
               overflow: "auto",
-              minWidth: 300
+              minWidth: 300,
             }}
           >
-            <h2 className="textLeft">Recent rallies</h2>
+            <div
+              style={{ textTransform: "uppercase" }}
+              className="row middle mb1  mt2"
+            >
+              <IonIcon name="list" className="mr2" />
+              <h2 className="textLeft">Recent rallies</h2>
+            </div>
             <div>
               {allRallies.map((rally, index) => (
                 <RecentScores key={index} rally={rally} />
