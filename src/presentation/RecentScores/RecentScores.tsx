@@ -46,7 +46,7 @@ function RecentScores({ rally }: RecentScoresProps) {
           style={{ color: "var(--mediumAccent)" }}
           className="pt1 pb1 m0"
         >
-          {DateTime.fromJSDate(new Date(rally.created_at)).toRelative()}
+          {DateTime.fromJSDate(new Date(rally.created_at)).toRelative({style:'short'})}
         </p>
       </div>
       <div className="boxedAccent w10">
