@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import {
   fetchRallies,
@@ -26,8 +26,9 @@ import { PacmanLoader } from "react-spinners";
 function App() {
   const [rallies, setRallies] = useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] = useState<RallyTypeObject[]>();
-  const { totalSeconds, reset } = useStopwatch({
+  const { totalSeconds } = useStopwatch({
     autoStart: true,
+    interval: 2000,
   });
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
@@ -35,16 +36,26 @@ function App() {
   const [highestRallies, setHighestRallies] =
     useState<HighestRallyType[]>();
   const [maxHits, setMaxHits] = useState(0);
+    const [data, setData] = useState({ value: 0 });
+
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  /** Re-fetch the rallies every 10 secs */
-  if (totalSeconds > 10) {
+  useEffect(() => {
     getAllRallies(rallyTypes);
-    reset();
+    handleDataChange ();
+  }, [totalSeconds]);
+
+
+  const memoizedData = useMemo(() => ({ value: data.value }), [data.value]);
+
+  const handleDataChange = () => {
+    setData({ value: data.value + 1 });
   }
+
+  console.log(highestRallies)
 
   /*******************************
    * Get rally data from the DB
@@ -147,8 +158,12 @@ function App() {
               </div>
             ) : (
               <div className="pr2">
-                <div className="row middle ml1 pl2 mt2 mr2 boxed outline">
-                  <IonIcon name="analytics" className="h2Icon" style={{color: 'var(--text)'}} />
+                <div className="row middle ml1 pl2 mt2 mr2 boxed">
+                  <IonIcon
+                    name="analytics"
+                    className="h2Icon"
+                    style={{ color: "var(--text)" }}
+                  />
                   <h2
                     className="mt2 pb2 m0 textLeft"
                     onClick={() =>
@@ -185,6 +200,7 @@ function App() {
                       key={index}
                       highestRally={rally}
                       maxHits={maxHits}
+                      score={memoizedData.value}
                     />
                   ))}
                 </div>
@@ -202,7 +218,7 @@ function App() {
           >
             <div
               style={{ textTransform: "uppercase" }}
-              className="row middle boxed outline mb2 mt2 pt2 pb2 mr0"
+              className="row middle boxed mb2 mt2 pt2 pb2 mr0"
             >
               <IonIcon name="list" className="mr2 ml2" />
               <h2 className="textLeft m0">Recent rallies</h2>

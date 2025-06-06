@@ -19,7 +19,7 @@ export default function Header({ activeSavedModal }: HeaderProps) {
         onClose={() => setEditActive(false)}
         activateSaved={activeSavedModal}
       />
-      <div className="boxed outline m0 between middle w100 pt1 pb1">
+      <div className="boxed m0 between middle w100 pt1 pb1">
        {!isMobileBrowser() && <QrCodeModal />}
         <div className="row middle pl2">
           <IonIcon name="bowling-ball-sharp" className="mr1" />
@@ -41,7 +41,7 @@ export default function Header({ activeSavedModal }: HeaderProps) {
         </div>
         <div className="row middle">
           <button
-            className="accentButton mr2 p0 pt2 pb2 pl2 pr2"
+            className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
             onClick={() => setEditActive(true)}
           >
             <div className="row middle center">

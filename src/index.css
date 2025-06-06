@@ -96,12 +96,13 @@ label {
   font-size: 10pt;
 }
 
-.card .number {
-  margin: 15px 0 0 0;
-  font-size: 50pt;
+.number {
+  color: var(--text) !important;
+  margin: 0 0 0 0;
+  font-size: 50pt !important;
 }
 
-.card .record {
+.record {
   font-weight: 600;
   font-size: 10pt;
 }
@@ -449,7 +450,7 @@ button {
 
   cursor: pointer;
 
-  border: 1px solid var(--smallAccent);
+  border: 0px solid var(--smallAccent);
 
   transition: 0.5s;
 }
@@ -590,6 +591,19 @@ option {
   transition: 0.2s;
 }
 
+.innerShadow {
+  box-shadow: 0px 0px 80px 0px #0e1b1eDD inset;
+}
+
+.outerShadow {
+  box-shadow: 5px 5px 30px -10px #FFFFFF22;
+}
+
+.innerBorder {
+  border-radius: 3px;
+  box-shadow: 0px 0px 0 2px #FFFFFF55 inset;
+}
+
 .boxedAccent:hover {
   background-color: var(--primaryColor) !important;
 }
@@ -611,8 +625,7 @@ option {
 
 .outline {
   border-radius: 3px;
-
-  border: 1px solid var(--smallAccent);
+  box-shadow: 0px 0px 0 2px #FFFFFF55 inset;
 
   transition: 0.2s;
 }
