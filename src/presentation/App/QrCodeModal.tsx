@@ -11,7 +11,7 @@ export default function qrCodeModal() {
         onClick={() => setOpen(!open)}
         className="clickable"
         style={{ maxWidth: 75 }}
-        src="public\qr-code.png"
+        src="/qr-code.png"
         alt="QR Code"
       />
       <MoveableMenu
@@ -56,7 +56,7 @@ export default function qrCodeModal() {
           <h2 className="boxed p2 mb2">SCAN TO ADD YOUR RALLIES!</h2>
           <img
             style={{ width: 350 }}
-            src="public\qr-code.png"
+            src="/qr-code.png"
             alt="QR Code"
           />
           <p className="bold mt2 mb1 boxed pt1 pb1">
