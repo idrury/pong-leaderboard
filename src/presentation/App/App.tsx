@@ -32,10 +32,8 @@ function App() {
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
   });
-  const [highestRallies, setHighestRallies] = useState<
-    HighestRallyType[]
-  >([]);
-  const allRallies = rallies && rallyTypes ? rallies : [];
+  const [highestRallies, setHighestRallies] =
+    useState<HighestRallyType[]>();
   const [maxHits, setMaxHits] = useState(0);
 
   useEffect(() => {
@@ -44,7 +42,7 @@ function App() {
 
   /** Re-fetch the rallies every 10 secs */
   if (totalSeconds > 10) {
-    getAllRallies();
+    getAllRallies(rallyTypes);
     reset();
   }
 
@@ -56,7 +54,7 @@ function App() {
     try {
       const rallyTypes = await fetchRallyTypes();
       setRallyTypes(rallyTypes);
-      await getAllRallies();
+      await getAllRallies(rallyTypes);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -65,7 +63,9 @@ function App() {
   /*********************************
    * Get all rallies from the DB
    */
-  async function getAllRallies() {
+  async function getAllRallies(
+    rallyTypes: RallyTypeObject[] | undefined
+  ) {
     console.log("Fetching rallies...");
     try {
       const rallies = await fetchRallies();
@@ -132,7 +132,7 @@ function App() {
         <Header activeSavedModal={popSavedModal} />
         <div className="row shrinkWrap">
           <div className="w100">
-            {highestRallies.length === 0 ? (
+            {highestRallies?.length === 0 ? (
               <div
                 className="col middle center mediumFade"
                 style={{ minHeight: "60vh" }}
@@ -146,17 +146,17 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div>
-                <div className="row middle ml2">
-                  <IonIcon name="analytics" className="mt2" />
+              <div className="pr2">
+                <div className="row middle ml1 pl2 mt2 mr2 boxed outline">
+                  <IonIcon name="analytics" className="h2Icon" style={{color: 'var(--text)'}} />
                   <h2
+                    className="mt2 pb2 m0 textLeft"
                     onClick={() =>
                       window.open(
                         "https://www.youtube.com/watch?v=U8wLBOlCKPU",
                         "_blank"
                       )
                     }
-                    className="mb2 mt2 pt2 pl2 m0 textLeft"
                     style={{
                       textTransform: "uppercase",
                       cursor: "help",
@@ -173,14 +173,14 @@ function App() {
                   </h2>
                 </div>
                 <div
-                  className="row wrap w100 mediumFade"
+                  className="mt1 mr1"
                   style={{
-                    maxHeight: "90vh",
-                    overflow: "auto",
-                    minWidth: 300,
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(350px, 1fr))",
                   }}
                 >
-                  {highestRallies.map((rally, index) => (
+                  {highestRallies?.map((rally, index) => (
                     <HighscoreCard
                       key={index}
                       highestRally={rally}
@@ -202,13 +202,13 @@ function App() {
           >
             <div
               style={{ textTransform: "uppercase" }}
-              className="row middle mb1  mt2"
+              className="row middle boxed outline mb2 mt2 pt2 pb2 mr0"
             >
-              <IonIcon name="list" className="mr2" />
-              <h2 className="textLeft">Recent rallies</h2>
+              <IonIcon name="list" className="mr2 ml2" />
+              <h2 className="textLeft m0">Recent rallies</h2>
             </div>
-            <div>
-              {allRallies.map((rally, index) => (
+            <div className="pr1">
+              {rallies?.map((rally, index) => (
                 <RecentScores key={index} rally={rally} />
               ))}
             </div>

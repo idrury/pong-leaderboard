@@ -39,14 +39,14 @@ export default function Header({ activeSavedModal }: HeaderProps) {
             Ping-Pong-A-Thon 2025
           </h2>
         </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div className="row middle">
           <button
             className="accentButton mr2 p0 pt2 pb2 pl2 pr2"
             onClick={() => setEditActive(true)}
           >
             <div className="row middle center">
-              <IonIcon name="add-circle" className="mr1" />
-              Add rally
+              <IonIcon name="add-circle" className="h2Icon" />
+              ADD A RALLY
             </div>
           </button>
         </div>

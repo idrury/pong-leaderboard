@@ -11,8 +11,7 @@ function RecentScores({ rally }: RecentScoresProps) {
 
   return (
     <div
-      className="boxed middle row between outline w100 pl mb1"
-      style={{ maxWidth: "98%" }}
+      className="boxed middle row between outline w100 mb1"
     >
       <div className="row middle w50">
         <div style={{ width: 30 }}>

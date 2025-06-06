@@ -22,7 +22,6 @@ function HighscoreCard({
         <Card
           className="outline row m1 center middle"
           style={{
-            width: 350,
             height: 150,
             background: hex,
           }}
@@ -58,20 +57,28 @@ function HighscoreCard({
             <Card.Text className="number">
               {highestRally.highestHits}
             </Card.Text>
-            <div
-              className="row middle center mt2 bold"
-              style={{ textTransform: "capitalize" }}
-            >
+            <div className="row middle center mt2">
               <IonIcon name="person-circle" className="mr1" />
-              <p className="m0">
-                {highestRally.person
-                  ? `${DateTime.now()
-                      .minus({ minutes: highestRally.time })
-                      .toRelative({ style: "long" })} by ${
-                      highestRally.person
-                    }`
-                  : "not claimed yet!"}
-              </p>
+              <div className="m0" style={{ fontSize: "10pt" }}>
+                {highestRally.person ? (
+                  <div className="row">
+                    <p className="pr1">
+                      {DateTime.now()
+                        .minus({ minutes: highestRally.time })
+                        .toRelative({ style: "long" })}{" "}
+                      by
+                    </p>
+                    <p
+                      style={{ textTransform: "capitalize" }}
+                      className="bold"
+                    >
+                      {highestRally.person}
+                    </p>
+                  </div>
+                ) : (
+                  "not claimed yet!"
+                )}
+              </div>
             </div>
           </Card.Body>
         </Card>
