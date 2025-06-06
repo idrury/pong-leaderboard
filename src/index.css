@@ -599,7 +599,7 @@ option {
   padding: 10px;
 
   background: var(--secondaryColor);
-  color: #111111;
+  color: #111111 !important;
 
   transition: 0.2s;
 }

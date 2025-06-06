@@ -3,6 +3,7 @@ import AddRallyMenu from "./AddRallyMenu";
 import { PopSavedModalFn } from "../../Types";
 import IonIcon from "@reacticons/ionicons";
 import QrCodeModal from "../App/QrCodeModal";
+import { isMobileBrowser } from "../../common/CommonFunctions";
 
 interface HeaderProps {
   activeSavedModal: PopSavedModalFn;
@@ -19,11 +20,10 @@ export default function Header({ activeSavedModal }: HeaderProps) {
         activateSaved={activeSavedModal}
       />
       <div className="boxed outline m0 between middle w100 pt1 pb1">
-        <QrCodeModal />
-        <div className="row middle">
+       {!isMobileBrowser() && <QrCodeModal />}
+        <div className="row middle pl2">
           <IonIcon name="bowling-ball-sharp" className="mr1" />
           <h2
-            className="pl2"
             onClick={() =>
               window.open(
                 "https://www.youtube.com/watch?v=xvFZjo5PgG0",
@@ -41,8 +41,7 @@ export default function Header({ activeSavedModal }: HeaderProps) {
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <button
-          style={{height: 50}}
-            className="accentButton mr2"
+            className="accentButton mr2 p0 pt2 pb2 pl2 pr2"
             onClick={() => setEditActive(true)}
           >
             <div className="row middle center">

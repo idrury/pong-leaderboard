@@ -16,24 +16,30 @@ export default function qrCodeModal() {
       />
       <MoveableMenu
         width={120}
-        height={50}
+        height={20}
         x={95}
-        y={25}
+        y={30}
         z={20}
         onClose={() => {}}
         active={!open}
         autoHide={false}
         noBlur
       >
-        <div className="boxedAccent outline h100 row middle">
+        <div className="boxedSecondary outline h100 row middle">
           <IonIcon
             className="h2Icon"
             name="arrow-back-circle"
-            style={{ color: "var(--text)" }}
+            style={{ color: "var(--background)" }}
           />
-          <p style={{ textTransform: "uppercase" }} className="bold">
+          <h3
+            style={{
+              textTransform: "uppercase",
+              color: "var(--background)",
+            }}
+            className=""
+          >
             Join in!
-          </p>
+          </h3>
         </div>
       </MoveableMenu>
       <MoveableMenu

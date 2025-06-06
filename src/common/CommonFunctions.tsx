@@ -14,3 +14,11 @@ export default function toString(item: any): string {
   return String(item);
 
 }
+
+export function isMobileBrowser() {
+  const userAgent =
+    typeof window.navigator === "undefined"
+      ? ""
+      : navigator.userAgent;
+  return /iPhone|iPad|iPod|Android/i.test(userAgent);
+}
