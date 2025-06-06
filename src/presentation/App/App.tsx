@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import {
   fetchRallies,
@@ -26,9 +26,9 @@ import { PacmanLoader } from "react-spinners";
 function App() {
   const [rallies, setRallies] = useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] = useState<RallyTypeObject[]>();
-  const { totalSeconds } = useStopwatch({
+  const { totalSeconds, reset } = useStopwatch({
     autoStart: true,
-    interval: 2000,
+    interval: 2000
   });
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
@@ -36,26 +36,16 @@ function App() {
   const [highestRallies, setHighestRallies] =
     useState<HighestRallyType[]>();
   const [maxHits, setMaxHits] = useState(0);
-    const [data, setData] = useState({ value: 0 });
-
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
+  /** Re-fetch the rallies every 10 secs */
+  if (totalSeconds > 10) {
     getAllRallies(rallyTypes);
-    handleDataChange ();
-  }, [totalSeconds]);
-
-
-  const memoizedData = useMemo(() => ({ value: data.value }), [data.value]);
-
-  const handleDataChange = () => {
-    setData({ value: data.value + 1 });
+    reset();
   }
-
-  console.log(highestRallies)
 
   /*******************************
    * Get rally data from the DB
@@ -159,11 +149,7 @@ function App() {
             ) : (
               <div className="pr2">
                 <div className="row middle ml1 pl2 mt2 mr2 boxed">
-                  <IonIcon
-                    name="analytics"
-                    className="h2Icon"
-                    style={{ color: "var(--text)" }}
-                  />
+                  <IonIcon name="analytics" className="h2Icon" style={{color: 'var(--text)'}} />
                   <h2
                     className="mt2 pb2 m0 textLeft"
                     onClick={() =>
@@ -200,7 +186,6 @@ function App() {
                       key={index}
                       highestRally={rally}
                       maxHits={maxHits}
-                      score={memoizedData.value}
                     />
                   ))}
                 </div>

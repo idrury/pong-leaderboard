@@ -36,6 +36,7 @@ export function SplitText({
 }:SplitTextProps) {
   const ref = useRef<HTMLParagraphElement>(null);
 
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -113,8 +114,10 @@ export function SplitText({
     rootMargin,
     onLetterAnimationComplete,
   ]);
+  
 
   return (
+    
     <p
       ref={ref}
       className={`split-parent ${className}`}
