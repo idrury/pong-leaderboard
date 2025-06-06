@@ -1,12 +1,11 @@
 import IonIcon from "@reacticons/ionicons";
 import { useEffect, useState, type MouseEvent } from "react";
+import { ActivatableElement } from "../Types";
 
-interface MoveableMenuInterface {
+interface MoveableMenuInterface extends ActivatableElement{
   x: number;
   y: number;
   z?: number;
-  isActive: boolean;
-  setIsActive: (active: boolean) => void;
   children: any;
   width?: number;
   height?: number;
@@ -20,8 +19,8 @@ const MoveableMenu = ({
   x = 0,
   y = 0,
   z = 15,
-  isActive,
-  setIsActive,
+  active,
+  onClose,
   children,
   width = 300,
   height = 300,
@@ -83,10 +82,10 @@ const MoveableMenu = ({
       e?.target?.id == "close" ||
       (forceClose == true && autoHide == true)
     )
-      setIsActive(false);
+      onClose();
   }
 
-  if (isActive) {
+  if (active) {
     return (
       <div
         id="close"
