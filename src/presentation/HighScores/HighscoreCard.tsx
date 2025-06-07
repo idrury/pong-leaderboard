@@ -3,7 +3,9 @@ import Card from "react-bootstrap/Card";
 import { HighestRallyType } from "../../Types";
 import { DateTime } from "luxon";
 import { timeToHex } from "./HsBusinessLogic";
-
+import ShinyText from "../Animations/ShinyText";
+import Counter from "../Animations/Counter";
+import { getPlaces } from "../../common/CommonFunctions";
 interface HighscoreCardProps {
   highestRally: HighestRallyType;
   maxHits: number;
@@ -13,46 +15,41 @@ function HighscoreCard({
   highestRally,
   maxHits,
 }: HighscoreCardProps) {
-  const hex = timeToHex(highestRally.time, maxHits);
 
   return (
     <div
-      className="m1 outline col center p2 clickable"
+      className="m1 outline col center "
       style={{
-        background: hex,
+        background: timeToHex(highestRally.time, maxHits, true)
       }}
     >
       <div>
         <Card.Body className="w100 col middle p2">
           <div
-            className="row middle center bold mt2"
+            className="row middle center bold mt2 mb2"
             style={{ textTransform: "capitalize" }}
           >
             <IonIcon name="bowling-ball" className="mr1" />
             <p className="">{highestRally.rallyType}</p>
           </div>
-          {highestRally.time < 5 && (
+          {(highestRally.time < 5 && highestRally.highestHits > 0) && (
             <div
-              className="row middle center boxed mt2 w50"
-              style={{
-                background: "var(--secondaryColor)",
-              }}
+              className="boxed m0"
+              style={{ background: "var(--secondaryColor)" }}
             >
-              <IonIcon
-                name="trophy"
-                className="mr1"
-                style={{ color: "var(--background)" }}
-              />
-              <p
-                className="bold pt1 pb1"
-                style={{ color: "var(--background)" }}
-              >
-                New Record
-              </p>
+              <ShinyText text="New Record" />
             </div>
           )}
-          <div className="pt2 mt2 mb2">
-            <p className="number">{highestRally.highestHits}</p>
+          <div className="pt2 mb2">
+            <Counter
+              value={highestRally.highestHits}
+              places={getPlaces(highestRally.highestHits)}
+              fontSize={80}
+              padding={5}
+              gap={10}
+              textColor="white"
+              fontWeight={900}
+            />
           </div>
           <div className="row middle center mt2 mb2">
             <IonIcon name="person-circle" className="mr1" />

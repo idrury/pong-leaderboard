@@ -22,13 +22,14 @@ import {
   getHighestMins,
 } from "./AppFunctions";
 import { PacmanLoader } from "react-spinners";
+import AnimatedContent from "../Animations/AnimatedContent";
 
 function App() {
   const [rallies, setRallies] = useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] = useState<RallyTypeObject[]>();
-  const { totalSeconds, reset } = useStopwatch({
+  const { totalSeconds } = useStopwatch({
     autoStart: true,
-    interval: 2000
+    interval: 10000,
   });
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
@@ -41,11 +42,9 @@ function App() {
     fetchData();
   }, []);
 
-  /** Re-fetch the rallies every 10 secs */
-  if (totalSeconds > 10) {
+  useEffect(() => {
     getAllRallies(rallyTypes);
-    reset();
-  }
+  }, [totalSeconds]);
 
   /*******************************
    * Get rally data from the DB
@@ -147,73 +146,89 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="pr2">
-                <div className="row middle ml1 pl2 mt2 mr2 boxed">
-                  <IonIcon name="analytics" className="h2Icon" style={{color: 'var(--text)'}} />
-                  <h2
-                    className="mt2 pb2 m0 textLeft"
-                    onClick={() =>
-                      window.open(
-                        "https://www.youtube.com/watch?v=U8wLBOlCKPU",
-                        "_blank"
-                      )
-                    }
+                <div className="pr2">
+                  <div className="row middle ml1 pl2 mt2 mr2 boxed">
+                    <IonIcon
+                      name="analytics"
+                      className="h2Icon"
+                      style={{ color: "var(--text)" }}
+                    />
+                    <h2
+                      className="mt2 pb2 m0 textLeft"
+                      onClick={() =>
+                        window.open(
+                          "https://www.youtube.com/watch?v=U8wLBOlCKPU",
+                          "_blank"
+                        )
+                      }
+                      style={{
+                        textTransform: "uppercase",
+                        cursor: "help",
+                        position: "relative",
+                      }}
+                      onMouseEnter={(e) => showToolTip(e)}
+                      onMouseLeave={(e) => {
+                        const tooltip =
+                          e.currentTarget.querySelector("div");
+                        if (tooltip) tooltip.remove();
+                      }}
+                    >
+                      High scores
+                    </h2>
+                  </div>
+                  <div
+                    className="mt1 mr1"
                     style={{
-                      textTransform: "uppercase",
-                      cursor: "help",
-                      position: "relative",
-                    }}
-                    onMouseEnter={(e) => showToolTip(e)}
-                    onMouseLeave={(e) => {
-                      const tooltip =
-                        e.currentTarget.querySelector("div");
-                      if (tooltip) tooltip.remove();
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(350px, 1fr))",
                     }}
                   >
-                    High scores
-                  </h2>
+                    {highestRallies?.map((rally, index) => (
+                      <HighscoreCard
+                        key={index}
+                        highestRally={rally}
+                        maxHits={maxHits}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div
-                  className="mt1 mr1"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(350px, 1fr))",
-                  }}
-                >
-                  {highestRallies?.map((rally, index) => (
-                    <HighscoreCard
-                      key={index}
-                      highestRally={rally}
-                      maxHits={maxHits}
-                    />
-                  ))}
-                </div>
-              </div>
             )}
           </div>
 
-          <div
-            className="w25"
-            style={{
-              maxHeight: "90vh",
-              overflow: "auto",
-              minWidth: 300,
-            }}
+          <AnimatedContent
+            distance={300}
+            direction="horizontal"
+            reverse={false}
+            duration={1.2}
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1}
+            threshold={0}
+            delay={0.3}
           >
             <div
-              style={{ textTransform: "uppercase" }}
-              className="row middle boxed mb2 mt2 pt2 pb2 mr0"
+              className="w25"
+              style={{
+                maxHeight: "90vh",
+                overflow: "auto",
+                minWidth: 300,
+              }}
             >
-              <IonIcon name="list" className="mr2 ml2" />
-              <h2 className="textLeft m0">Recent rallies</h2>
+              <div
+                style={{ textTransform: "uppercase" }}
+                className="row middle boxed mb1 mt2 pt2 pb2 mr0"
+              >
+                <IonIcon name="list" className="mr2 ml2" />
+                <h2 className="textLeft m0">Recent rallies</h2>
+              </div>
+              <div className="pr1">
+                {rallies?.map((rally, index) => (
+                  <RecentScores key={index} rally={rally} />
+                ))}
+              </div>
             </div>
-            <div className="pr1">
-              {rallies?.map((rally, index) => (
-                <RecentScores key={index} rally={rally} />
-              ))}
-            </div>
-          </div>
+          </AnimatedContent>
         </div>
       </div>
     </>

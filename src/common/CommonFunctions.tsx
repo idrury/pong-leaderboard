@@ -12,7 +12,6 @@ export default function toString(item: any): string {
     return JSON.stringify(item);
   }
   return String(item);
-
 }
 
 export function isMobileBrowser() {
@@ -21,4 +20,15 @@ export function isMobileBrowser() {
       ? ""
       : navigator.userAgent;
   return /iPhone|iPad|iPod|Android/i.test(userAgent);
+}
+
+export function getPlaces(number: number): number[] {
+  const idxs = [10000, 1000, 100, 10, 1];
+  const returnIdxs = new Array<number>();
+
+  idxs.forEach(idx => {
+    if(number >= idx) returnIdxs.push(idx);
+  })
+
+  return (returnIdxs.length > 0 ? returnIdxs : [1]);
 }
