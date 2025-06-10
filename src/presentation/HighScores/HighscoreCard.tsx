@@ -22,7 +22,7 @@ function HighscoreCard({
   const time: number = Math.round(
     DateTime.now()
       .diff(DateTime.fromJSDate(new Date(rallyType.rallys?.created_at || new Date())))
-      .as("minutes")
+      .as("minutes")+1
   );
 
   return (
@@ -42,7 +42,7 @@ function HighscoreCard({
             <IonIcon name="bowling-ball" className="mr1" />
             <p className="">{rallyType?.name || "Other"}</p>
           </div>
-          {time < 5 && rallyType.rallys.num_hits > 0 && (
+          {time < 10 && rallyType.rallys.num_hits > 0 && (
             <div
               className="boxed m0"
               style={{ background: "var(--secondaryColor)" }}
