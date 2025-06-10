@@ -1,6 +1,6 @@
 import IonIcon from "@reacticons/ionicons";
 import Card from "react-bootstrap/Card";
-import { HighestRallyType } from "../../Types";
+import { RallyObject } from "../../Types";
 import { DateTime } from "luxon";
 import { timeToHex } from "./HsBusinessLogic";
 import ShinyText from "../Animations/ShinyText";
@@ -8,23 +8,30 @@ import Counter from "../Animations/Counter";
 import { getPlaces } from "../../common/CommonFunctions";
 import { Ref } from "react";
 interface HighscoreCardProps {
-  highestRally: HighestRallyType;
+  rally: RallyObject;
   maxHits: number;
-  nodeRef?:Ref<HTMLDivElement>
+  nodeRef?: Ref<HTMLDivElement>;
 }
 
 function HighscoreCard({
-  highestRally,
+  rally,
   maxHits,
-  nodeRef
+  nodeRef,
 }: HighscoreCardProps) {
+  if (!rally) return;
+
+  const time: number = Math.round(
+    DateTime.now()
+      .diff(DateTime.fromJSDate(new Date(rally?.created_at)))
+      .as("minutes")
+  );
 
   return (
     <div
-    ref={nodeRef}
+      ref={nodeRef}
       className="col center "
       style={{
-        background: timeToHex(highestRally.time, maxHits, true)
+        background: timeToHex(time, maxHits, true),
       }}
     >
       <div>
@@ -34,9 +41,9 @@ function HighscoreCard({
             style={{ textTransform: "capitalize" }}
           >
             <IonIcon name="bowling-ball" className="mr1" />
-            <p className="">{highestRally.rallyType}</p>
+            <p className="">{rally.rally_types?.name || "Other"}</p>
           </div>
-          {(highestRally.time < 5 && highestRally.highestHits > 0) && (
+          {time < 5 && rally.num_hits > 0 && (
             <div
               className="boxed m0"
               style={{ background: "var(--secondaryColor)" }}
@@ -46,8 +53,8 @@ function HighscoreCard({
           )}
           <div className="pt2 mb2">
             <Counter
-              value={highestRally.highestHits}
-              places={getPlaces(highestRally.highestHits)}
+              value={rally.num_hits}
+              places={getPlaces(rally.num_hits)}
               fontSize={80}
               padding={5}
               gap={10}
@@ -58,11 +65,11 @@ function HighscoreCard({
           <div className="row middle center mt2 mb2">
             <IonIcon name="person-circle" className="mr1" />
             <div className="m0" style={{ fontSize: "10pt" }}>
-              {highestRally.person ? (
+              {rally.people.name ? (
                 <div className="row">
                   <p className="pr1">
                     {DateTime.now()
-                      .minus({ minutes: highestRally.time })
+                      .minus({ minutes: time })
                       .toRelative({ style: "long" })}{" "}
                     by
                   </p>
@@ -70,7 +77,7 @@ function HighscoreCard({
                     style={{ textTransform: "capitalize" }}
                     className="bold"
                   >
-                    {highestRally.person}
+                    {rally.people.name}
                   </p>
                 </div>
               ) : (

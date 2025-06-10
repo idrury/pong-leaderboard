@@ -13,7 +13,6 @@ import {
 } from "../../Types";
 import {
   fetchPeople,
-  fetchRallyTypes,
   insertPerson,
   insertRally,
   insertRallyType,
@@ -26,17 +25,20 @@ import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
 
 interface AddRallyMenuProps extends ActivatableElement {
+  currentRallyTypes?: RallyTypeObject[];
   activateSaved: PopSavedModalFn;
 }
 
 export default function AddRallyMenu({
   active,
+  currentRallyTypes,
   onClose,
   activateSaved,
 }: AddRallyMenuProps) {
+
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
-  const [rallyType, setRallyType] = useState<string>();
+  const [rallyType, setRallyType] = useState<number>();
   const [peopleId, setPeopleId] = useState<string | number>();
 
   const [peopleOptions, setPeopleOptions] = useState<InputOption[]>();
@@ -53,7 +55,8 @@ export default function AddRallyMenu({
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [currentRallyTypes?.length]);
+
 
   useGSAP(() => {
     gsap.registerPlugin(SplitText);
@@ -80,10 +83,10 @@ export default function AddRallyMenu({
    * Refresh the required data
    */
   async function getData() {
+    console.log("FETCHING RALLY TYPES AGAIN")
     try {
-      // console.log('p', await checkPin(1, '00000'));
-      setRallyOptions(createRallyTypes(await fetchRallyTypes()));
       const people = await fetchPeople();
+      setRallyOptions(createRallyTypes(currentRallyTypes || []));
       setPeopleOptions(createInputOptions(people));
     } catch (error) {}
   }
@@ -116,7 +119,7 @@ export default function AddRallyMenu({
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
-        value: type.name,
+        value: type.id,
         label: type.name,
       });
     });
@@ -131,7 +134,6 @@ export default function AddRallyMenu({
   async function addPeople(name: string) {
     try {
       await insertPerson(name);
-      // console.log("added", name);
       await getData();
     } catch (error) {
       /*@ts-ignore*/
@@ -200,7 +202,12 @@ export default function AddRallyMenu({
       });
       return;
     }
-    if (hits > 1000 && hits < 30000 && !secured) {
+
+    const prevHighRally = currentRallyTypes?.find(type => {
+      return type.id == rallyType
+    })?.rallys
+
+    if (hits > 1000 && hits < 30000 || hits > (prevHighRally?.num_hits || 100) && !secured) {
       setPasswordType("add_high_rally");
       setPendingValue(hits);
       setPasswordActive(true);
@@ -214,6 +221,7 @@ export default function AddRallyMenu({
       });
       return;
     }
+
     try {
       setError({ active: false });
       await insertRally(
@@ -275,9 +283,8 @@ export default function AddRallyMenu({
             <CreatableTypeInput
               onCreate={(val) => {
                 addRallyType(val);
-                setRallyType(val);
               }}
-              onChange={(val) => setRallyType(val.value)}
+              onChange={(val) => setRallyType(val?.value)}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}

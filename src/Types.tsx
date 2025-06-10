@@ -13,6 +13,7 @@ export interface ActivatableElement {
 export interface RallyTypeObject extends SupabaseTable {
     name: string,
     tags: string[],
+    rallys: RallyObject
 }
 
 export interface PeopleObject extends SupabaseTable {
@@ -23,14 +24,14 @@ export interface PeopleObject extends SupabaseTable {
 export interface RallyObject extends SupabaseTable {
     num_hits: number,
     people: PeopleObject,
-    rally_type: string
+    rally_types: RallyTypeObject
 }
 
 export interface HighestRallyType {
     rallyType: string;
     highestHits: number;
     person: string | null;
-    time: number;
+    time: Date;
 }
 
 export type InputOption = {

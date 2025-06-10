@@ -13,7 +13,7 @@ export async function fetchRallies(): Promise<
 > {
   const { data, error } = await supabase
     .from("rallys")
-    .select("*, people(*)")
+    .select("*, people(*), rally_types!rallys_rally_type_id_fkey(*)")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -33,13 +33,12 @@ export async function fetchRallyTypes(): Promise<
 > {
   const { data, error } = await supabase
     .from("rally_types")
-    .select();
+    .select("*, rallys!rally_types_high_score_id_fkey(*, people(*))");
 
   if (error) {
      console.error(error.message);
     throw error;
   }
-
   return data;
 }
 
@@ -94,14 +93,16 @@ export async function insertPerson(
 export async function insertRally(
   hits: number,
   peopleId: number,
-  rallyType: string
+  rallyType: number,
+  highScore: boolean=false
 ): Promise<boolean> {
   const { error } = await supabase
     .from("rallys")
     .insert({
       num_hits: hits,
       people: peopleId,
-      rally_type: rallyType,
+      rally_type_id: rallyType,
+      is_high_score: highScore
     });
 
   if (error) {

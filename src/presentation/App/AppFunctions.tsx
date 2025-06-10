@@ -1,7 +1,5 @@
 import { DateTime } from "luxon";
 import {
-  HighestRallyType,
-  RallyObject,
   RallyTypeObject,
 } from "../../Types";
 
@@ -12,54 +10,58 @@ import {
  * @param rallyTypes The types of rallies
  * @returns An array of objects containing the highest rally for each type
  */
-export function findHighestRallyByType(
-  rallies: RallyObject[],
-  rallyTypes: RallyTypeObject[]
-): HighestRallyType[] {
-  if (
-    !rallies ||
-    !rallyTypes ||
-    rallies.length === 0 ||
-    rallyTypes.length === 0
-  ) {
-    return [];
-  }
+// export function findHighestRallyByType(
+//   rallies: RallyObject[],
+//   rallyTypes: RallyTypeObject[]
+// ): HighestRallyType[] {
+//   if (
+//     !rallies ||
+//     !rallyTypes ||
+//     rallies.length === 0 ||
+//     rallyTypes.length === 0
+//   ) {
+//     return [];
+//   }
 
-  const allHighestRallies = rallyTypes.map((rallyType) => {
-    // Filter rallies that match this rally type
-    const matchingRallies = rallies.filter((rally) => {
-      return (
-        rally.rally_type === rallyType.name ||
-        rally.rally_type === rallyType.id.toString()
-      );
-    });
+//   const allHighestRallies = rallyTypes.map((rallyType) => {
+//     // Filter rallies that match this rally type
+//     const matchingRallies = rallies.filter((rally) => {
+//       return (
+//         rally.rally_type === rallyType.name ||
+//         rally.rally_type === rallyType.id.toString()
+//       );
+//     });
 
-    // Find the highest rally among matching rallies
-    const highestRally =
-      matchingRallies.length > 0
-        ? matchingRallies.reduce((highest, current) => {
-            return current.num_hits > highest.num_hits
-              ? current
-              : highest;
-          }, matchingRallies[0])
-        : null;
+//     // Find the highest rally among matching rallies
+//     const highestRally =
+//       matchingRallies.length > 0
+//         ? matchingRallies.reduce((highest, current) => {
+//             return current.num_hits > highest.num_hits
+//               ? current
+//               : highest;
+//           }, matchingRallies[0])
+//         : null;
 
-    return {
-      rallyType: rallyType.name,
-      highestHits: highestRally?.num_hits || 0,
-      person: highestRally ? highestRally.people?.name || null : null,
-      time: getMinutesHeldFor(
-        new Date(highestRally?.created_at || new Date())
-      ),
-    };
-  });
+//     return {
+//       rallyType: rallyType.name,
+//       highestHits: highestRally?.num_hits || 0,
+//       person: highestRally ? highestRally.people?.name || null : null,
+//       time: getMinutesHeldFor(
+//         new Date(highestRally?.created_at || new Date())
+//       ),
+//     };
+//   });
 
-  return allHighestRallies;
-}
+//   return allHighestRallies;
+// }
 
-export function getHighestMins(rallies: HighestRallyType[]): number {
+export function getHighestMins(rallies: RallyTypeObject[]): number {
   if (rallies.length === 0) return 0;
-  return Math.max(...rallies.map((r) => r.time));
+  return Math.max(...rallies.map((type) =>  Math.round(
+      DateTime.now()
+        .diff(DateTime.fromJSDate(new Date(type?.created_at)))
+        .as("minutes")
+    )));
 }
 
 export function getMinutesHeldFor(time: Date): number {

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddRallyMenu from "./AddRallyMenu";
-import { PopSavedModalFn } from "../../Types";
+import { PopSavedModalFn, RallyTypeObject } from "../../Types";
 import IonIcon from "@reacticons/ionicons";
 import QrCodeModal from "../App/QrCodeModal";
 import { isMobileBrowser } from "../../common/CommonFunctions";
@@ -10,25 +10,35 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 interface HeaderProps {
+  rallyTypes?: RallyTypeObject[];
   activeSavedModal: PopSavedModalFn;
 }
 
-export default function Header({ activeSavedModal }: HeaderProps) {
+export default function Header({
+  activeSavedModal,
+  rallyTypes,
+}: HeaderProps) {
   const [editActive, setEditActive] = useState(false);
+  const [rallyTypesState, setRallyTypeState] = useState(rallyTypes);
+
+  useEffect(() => {
+    setRallyTypeState(rallyTypes);
+  }, [rallyTypes])
 
   useGSAP(() => {
     gsap.from(".titleTransition", {
       opacity: 0,
       x: -100,
-      ease: 'back'
+      ease: "back",
     });
 
-    gsap.from('.spinTransition', {
+    gsap.from(".spinTransition", {
       opacity: 0,
       rotate: 360,
-      ease: 'back'
-    })
+      ease: "back",
+    });
   });
+
 
   return (
     <div>
@@ -51,15 +61,23 @@ export default function Header({ activeSavedModal }: HeaderProps) {
       </div>
       <AddRallyMenu
         active={editActive}
+        currentRallyTypes={rallyTypesState}
         onClose={() => setEditActive(false)}
         activateSaved={activeSavedModal}
       />
-      <div className={`m0 between middle w100 pt1 pb1 wrap ${isMobileBrowser() && "center"}`}>
+      <div
+        className={`m0 between middle w100 pt1 pb1 wrap ${
+          isMobileBrowser() && "center"
+        }`}
+      >
         {!isMobileBrowser() && <QrCodeModal />}
         <div className="centerRow middle pl2">
-          <IonIcon name="bowling-ball-sharp" className="mr2 h2Icon spinTransition" />
+          <IonIcon
+            name="bowling-ball-sharp"
+            className="mr2 h2Icon spinTransition"
+          />
           <h2
-          className="titleTransition"
+            className="titleTransition"
             onClick={() =>
               window.open(
                 "https://www.youtube.com/watch?v=xvFZjo5PgG0",
@@ -74,7 +92,12 @@ export default function Header({ activeSavedModal }: HeaderProps) {
             Ping-Pong-A-Thon 2025
           </h2>
         </div>
-        <div style={{zIndex: 20, top: 10}} className={`row middle center ${isMobileBrowser() && "w100 fixed"}`}>
+        <div
+          style={{ zIndex: 20, top: 10 }}
+          className={`row middle center ${
+            isMobileBrowser() && "w100 fixed"
+          }`}
+        >
           <button
             className="accentButton mr2 ml2 p0 pt2 pb2 pl2 pr2 outline w100"
             onClick={() => setEditActive(true)}

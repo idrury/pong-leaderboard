@@ -25,7 +25,7 @@ function RecentScores({ rally }: RecentScoresProps) {
               textAlign: "start",
             }}
           >
-            {rally.rally_type || "Subheading"}
+            {rally.rally_types?.name || "no type"}
           </p>
           <div
             className=""

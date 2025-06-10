@@ -3,12 +3,12 @@ import "./App.css";
 import {
   fetchRallies,
   fetchRallyTypes,
+
 } from "../../DatabaseAccess/select";
 import HighscoreCard from "../HighScores/HighscoreCard";
 import RecentScores from "../RecentScores/RecentScores";
 import Header from "../Header/Header";
 import {
-  HighestRallyType,
   PopSavedModalFn,
   SavedModalType,
   type RallyObject,
@@ -17,7 +17,6 @@ import {
 import { useStopwatch } from "react-timer-hook";
 import SavedModal from "../SavedModal";
 import {
-  findHighestRallyByType,
   getHighestMins,
 } from "./AppFunctions";
 import { PacmanLoader } from "react-spinners";
@@ -34,29 +33,22 @@ function App() {
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
   });
-  const [highestRallies, setHighestRallies] =
-    useState<HighestRallyType[]>();
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    getAllRallies(rallyTypes);
   }, [totalSeconds]);
 
   useGSAP(() => {
-        gsap.from( highScoreRefs.current, {
-          opacity: 0,
-          rotate: 20,
-          zoom: .1,
-          duration: 0.5,
-          stagger: .2
-        })
-    
-  }, [highestRallies?.length]);
+    gsap.from(highScoreRefs.current, {
+      opacity: 0,
+      rotate: 20,
+      zoom: 0.1,
+      duration: 0.5,
+      stagger: 0.2,
+    });
+  }, [rallyTypes?.length]);
 
   const addToRefs = (element: any) => {
     if (element && !highScoreRefs.current.includes(element)) {
@@ -70,33 +62,12 @@ function App() {
   async function fetchData() {
     console.log("Fetching data...");
     try {
-      const rallyTypes = await fetchRallyTypes();
-      setRallyTypes(rallyTypes);
-      await getAllRallies(rallyTypes);
+      setRallies(await fetchRallies());
+      const fetchedRallyTypes = await fetchRallyTypes()
+      setRallyTypes(fetchedRallyTypes)
+      setMaxHits(getHighestMins(fetchedRallyTypes||[]));
     } catch (error) {
       console.error("Error fetching data:", error);
-    }
-  }
-
-  /*********************************
-   * Get all rallies from the DB
-   */
-  async function getAllRallies(
-    rallyTypes: RallyTypeObject[] | undefined
-  ) {
-    console.log("Fetching rallies...");
-    try {
-      const rallies = await fetchRallies();
-      const highestRallies = findHighestRallyByType(
-        rallies,
-        rallyTypes || []
-      );
-
-      setRallies(rallies);
-      setHighestRallies(highestRallies);
-      setMaxHits(getHighestMins(highestRallies));
-    } catch (error) {
-      console.error("Error occured fetching rallies:", error);
     }
   }
 
@@ -147,10 +118,13 @@ function App() {
           body={savedModal.body}
           state={savedModal.state}
         />
-        <Header activeSavedModal={popSavedModal} />
+        <Header
+          activeSavedModal={popSavedModal}
+          rallyTypes={rallyTypes}
+        />
         <div className="row shrinkWrap">
           <div className="w100">
-            {highestRallies?.length === 0 ? (
+            {rallyTypes?.length === 0 ? (
               <div
                 className="col middle center mediumFade"
                 style={{ minHeight: "60vh" }}
@@ -173,13 +147,13 @@ function App() {
                       "repeat(auto-fit, minmax(350px, 1fr))",
                   }}
                 >
-                  {highestRallies?.map((rally, index) => (
-                      <HighscoreCard
+                  {rallyTypes?.map((type, index) => (
+                    <HighscoreCard
                       key={index}
-                       nodeRef={addToRefs}
-                        highestRally={rally}
-                        maxHits={maxHits}
-                      />
+                      nodeRef={addToRefs}
+                      rally={type.rallys}
+                      maxHits={maxHits}
+                    />
                   ))}
                 </div>
               </div>
