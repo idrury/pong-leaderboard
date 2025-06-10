@@ -11,6 +11,7 @@
     "vercel-build": "npm ci && npm run build"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@react-three/fiber": "^9.1.2",
     "@reacticons/ionicons": "^7.1.0",
     "@supabase/supabase-js": "^2.49.9",
@@ -25,6 +26,7 @@
     "react-select": "^5.10.1",
     "react-spinners": "^0.17.0",
     "react-timer-hook": "^4.0.5",
+    "react-transition-group": "^4.4.5",
     "three": "^0.177.0"
   },
   "devDependencies": {
