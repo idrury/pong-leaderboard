@@ -57,11 +57,14 @@ import {
 
 export function getHighestMins(rallies: RallyTypeObject[]): number {
   if (rallies.length === 0) return 0;
+      console.log(rallies)
+
   return Math.max(...rallies.map((type) =>  Math.round(
       DateTime.now()
-        .diff(DateTime.fromJSDate(new Date(type?.created_at)))
+        .diff(DateTime.fromJSDate(new Date(type?.rallys?.created_at || new Date())))
         .as("minutes")
     )));
+
 }
 
 export function getMinutesHeldFor(time: Date): number {

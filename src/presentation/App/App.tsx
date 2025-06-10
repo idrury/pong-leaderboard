@@ -138,7 +138,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="pr2">
+              <div className="">
                 <div
                   className="mt2"
                   style={{
@@ -159,7 +159,7 @@ function App() {
               </div>
             )}
           </div>
-
+            <div className="mr2"/>
           <div
             className="w25"
             style={{

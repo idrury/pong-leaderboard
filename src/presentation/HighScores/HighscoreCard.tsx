@@ -31,6 +31,7 @@ function HighscoreCard({
       className="col center "
       style={{
         background: timeToHex(time, maxHits, true),
+        maxWidth: '100vw'
       }}
     >
       <div>
