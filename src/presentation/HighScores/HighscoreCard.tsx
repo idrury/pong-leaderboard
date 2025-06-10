@@ -6,19 +6,23 @@ import { timeToHex } from "./HsBusinessLogic";
 import ShinyText from "../Animations/ShinyText";
 import Counter from "../Animations/Counter";
 import { getPlaces } from "../../common/CommonFunctions";
+import { Ref } from "react";
 interface HighscoreCardProps {
   highestRally: HighestRallyType;
   maxHits: number;
+  nodeRef?:Ref<HTMLDivElement>
 }
 
 function HighscoreCard({
   highestRally,
   maxHits,
+  nodeRef
 }: HighscoreCardProps) {
 
   return (
     <div
-      className="m1 outline col center "
+    ref={nodeRef}
+      className="col center "
       style={{
         background: timeToHex(highestRally.time, maxHits, true)
       }}

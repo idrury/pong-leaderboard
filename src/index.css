@@ -52,6 +52,10 @@
   color: var(--text);
 }
 
+body {
+  margin: 0
+}
+
 /** text */
 p {
   margin: 0px;

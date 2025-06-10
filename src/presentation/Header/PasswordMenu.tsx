@@ -59,6 +59,7 @@ export default function PasswordMenu({
         size: 30,
         color: "var(--primaryColor)",
       }}
+      zIndex={25}
     >
       <div>
         <h2>Enter admin password to continue</h2>
