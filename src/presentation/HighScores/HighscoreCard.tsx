@@ -1,6 +1,6 @@
 import IonIcon from "@reacticons/ionicons";
 import Card from "react-bootstrap/Card";
-import { RallyObject } from "../../Types";
+import { RallyTypeObject } from "../../Types";
 import { DateTime } from "luxon";
 import { timeToHex } from "./HsBusinessLogic";
 import ShinyText from "../Animations/ShinyText";
@@ -8,21 +8,20 @@ import Counter from "../Animations/Counter";
 import { getPlaces } from "../../common/CommonFunctions";
 import { Ref } from "react";
 interface HighscoreCardProps {
-  rally: RallyObject;
+  rallyType: RallyTypeObject;
   maxHits: number;
   nodeRef?: Ref<HTMLDivElement>;
 }
 
 function HighscoreCard({
-  rally,
+  rallyType,
   maxHits,
   nodeRef,
 }: HighscoreCardProps) {
-  if (!rally) return;
-
+  if (!rallyType?.rallys) return;
   const time: number = Math.round(
     DateTime.now()
-      .diff(DateTime.fromJSDate(new Date(rally?.created_at)))
+      .diff(DateTime.fromJSDate(new Date(rallyType.rallys?.created_at || new Date())))
       .as("minutes")
   );
 
@@ -41,9 +40,9 @@ function HighscoreCard({
             style={{ textTransform: "capitalize" }}
           >
             <IonIcon name="bowling-ball" className="mr1" />
-            <p className="">{rally.rally_types?.name || "Other"}</p>
+            <p className="">{rallyType?.name || "Other"}</p>
           </div>
-          {time < 5 && rally.num_hits > 0 && (
+          {time < 5 && rallyType.rallys.num_hits > 0 && (
             <div
               className="boxed m0"
               style={{ background: "var(--secondaryColor)" }}
@@ -53,8 +52,8 @@ function HighscoreCard({
           )}
           <div className="pt2 mb2">
             <Counter
-              value={rally.num_hits}
-              places={getPlaces(rally.num_hits)}
+              value={rallyType.rallys?.num_hits}
+              places={getPlaces(rallyType.rallys.num_hits)}
               fontSize={80}
               padding={5}
               gap={10}
@@ -65,7 +64,7 @@ function HighscoreCard({
           <div className="row middle center mt2 mb2">
             <IonIcon name="person-circle" className="mr1" />
             <div className="m0" style={{ fontSize: "10pt" }}>
-              {rally.people.name ? (
+              {rallyType.rallys.people?.name ? (
                 <div className="row">
                   <p className="pr1">
                     {DateTime.now()
@@ -77,7 +76,7 @@ function HighscoreCard({
                     style={{ textTransform: "capitalize" }}
                     className="bold"
                   >
-                    {rally.people.name}
+                    {rallyType.rallys.people.name}
                   </p>
                 </div>
               ) : (

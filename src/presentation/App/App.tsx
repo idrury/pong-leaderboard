@@ -151,7 +151,7 @@ function App() {
                     <HighscoreCard
                       key={index}
                       nodeRef={addToRefs}
-                      rally={type.rallys}
+                      rallyType={type}
                       maxHits={maxHits}
                     />
                   ))}

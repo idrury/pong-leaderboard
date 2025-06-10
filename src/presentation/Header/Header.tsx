@@ -48,7 +48,7 @@ export default function Header({
         <Aurora
           colorStops={["#050c0f", "#124450", "#146679"]}
           blend={0.9}
-          amplitude={1.2}
+          amplitude={2}
           speed={1}
         />
         <Noise

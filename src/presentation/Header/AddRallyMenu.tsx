@@ -178,6 +178,7 @@ export default function AddRallyMenu({
    * Add a new rally
    */
   async function addRally(secured = false) {
+    let isHighScore = false;
     if (!rallyType) {
       setError({
         active: true,
@@ -207,11 +208,17 @@ export default function AddRallyMenu({
       return type.id == rallyType
     })?.rallys
 
-    if (hits > 1000 && hits < 30000 || hits > (prevHighRally?.num_hits || 100) && !secured) {
+    //Prompt for password if high score
+    if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
+      if(!secured) {
       setPasswordType("add_high_rally");
       setPendingValue(hits);
       setPasswordActive(true);
       return;
+      }
+      else 
+        isHighScore = true;
+
     }
     if (hits >= 30000) {
       setError({
@@ -227,7 +234,8 @@ export default function AddRallyMenu({
       await insertRally(
         pendingValue || hits,
         peopleId as number,
-        rallyType
+        rallyType,
+        isHighScore
       );
       activateSaved("New rally added!");
       onClose();
