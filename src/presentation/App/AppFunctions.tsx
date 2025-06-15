@@ -57,7 +57,6 @@ import {
 
 export function getHighestMins(rallies: RallyTypeObject[]): number {
   if (rallies.length === 0) return 0;
-      console.log(rallies)
 
   return Math.max(...rallies.map((type) =>  Math.round(
       DateTime.now()

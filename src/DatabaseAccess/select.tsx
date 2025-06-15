@@ -33,7 +33,7 @@ export async function fetchRallyTypes(): Promise<
 > {
   const { data, error } = await supabase
     .from("rally_types")
-    .select("*, rallys!rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, people(*))");
+    .select("*, rallys!rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))");
 
   if (error) {
     console.error(error.message);

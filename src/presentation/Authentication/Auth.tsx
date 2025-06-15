@@ -29,7 +29,6 @@ export default function Auth({
     }
   }
 
-  console.log(profile)
   return (
     <div>
       {session ? (

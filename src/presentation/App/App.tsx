@@ -50,8 +50,7 @@ function App() {
     // Fetch the user's profile
     supabase.auth.onAuthStateChange(
       (_event, session) => {
-        console.log(session?.user.id)
-        if (_event != "SIGNED_OUT") {
+        if (_event=="SIGNED_IN" || _event=="TOKEN_REFRESHED") {
           getProfile(session?.user?.id, _event);
         }
         setSession(session);
