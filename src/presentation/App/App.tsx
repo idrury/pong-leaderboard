@@ -21,14 +21,11 @@ import {
   getHighestMins,
 } from "./AppFunctions";
 import { PacmanLoader } from "react-spinners";
-<<<<<<< HEAD
-import AnimatedContent from "../Animations/AnimatedContent";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
 import { Session } from "@supabase/supabase-js";
-=======
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
+
 
 function App() {
   const [rallies, setRallies] =
@@ -39,24 +36,15 @@ function App() {
     autoStart: true,
     interval: 10000,
   });
-<<<<<<< HEAD
-  const [savedModal, setSavedModal] =
-    useState<SavedModalType>({
-      active: false,
-    });
-  const [highestRallies, setHighestRallies] =
-    useState<HighestRallyType[]>();
-  const [maxHits, setMaxHits] = useState(0);
+
   const [session, setSession] =
     useState<Session | null>(null);
   const [profile, setProfile] = useState<any>();
-=======
   const [savedModal, setSavedModal] = useState<SavedModalType>({
     active: false,
   });
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
   useEffect(() => {
     // Fetch the user's profile
@@ -72,7 +60,6 @@ function App() {
     fetchData();
   }, [totalSeconds]);
 
-<<<<<<< HEAD
   /****************************
    * Set the profile object
    * @param userId
@@ -92,7 +79,6 @@ function App() {
       );
     }
   }
-=======
   useGSAP(() => {
     gsap.from(highScoreRefs.current, {
       opacity: 0,
@@ -108,7 +94,6 @@ function App() {
       highScoreRefs.current.push(element);
     }
   };
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
   /*******************************
    * Get rally data from the DB
@@ -128,35 +113,6 @@ function App() {
     }
   }
 
-<<<<<<< HEAD
-  /*********************************
-   * Get all rallies from the DB
-   */
-  async function getAllRallies(
-    rallyTypes: RallyTypeObject[] | undefined
-  ) {
-    console.log("Fetching rallies...");
-    try {
-      const rallies = await fetchRallies();
-      const highestRallies =
-        findHighestRallyByType(
-          rallies,
-          rallyTypes || []
-        );
-
-      setRallies(rallies);
-      setHighestRallies(highestRallies);
-      setMaxHits(getHighestMins(highestRallies));
-    } catch (error) {
-      console.error(
-        "Error occured fetching rallies:",
-        error
-      );
-    }
-  }
-
-=======
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
   /** Activate the saved popup box */
   const popSavedModal: PopSavedModalFn = (
     header,
@@ -171,32 +127,6 @@ function App() {
     });
   };
 
-<<<<<<< HEAD
-  function showToolTip(
-    e: React.MouseEvent<HTMLHeadingElement>
-  ) {
-    const tooltip = document.createElement("div");
-    tooltip.innerHTML = `
-      <img src="../lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
-      Hello There
-                `;
-    tooltip.style.cssText = `
-                  position: absolute;
-                  background: #333;
-                  color: white;
-                  padding: 5px 10px;
-                  border-radius: 4px;
-                  font-size: 12px;
-                  top: -30px;
-                  left: 0;
-                  z-index: 1000;
-                  white-space: nowrap;
-                  display: flex;
-                  align-items: center;
-                `;
-    e.currentTarget.appendChild(tooltip);
-  }
-=======
   // function showToolTip(e: React.MouseEvent<HTMLHeadingElement>) {
   //   const tooltip = document.createElement("div");
   //   tooltip.innerHTML = `
@@ -219,7 +149,6 @@ function App() {
   //               `;
   //   e.currentTarget.appendChild(tooltip);
   // }
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
   return (
     <>
@@ -234,14 +163,9 @@ function App() {
           state={savedModal.state}
         />
         <Header
-<<<<<<< HEAD
           profile={profile}
           session={session || undefined}
           activeSavedModal={popSavedModal}
-=======
-          activeSavedModal={popSavedModal}
-          rallyTypes={rallyTypes}
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
         />
         <div className="row shrinkWrap">
           <div className="w100">
@@ -261,68 +185,15 @@ function App() {
                 </p>
               </div>
             ) : (
-<<<<<<< HEAD
-              <div className="pr2">
-                <div className="row middle ml1 pl2 mt2 mr2 boxed">
-                  <IonIcon
-                    name="analytics"
-                    className="h2Icon"
-                    style={{
-                      color: "var(--text)",
-                    }}
-                  />
-                  <h2
-                    className="mt2 pb2 m0 textLeft"
-                    onClick={() =>
-                      window.open(
-                        "https://www.youtube.com/watch?v=U8wLBOlCKPU",
-                        "_blank"
-                      )
-                    }
-                    style={{
-                      textTransform: "uppercase",
-                      cursor: "help",
-                      position: "relative",
-                    }}
-                    onMouseEnter={(e) =>
-                      showToolTip(e)
-                    }
-                    onMouseLeave={(e) => {
-                      const tooltip =
-                        e.currentTarget.querySelector(
-                          "div"
-                        );
-                      if (tooltip)
-                        tooltip.remove();
-                    }}
-                  >
-                    High scores
-                  </h2>
-                </div>
-                <div
-                  className="mt1 mr1"
-=======
               <div className="">
                 <div
                   className="mt2"
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
                   style={{
                     display: "grid",
                     gridTemplateColumns:
                       "repeat(auto-fit, minmax(350px, 1fr))",
                   }}
                 >
-<<<<<<< HEAD
-                  {highestRallies?.map(
-                    (rally, index) => (
-                      <HighscoreCard
-                        key={index}
-                        highestRally={rally}
-                        maxHits={maxHits}
-                      />
-                    )
-                  )}
-=======
                   {rallyTypes?.map((type, index) => (
                     <HighscoreCard
                       key={index}
@@ -331,7 +202,6 @@ function App() {
                       maxHits={maxHits}
                     />
                   ))}
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
                 </div>
               </div>
             )}
@@ -345,43 +215,10 @@ function App() {
               minWidth: 300,
             }}
           >
-<<<<<<< HEAD
-            <div
-              className="w25"
-              style={{
-                maxHeight: "90vh",
-                overflow: "auto",
-                minWidth: 300,
-              }}
-            >
-              <div
-                style={{
-                  textTransform: "uppercase",
-                }}
-                className="row middle boxed mb1 mt2 pt2 pb2 mr0"
-              >
-                <IonIcon
-                  name="list"
-                  className="mr2 ml2"
-                />
-                <h2 className="textLeft m0">
-                  Recent rallies
-                </h2>
-              </div>
-              <div className="pr1">
-                {rallies?.map((rally, index) => (
-                  <RecentScores
-                    key={index}
-                    rally={rally}
-                  />
-                ))}
-              </div>
-=======
             <div className="pr1 mt2">
               {rallies?.map((rally, index) => (
                 <RecentScores key={index} rally={rally} />
               ))}
->>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
             </div>
           </div>
         </div>

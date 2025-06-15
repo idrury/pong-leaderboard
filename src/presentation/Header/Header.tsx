@@ -6,9 +6,11 @@ import QrCodeModal from "../App/QrCodeModal";
 import { isMobileBrowser } from "../../common/CommonFunctions";
 import { Session } from "@supabase/supabase-js";
 import Auth from "../Authentication/Auth";
+import Aurora from "../Animations/Aurora";
+import Noise from "../Animations/Noise";
 
 interface HeaderProps {
-  rallyTypes?: RallyTypeObject[];
+  rallyTypesState?: RallyTypeObject[];
   activeSavedModal: PopSavedModalFn;
   session: Session | undefined;
   profile: any | undefined;
@@ -16,6 +18,7 @@ interface HeaderProps {
 
 export default function Header({
   session,
+  rallyTypesState,
   activeSavedModal,
   profile,
 }: HeaderProps) {
@@ -47,7 +50,7 @@ export default function Header({
         onClose={() => setEditActive(false)}
         activateSaved={activeSavedModal}
       />
-      <div className="boxed m0 between middle w100 pt1 pb1">
+      <div className="m0 between middle w100 pt1 pb1">
         {!isMobileBrowser() && <QrCodeModal />}
         <div className="row middle pl2">
           <IonIcon
