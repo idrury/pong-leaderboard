@@ -4,13 +4,22 @@ import { PopSavedModalFn } from "../../Types";
 import IonIcon from "@reacticons/ionicons";
 import QrCodeModal from "../App/QrCodeModal";
 import { isMobileBrowser } from "../../common/CommonFunctions";
+import { Session } from "@supabase/supabase-js";
+import Auth from "../Authentication/Auth";
 
 interface HeaderProps {
   activeSavedModal: PopSavedModalFn;
+  session: Session | undefined;
+  profile: any | undefined;
 }
 
-export default function Header({ activeSavedModal }: HeaderProps) {
-  const [editActive, setEditActive] = useState(false);
+export default function Header({
+  session,
+  activeSavedModal,
+  profile,
+}: HeaderProps) {
+  const [editActive, setEditActive] =
+    useState(false);
 
   return (
     <div>
@@ -20,9 +29,12 @@ export default function Header({ activeSavedModal }: HeaderProps) {
         activateSaved={activeSavedModal}
       />
       <div className="boxed m0 between middle w100 pt1 pb1">
-       {!isMobileBrowser() && <QrCodeModal />}
+        {!isMobileBrowser() && <QrCodeModal />}
         <div className="row middle pl2">
-          <IonIcon name="bowling-ball-sharp" className="mr1" />
+          <IonIcon
+            name="bowling-ball-sharp"
+            className="mr1"
+          />
           <h2
             onClick={() =>
               window.open(
@@ -40,15 +52,25 @@ export default function Header({ activeSavedModal }: HeaderProps) {
           </h2>
         </div>
         <div className="row middle">
-          <button
-            className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
-            onClick={() => setEditActive(true)}
-          >
-            <div className="row middle center">
-              <IonIcon name="add-circle" className="h2Icon" />
-              ADD A RALLY
-            </div>
-          </button>
+          {session && (
+            <button
+              className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
+              onClick={() => setEditActive(true)}
+            >
+              <div className="row middle center">
+                <IonIcon
+                  name="add-circle"
+                  className="h2Icon"
+                />
+                Add rally
+              </div>
+            </button>
+          )}
+          <Auth
+            profile={profile}
+            session={session}
+            popModal={activeSavedModal}
+          />
         </div>
       </div>
     </div>

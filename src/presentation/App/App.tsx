@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import {
+  fetchProfile,
   fetchRallies,
   fetchRallyTypes,
 } from "../../DatabaseAccess/select";
@@ -23,28 +24,66 @@ import {
 } from "./AppFunctions";
 import { PacmanLoader } from "react-spinners";
 import AnimatedContent from "../Animations/AnimatedContent";
+import { supabase } from "../../DatabaseAccess/SupabaseClient";
+import { Session } from "@supabase/supabase-js";
 
 function App() {
-  const [rallies, setRallies] = useState<RallyObject[]>();
-  const [rallyTypes, setRallyTypes] = useState<RallyTypeObject[]>();
+  const [rallies, setRallies] =
+    useState<RallyObject[]>();
+  const [rallyTypes, setRallyTypes] =
+    useState<RallyTypeObject[]>();
   const { totalSeconds } = useStopwatch({
     autoStart: true,
     interval: 10000,
   });
-  const [savedModal, setSavedModal] = useState<SavedModalType>({
-    active: false,
-  });
+  const [savedModal, setSavedModal] =
+    useState<SavedModalType>({
+      active: false,
+    });
   const [highestRallies, setHighestRallies] =
     useState<HighestRallyType[]>();
   const [maxHits, setMaxHits] = useState(0);
+  const [session, setSession] =
+    useState<Session | null>(null);
+  const [profile, setProfile] = useState<any>();
 
   useEffect(() => {
+    // Fetch the user's profile
+    supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        console.log(session?.user.id)
+        if (_event != "SIGNED_OUT") {
+          getProfile(session?.user?.id, _event);
+        }
+        setSession(session);
+      }
+    );
     fetchData();
   }, []);
 
   useEffect(() => {
     getAllRallies(rallyTypes);
   }, [totalSeconds]);
+
+  /****************************
+   * Set the profile object
+   * @param userId
+   * @param event
+   */
+  async function getProfile(
+    userId: string | undefined,
+    event: string
+  ) {
+    console.log(event);
+    try {
+      setProfile(await fetchProfile(userId));
+    } catch (error) {
+      console.error(
+        "Error fetching profile:",
+        error
+      );
+    }
+  }
 
   /*******************************
    * Get rally data from the DB
@@ -56,7 +95,10 @@ function App() {
       setRallyTypes(rallyTypes);
       await getAllRallies(rallyTypes);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error(
+        "Error fetching data:",
+        error
+      );
     }
   }
 
@@ -69,16 +111,20 @@ function App() {
     console.log("Fetching rallies...");
     try {
       const rallies = await fetchRallies();
-      const highestRallies = findHighestRallyByType(
-        rallies,
-        rallyTypes || []
-      );
+      const highestRallies =
+        findHighestRallyByType(
+          rallies,
+          rallyTypes || []
+        );
 
       setRallies(rallies);
       setHighestRallies(highestRallies);
       setMaxHits(getHighestMins(highestRallies));
     } catch (error) {
-      console.error("Error occured fetching rallies:", error);
+      console.error(
+        "Error occured fetching rallies:",
+        error
+      );
     }
   }
 
@@ -96,11 +142,13 @@ function App() {
     });
   };
 
-  function showToolTip(e: React.MouseEvent<HTMLHeadingElement>) {
+  function showToolTip(
+    e: React.MouseEvent<HTMLHeadingElement>
+  ) {
     const tooltip = document.createElement("div");
     tooltip.innerHTML = `
-                  <img src="../lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
-                  Hello There
+      <img src="../lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
+      Hello There
                 `;
     tooltip.style.cssText = `
                   position: absolute;
@@ -124,12 +172,18 @@ function App() {
       <div className="w100">
         <SavedModal
           active={savedModal.active}
-          onClose={() => setSavedModal({ active: false })}
+          onClose={() =>
+            setSavedModal({ active: false })
+          }
           header={savedModal.header}
           body={savedModal.body}
           state={savedModal.state}
         />
-        <Header activeSavedModal={popSavedModal} />
+        <Header
+          profile={profile}
+          session={session || undefined}
+          activeSavedModal={popSavedModal}
+        />
         <div className="row shrinkWrap">
           <div className="w100">
             {highestRallies?.length === 0 ? (
@@ -140,59 +194,70 @@ function App() {
                 <PacmanLoader color="var(--primaryColor)" />
                 <p
                   className="bold mt2"
-                  style={{ color: "var(--primaryColor)" }}
+                  style={{
+                    color: "var(--primaryColor)",
+                  }}
                 >
                   Loading your scores...
                 </p>
               </div>
             ) : (
-                <div className="pr2">
-                  <div className="row middle ml1 pl2 mt2 mr2 boxed">
-                    <IonIcon
-                      name="analytics"
-                      className="h2Icon"
-                      style={{ color: "var(--text)" }}
-                    />
-                    <h2
-                      className="mt2 pb2 m0 textLeft"
-                      onClick={() =>
-                        window.open(
-                          "https://www.youtube.com/watch?v=U8wLBOlCKPU",
-                          "_blank"
-                        )
-                      }
-                      style={{
-                        textTransform: "uppercase",
-                        cursor: "help",
-                        position: "relative",
-                      }}
-                      onMouseEnter={(e) => showToolTip(e)}
-                      onMouseLeave={(e) => {
-                        const tooltip =
-                          e.currentTarget.querySelector("div");
-                        if (tooltip) tooltip.remove();
-                      }}
-                    >
-                      High scores
-                    </h2>
-                  </div>
-                  <div
-                    className="mt1 mr1"
+              <div className="pr2">
+                <div className="row middle ml1 pl2 mt2 mr2 boxed">
+                  <IonIcon
+                    name="analytics"
+                    className="h2Icon"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fit, minmax(350px, 1fr))",
+                      color: "var(--text)",
+                    }}
+                  />
+                  <h2
+                    className="mt2 pb2 m0 textLeft"
+                    onClick={() =>
+                      window.open(
+                        "https://www.youtube.com/watch?v=U8wLBOlCKPU",
+                        "_blank"
+                      )
+                    }
+                    style={{
+                      textTransform: "uppercase",
+                      cursor: "help",
+                      position: "relative",
+                    }}
+                    onMouseEnter={(e) =>
+                      showToolTip(e)
+                    }
+                    onMouseLeave={(e) => {
+                      const tooltip =
+                        e.currentTarget.querySelector(
+                          "div"
+                        );
+                      if (tooltip)
+                        tooltip.remove();
                     }}
                   >
-                    {highestRallies?.map((rally, index) => (
+                    High scores
+                  </h2>
+                </div>
+                <div
+                  className="mt1 mr1"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(350px, 1fr))",
+                  }}
+                >
+                  {highestRallies?.map(
+                    (rally, index) => (
                       <HighscoreCard
                         key={index}
                         highestRally={rally}
                         maxHits={maxHits}
                       />
-                    ))}
-                  </div>
+                    )
+                  )}
                 </div>
+              </div>
             )}
           </div>
 
@@ -216,15 +281,25 @@ function App() {
               }}
             >
               <div
-                style={{ textTransform: "uppercase" }}
+                style={{
+                  textTransform: "uppercase",
+                }}
                 className="row middle boxed mb1 mt2 pt2 pb2 mr0"
               >
-                <IonIcon name="list" className="mr2 ml2" />
-                <h2 className="textLeft m0">Recent rallies</h2>
+                <IonIcon
+                  name="list"
+                  className="mr2 ml2"
+                />
+                <h2 className="textLeft m0">
+                  Recent rallies
+                </h2>
               </div>
               <div className="pr1">
                 {rallies?.map((rally, index) => (
-                  <RecentScores key={index} rally={rally} />
+                  <RecentScores
+                    key={index}
+                    rally={rally}
+                  />
                 ))}
               </div>
             </div>

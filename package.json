@@ -11,6 +11,7 @@
     "vercel-build": "npm ci && npm run build"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@react-three/fiber": "^9.1.2",
     "@reacticons/ionicons": "^7.1.0",
     "@supabase/supabase-js": "^2.49.9",

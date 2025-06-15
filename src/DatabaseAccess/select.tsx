@@ -13,7 +13,7 @@ export async function fetchRallies(): Promise<
 > {
   const { data, error } = await supabase
     .from("rallys")
-    .select("*, people(*)")
+    .select("*, profiles(*)")
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -36,7 +36,7 @@ export async function fetchRallyTypes(): Promise<
     .select();
 
   if (error) {
-     console.error(error.message);
+    console.error(error.message);
     throw error;
   }
 
@@ -50,7 +50,7 @@ export async function fetchPeople(): Promise<
   PeopleObject[]
 > {
   const { data, error } = await supabase
-    .from("people")
+    .from("profiles")
     .select();
 
   if (error) {
@@ -73,7 +73,7 @@ export async function insertPerson(
   age?: number
 ): Promise<boolean> {
   const { error } = await supabase
-    .from("people")
+    .from("profiles")
     .insert({ name: name, age: age || null });
 
   if (error) {
@@ -131,4 +131,42 @@ export async function insertRallyType(
   }
 
   return true;
+}
+
+/************************************
+ * Upsert a user profile
+ * @param name The name of the user
+ * @param email The email of the user
+ * @returns True if successful
+ * @throws Error if fails
+ */
+export async function upsertProfile(
+  name: string,
+  email: string
+) {
+  const { error } = await supabase
+    .from("profiles")
+    .upsert({ name: name, email: email });
+
+  if (error) throw error.message;
+
+  return true;
+}
+
+export async function fetchProfile(
+  userId: string | undefined
+): Promise<PeopleObject | null> {
+  if (!userId) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("id", userId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  console.log("Fetched profile:", data);
+  return data;
 }
