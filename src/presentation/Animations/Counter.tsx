@@ -41,9 +41,11 @@ interface DigitProps {
 function Digit({ place, value, height, digitStyle }: DigitProps) {
   let valueRoundedToPlace = Math.floor(value / place);
   let animatedValue = useSpring(valueRoundedToPlace);
+  
   useEffect(() => {
     animatedValue.set(valueRoundedToPlace);
   }, [animatedValue, valueRoundedToPlace]);
+
   return (
     <div className="counter-digit" style={{ height, ...digitStyle }}>
       {Array.from({ length: 10 }, (_, i) => (

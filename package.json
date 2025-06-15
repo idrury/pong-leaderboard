@@ -20,12 +20,14 @@
     "framer-motion": "^12.16.0",
     "gsap": "^3.13.0",
     "luxon": "^3.6.1",
+    "ogl": "^1.0.11",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
     "react-select": "^5.10.1",
     "react-spinners": "^0.17.0",
     "react-timer-hook": "^4.0.5",
+    "react-transition-group": "^4.4.5",
     "three": "^0.177.0"
   },
   "devDependencies": {

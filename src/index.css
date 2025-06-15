@@ -52,6 +52,10 @@
   color: var(--text);
 }
 
+body {
+  margin: 0
+}
+
 /** text */
 p {
   margin: 0px;
@@ -60,16 +64,14 @@ p {
 }
 
 h2 {
-  font-size: 15pt;
+  font-size: 25pt;
   color: var(--text);
 }
 
 h3 {
-    font-size: 10pt;
-    color: var(--text);
-
+  font-size: 10pt;
+  color: var(--text);
 }
-
 
 label {
   text-align: start !important;
@@ -79,16 +81,16 @@ label {
 
 /** Cards **/
 .card {
- background: linear-gradient(
+  background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0) 40%,
     var(--text) 50%,
     rgba(255, 255, 255, 0) 60%
   );
-    animation: shine 5s linear infinite;
+  animation: shine 5s linear infinite;
 }
 
- .card-title {
+.card-title {
   color: var(--text) !important;
 }
 
@@ -278,7 +280,6 @@ span:focus {
   box-shadow: 0 0 50px 1px var(--background);
 }
 
-
 .rightRow {
   flex-direction: row;
   display: flex;
@@ -312,7 +313,6 @@ span:focus {
   background-color: var(--lightBackground);
   transition: 0.2s;
 }
-
 
 .modal {
   background-color: #ffec9b;
@@ -437,7 +437,6 @@ th {
   font-size: 10pt;
   padding: 5px 10px;
 }
-
 
 /* --- BUTTON ---*/
 button {
@@ -597,16 +596,16 @@ option {
 }
 
 .innerShadow {
-  box-shadow: 0px 0px 80px 0px #0e1b1eDD inset;
+  box-shadow: 0px 0px 80px 0px #0e1b1edd inset;
 }
 
 .outerShadow {
-  box-shadow: 5px 5px 30px -10px #FFFFFF22;
+  box-shadow: 5px 5px 30px -10px #ffffff22;
 }
 
 .innerBorder {
   border-radius: 3px;
-  box-shadow: 0px 0px 0 2px #FFFFFF55 inset;
+  box-shadow: 0px 0px 0 2px #ffffff55 inset;
 }
 
 .boxedAccent:hover {
@@ -627,14 +626,12 @@ option {
   background-color: var(--secondaryColor) !important;
 }
 
-
 .outline {
   border-radius: 3px;
-  box-shadow: 0px 0px 0 2px #FFFFFF55 inset;
+  box-shadow: 0px 0px 0 2px #ffffff55 inset;
 
   transition: 0.2s;
 }
-
 
 .boxedDark {
   border-radius: 3px;
@@ -701,7 +698,7 @@ input[type="checkbox"]:disabled {
   backdrop-filter: blur(1.5px);
   cursor: auto;
 
-  overflow: scroll;
+  overflow: hidden;
 
   top: 0;
   left: 0;
@@ -712,6 +709,21 @@ input[type="checkbox"]:disabled {
   z-index: 15;
 
   background-color: #eeeeee44;
+}
+
+.fillScreen {
+  position: fixed;
+  cursor: auto;
+
+  overflow:hidden;
+
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 15;
 }
 
 .moveableMenu {
@@ -746,8 +758,8 @@ input[type="checkbox"]:disabled {
 }
 
 .h2Icon {
-  width:18pt !important;
-  height: 18pt !important;
+  width: 25pt !important;
+  height: 25pt !important;
   margin-right: 10px;
 }
 
@@ -771,7 +783,6 @@ input[type="checkbox"]:disabled {
 
   transition: 0.2s;
 }
-
 
 .basicImage {
   background-color: var(--text);
@@ -861,7 +872,6 @@ input[type="checkbox"]:disabled {
     opacity: 0;
   }
 }
-
 
 .dateModal {
   background-color: var(--background);
@@ -1098,6 +1108,16 @@ Layout
 .center {
   display: flex;
   justify-content: center;
+}
+
+.end {
+  display: flex;
+  justify-content: end;
+}
+
+.start {
+  display: flex;
+  justify-content: start;
 }
 
 .noBkg {

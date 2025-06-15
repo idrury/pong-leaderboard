@@ -1,8 +1,7 @@
 import IonIcon from "@reacticons/ionicons";
-import EditMenu from "../EditMenu";
 import ErrorLabel from "../ErrorLabel";
 import { CreatableTypeInput } from "../TypeInput";
-import { useEffect, useState } from "react";
+import { useEffect,  useState } from "react";
 import {
   ActivatableElement,
   ErrorLabelType,
@@ -14,26 +13,32 @@ import {
 } from "../../Types";
 import {
   fetchPeople,
-  fetchRallyTypes,
   insertPerson,
   insertRally,
   insertRallyType,
 } from "../../DatabaseAccess/select";
 import PasswordMenu from "./PasswordMenu";
 import { QueryError } from "@supabase/supabase-js";
+import BasicMenu from "../BasicMenu";
+import { useGSAP } from '@gsap/react';
+import { SplitText } from "gsap/SplitText";
+import gsap from "gsap";
 
 interface AddRallyMenuProps extends ActivatableElement {
+  currentRallyTypes?: RallyTypeObject[];
   activateSaved: PopSavedModalFn;
 }
 
 export default function AddRallyMenu({
   active,
+  currentRallyTypes,
   onClose,
   activateSaved,
 }: AddRallyMenuProps) {
+
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
-  const [rallyType, setRallyType] = useState<string>();
+  const [rallyType, setRallyType] = useState<number>();
   const [peopleId, setPeopleId] = useState<string | number>();
 
   const [peopleOptions, setPeopleOptions] = useState<InputOption[]>();
@@ -50,16 +55,38 @@ export default function AddRallyMenu({
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [currentRallyTypes?.length]);
 
+
+  useGSAP(() => {
+    gsap.registerPlugin(SplitText);
+
+    const titleSplit = SplitText.create('.titleTransition', {type: 'words'})
+
+    gsap.from(titleSplit.words, {
+      opacity: 0,
+      y:-30,
+      stagger: .05,
+      delay: .5
+    })
+
+    gsap.from('.spinTransition', {
+      opacity: 0,
+      rotate: 360,
+      duration: .5,
+      delay: .5,
+      ease: 'back'
+    })
+
+  }, [active])
   /*****************************
    * Refresh the required data
    */
   async function getData() {
+    console.log("FETCHING RALLY TYPES AGAIN")
     try {
-      // console.log('p', await checkPin(1, '00000'));
-      setRallyOptions(createRallyTypes(await fetchRallyTypes()));
       const people = await fetchPeople();
+      setRallyOptions(createRallyTypes(currentRallyTypes || []));
       setPeopleOptions(createInputOptions(people));
     } catch (error) {}
   }
@@ -92,7 +119,7 @@ export default function AddRallyMenu({
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
-        value: type.name,
+        value: type.id,
         label: type.name,
       });
     });
@@ -107,7 +134,6 @@ export default function AddRallyMenu({
   async function addPeople(name: string) {
     try {
       await insertPerson(name);
-      // console.log("added", name);
       await getData();
     } catch (error) {
       /*@ts-ignore*/
@@ -122,7 +148,6 @@ export default function AddRallyMenu({
    * @returns
    */
   async function addRallyType(rallyType: string, secured = false) {
-    console.log(rallyType);
     if (!rallyType) {
       activateSaved("Please enter a rally type", undefined, true);
       return;
@@ -153,6 +178,7 @@ export default function AddRallyMenu({
    * Add a new rally
    */
   async function addRally(secured = false) {
+    let isHighScore = false;
     if (!rallyType) {
       setError({
         active: true,
@@ -177,11 +203,22 @@ export default function AddRallyMenu({
       });
       return;
     }
-    if (hits > 1000 && hits < 30000 && !secured) {
+
+    const prevHighRally = currentRallyTypes?.find(type => {
+      return type.id == rallyType
+    })?.rallys
+
+    //Prompt for password if high score
+    if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
+      if(!secured) {
       setPasswordType("add_high_rally");
       setPendingValue(hits);
       setPasswordActive(true);
       return;
+      }
+      else 
+        isHighScore = true;
+
     }
     if (hits >= 30000) {
       setError({
@@ -191,12 +228,14 @@ export default function AddRallyMenu({
       });
       return;
     }
+
     try {
       setError({ active: false });
       await insertRally(
         pendingValue || hits,
         peopleId as number,
-        rallyType
+        rallyType,
+        isHighScore
       );
       activateSaved("New rally added!");
       onClose();
@@ -226,32 +265,17 @@ export default function AddRallyMenu({
         onClose={() => setPasswordActive(false)}
         onSuccess={(type) => onPasswordSuccess(type)}
       />
-      <EditMenu
+      <BasicMenu
+      disableClickOff
         width={300}
-        height={500}
-        isActive={active}
-        setIsActive={() => onClose()}
+        active={active}
+        onClose={() => onClose()}
       >
-        <div className="row middle">
-          <IonIcon name="add-circle" className="h2Icon" />
-          <h2>Add Rally</h2>
+        <div className="row middle center ">
+          <IonIcon name="add-circle" className="h2Icon spinTransition" />
+          <h2 className="textCenter titleTransition">Add a rally</h2>
         </div>
-        <div
-          className="boxedSecondary mb2 row middle"
-          style={{
-            maxWidth: 300,
-            background: "var(--secondaryColor)",
-          }}
-        >
-          <IonIcon name="information-circle" className="mr1" />
-          <p
-            className="textLeft bold"
-            style={{ color: "var(--background)" }}
-          >
-            Add your rallies here to track them!
-          </p>
-        </div>
-        <br/>
+        <br />
         <form
           action="submit"
           onSubmit={(f) => {
@@ -267,9 +291,8 @@ export default function AddRallyMenu({
             <CreatableTypeInput
               onCreate={(val) => {
                 addRallyType(val);
-                setRallyType(val);
               }}
-              onChange={(val) => setRallyType(val.value)}
+              onChange={(val) => setRallyType(val?.value)}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}
@@ -282,7 +305,6 @@ export default function AddRallyMenu({
             text={error.text || ""}
             color="var(--dangerColor)"
           />
-
           <div className="mb2">
             <div className="row mb1 middle">
               <IonIcon name="stats-chart" className="mr1" />
@@ -305,7 +327,6 @@ export default function AddRallyMenu({
             text={error.text || ""}
             color="var(--dangerColor)"
           />
-
           <div className="mb2">
             <div className="row mb1 middle">
               <IonIcon name="person-circle" className="mr1" />
@@ -326,7 +347,6 @@ export default function AddRallyMenu({
             text={error.text || ""}
             color="var(--dangerColor)"
           />
-
           <button
             type="submit"
             className="row center middle w100 accentButton p0 mt2"
@@ -335,7 +355,7 @@ export default function AddRallyMenu({
             Rally
           </button>
         </form>
-      </EditMenu>
+      </BasicMenu>
     </div>
   );
 }

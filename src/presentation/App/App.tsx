@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import {
   fetchProfile,
   fetchRallies,
   fetchRallyTypes,
+
 } from "../../DatabaseAccess/select";
 import HighscoreCard from "../HighScores/HighscoreCard";
 import RecentScores from "../RecentScores/RecentScores";
 import Header from "../Header/Header";
 import {
-  HighestRallyType,
   PopSavedModalFn,
   SavedModalType,
   type RallyObject,
@@ -17,15 +17,18 @@ import {
 } from "../../Types";
 import { useStopwatch } from "react-timer-hook";
 import SavedModal from "../SavedModal";
-import IonIcon from "@reacticons/ionicons";
 import {
-  findHighestRallyByType,
   getHighestMins,
 } from "./AppFunctions";
 import { PacmanLoader } from "react-spinners";
+<<<<<<< HEAD
 import AnimatedContent from "../Animations/AnimatedContent";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
 import { Session } from "@supabase/supabase-js";
+=======
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
 function App() {
   const [rallies, setRallies] =
@@ -36,6 +39,7 @@ function App() {
     autoStart: true,
     interval: 10000,
   });
+<<<<<<< HEAD
   const [savedModal, setSavedModal] =
     useState<SavedModalType>({
       active: false,
@@ -46,6 +50,13 @@ function App() {
   const [session, setSession] =
     useState<Session | null>(null);
   const [profile, setProfile] = useState<any>();
+=======
+  const [savedModal, setSavedModal] = useState<SavedModalType>({
+    active: false,
+  });
+  const [maxHits, setMaxHits] = useState(0);
+  const highScoreRefs = useRef<HTMLDivElement[]>([]);
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
   useEffect(() => {
     // Fetch the user's profile
@@ -59,12 +70,9 @@ function App() {
       }
     );
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    getAllRallies(rallyTypes);
   }, [totalSeconds]);
 
+<<<<<<< HEAD
   /****************************
    * Set the profile object
    * @param userId
@@ -84,6 +92,23 @@ function App() {
       );
     }
   }
+=======
+  useGSAP(() => {
+    gsap.from(highScoreRefs.current, {
+      opacity: 0,
+      rotate: 20,
+      zoom: 0.1,
+      duration: 0.5,
+      stagger: 0.2,
+    });
+  }, [rallyTypes?.length]);
+
+  const addToRefs = (element: any) => {
+    if (element && !highScoreRefs.current.includes(element)) {
+      highScoreRefs.current.push(element);
+    }
+  };
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
   /*******************************
    * Get rally data from the DB
@@ -91,9 +116,10 @@ function App() {
   async function fetchData() {
     console.log("Fetching data...");
     try {
-      const rallyTypes = await fetchRallyTypes();
-      setRallyTypes(rallyTypes);
-      await getAllRallies(rallyTypes);
+      setRallies(await fetchRallies());
+      const fetchedRallyTypes = await fetchRallyTypes()
+      setRallyTypes(fetchedRallyTypes)
+      setMaxHits(getHighestMins(fetchedRallyTypes||[]));
     } catch (error) {
       console.error(
         "Error fetching data:",
@@ -102,6 +128,7 @@ function App() {
     }
   }
 
+<<<<<<< HEAD
   /*********************************
    * Get all rallies from the DB
    */
@@ -128,6 +155,8 @@ function App() {
     }
   }
 
+=======
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
   /** Activate the saved popup box */
   const popSavedModal: PopSavedModalFn = (
     header,
@@ -142,6 +171,7 @@ function App() {
     });
   };
 
+<<<<<<< HEAD
   function showToolTip(
     e: React.MouseEvent<HTMLHeadingElement>
   ) {
@@ -166,6 +196,30 @@ function App() {
                 `;
     e.currentTarget.appendChild(tooltip);
   }
+=======
+  // function showToolTip(e: React.MouseEvent<HTMLHeadingElement>) {
+  //   const tooltip = document.createElement("div");
+  //   tooltip.innerHTML = `
+  //                 <img src="../lightsaber-hdr.png" alt="lightsaber" style="width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;" />
+  //                 Hello There
+  //               `;
+  //   tooltip.style.cssText = `
+  //                 position: absolute;
+  //                 background: #333;
+  //                 color: white;
+  //                 padding: 5px 10px;
+  //                 border-radius: 4px;
+  //                 font-size: 12px;
+  //                 top: -30px;
+  //                 left: 0;
+  //                 z-index: 1000;
+  //                 white-space: nowrap;
+  //                 display: flex;
+  //                 align-items: center;
+  //               `;
+  //   e.currentTarget.appendChild(tooltip);
+  // }
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
 
   return (
     <>
@@ -180,13 +234,18 @@ function App() {
           state={savedModal.state}
         />
         <Header
+<<<<<<< HEAD
           profile={profile}
           session={session || undefined}
           activeSavedModal={popSavedModal}
+=======
+          activeSavedModal={popSavedModal}
+          rallyTypes={rallyTypes}
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
         />
         <div className="row shrinkWrap">
           <div className="w100">
-            {highestRallies?.length === 0 ? (
+            {rallyTypes?.length === 0 ? (
               <div
                 className="col middle center mediumFade"
                 style={{ minHeight: "60vh" }}
@@ -202,6 +261,7 @@ function App() {
                 </p>
               </div>
             ) : (
+<<<<<<< HEAD
               <div className="pr2">
                 <div className="row middle ml1 pl2 mt2 mr2 boxed">
                   <IonIcon
@@ -241,12 +301,18 @@ function App() {
                 </div>
                 <div
                   className="mt1 mr1"
+=======
+              <div className="">
+                <div
+                  className="mt2"
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
                   style={{
                     display: "grid",
                     gridTemplateColumns:
                       "repeat(auto-fit, minmax(350px, 1fr))",
                   }}
                 >
+<<<<<<< HEAD
                   {highestRallies?.map(
                     (rally, index) => (
                       <HighscoreCard
@@ -256,22 +322,30 @@ function App() {
                       />
                     )
                   )}
+=======
+                  {rallyTypes?.map((type, index) => (
+                    <HighscoreCard
+                      key={index}
+                      nodeRef={addToRefs}
+                      rallyType={type}
+                      maxHits={maxHits}
+                    />
+                  ))}
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
                 </div>
               </div>
             )}
           </div>
-
-          <AnimatedContent
-            distance={300}
-            direction="horizontal"
-            reverse={false}
-            duration={1.2}
-            initialOpacity={0.2}
-            animateOpacity
-            scale={1}
-            threshold={0}
-            delay={0.3}
+            <div className="mr2"/>
+          <div
+            className="w25"
+            style={{
+              maxHeight: "90vh",
+              overflow: "auto",
+              minWidth: 300,
+            }}
           >
+<<<<<<< HEAD
             <div
               className="w25"
               style={{
@@ -302,8 +376,14 @@ function App() {
                   />
                 ))}
               </div>
+=======
+            <div className="pr1 mt2">
+              {rallies?.map((rally, index) => (
+                <RecentScores key={index} rally={rally} />
+              ))}
+>>>>>>> f57287cb988cdc0c1451fb0fe559b8afbdfe2db6
             </div>
-          </AnimatedContent>
+          </div>
         </div>
       </div>
     </>

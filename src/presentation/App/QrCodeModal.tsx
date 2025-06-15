@@ -7,6 +7,22 @@ export default function qrCodeModal() {
 
   return (
     <div className="pl1">
+      <div className="row middle fixed outline boxedAccent" style={{top: 25, left: 100, height: 30}}>
+          <IonIcon
+            className="h2Icon"
+            name="arrow-back-circle"
+            style={{ color: "var(--text)" }}
+          />
+          <h3
+            style={{
+              textTransform: "uppercase",
+
+            }}
+            className=""
+          >
+            Join in!
+          </h3>
+        </div>
       <img
         onClick={() => setOpen(!open)}
         className="clickable"
@@ -14,34 +30,6 @@ export default function qrCodeModal() {
         src="/qr-code.png"
         alt="QR Code"
       />
-      <MoveableMenu
-        width={120}
-        height={20}
-        x={95}
-        y={30}
-        z={20}
-        onClose={() => {}}
-        active={!open}
-        autoHide={false}
-        noBlur
-      >
-        <div className="boxedSecondary outline h100 row middle">
-          <IonIcon
-            className="h2Icon"
-            name="arrow-back-circle"
-            style={{ color: "var(--background)" }}
-          />
-          <h3
-            style={{
-              textTransform: "uppercase",
-              color: "var(--background)",
-            }}
-            className=""
-          >
-            Join in!
-          </h3>
-        </div>
-      </MoveableMenu>
       <MoveableMenu
         width={350}
         x={10}
@@ -52,14 +40,15 @@ export default function qrCodeModal() {
         autoHide={false}
         noBlur
       >
-        <div className="boxedAccent w100 p2">
-          <h2 className="boxed p2 mb2">SCAN TO ADD YOUR RALLIES!</h2>
+        <div className="boxedAccent outline w100 p2">
+          <h2 className="p2 mb2">Scan to add your rallies!</h2>
           <img
-            style={{ width: 350 }}
+          className="outline"
+            style={{ width: 300 }}
             src="/qr-code.png"
             alt="QR Code"
           />
-          <p className="bold mt2 mb1 boxed pt1 pb1">
+          <p className="bold mt2 mb1 pt1 pb1">
             pong-leaderboard.vercel.app/
           </p>
         </div>

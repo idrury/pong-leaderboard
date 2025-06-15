@@ -154,7 +154,7 @@ const Silk: React.FC<SilkProps> = ({
   );
 
   return (
-    <div>
+    <div style={{position: 'fixed', height: '100vh', width: '100vw'}}>
         <Canvas dpr={[1, 2]} frameloop="always">
           <SilkPlane ref={meshRef} uniforms={uniforms} />
         </Canvas>

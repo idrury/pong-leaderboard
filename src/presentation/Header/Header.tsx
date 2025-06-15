@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddRallyMenu from "./AddRallyMenu";
-import { PopSavedModalFn } from "../../Types";
+import { PopSavedModalFn, RallyTypeObject } from "../../Types";
 import IonIcon from "@reacticons/ionicons";
 import QrCodeModal from "../App/QrCodeModal";
 import { isMobileBrowser } from "../../common/CommonFunctions";
@@ -8,6 +8,7 @@ import { Session } from "@supabase/supabase-js";
 import Auth from "../Authentication/Auth";
 
 interface HeaderProps {
+  rallyTypes?: RallyTypeObject[];
   activeSavedModal: PopSavedModalFn;
   session: Session | undefined;
   profile: any | undefined;
@@ -23,8 +24,26 @@ export default function Header({
 
   return (
     <div>
+      <div
+        style={{ position: "fixed", minHeight: "100vh", zIndex: -5 }}
+      >
+        <Aurora
+          colorStops={["#050c0f", "#124450", "#146679"]}
+          blend={0.9}
+          amplitude={2}
+          speed={1}
+        />
+        <Noise
+          patternSize={250}
+          patternScaleX={1}
+          patternScaleY={1}
+          patternRefreshInterval={2}
+          patternAlpha={15}
+        />
+      </div>
       <AddRallyMenu
         active={editActive}
+        currentRallyTypes={rallyTypesState}
         onClose={() => setEditActive(false)}
         activateSaved={activeSavedModal}
       />

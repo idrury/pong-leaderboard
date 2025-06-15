@@ -1,8 +1,10 @@
+import { useRef } from "react";
 import { HashLoader } from "react-spinners";
+import { Transition } from "react-transition-group";
+import { ActivatableElement } from "../Types";
+import gsap from "gsap";
 
-interface EditMenuProps {
-  isActive: boolean;
-  setIsActive: (active: boolean) => void;
+interface EditMenuProps extends ActivatableElement {
   children: any;
   width: number;
   height: number;
@@ -10,61 +12,95 @@ interface EditMenuProps {
 }
 
 function EditMenu({
-  isActive,
-  setIsActive,
+  active,
+  onClose,
   children,
   width,
   height,
   isLoading = false,
 }: EditMenuProps) {
+  const transitionRef = useRef<HTMLDivElement>(null);
+
   function handleMainClick(e: any) {
     e.stopPropagation();
   }
 
-  if (isActive) {
-    return (
-      <div>
-        {isLoading && (
-          <HashLoader
-            className="mediumFade"
-            style={{
-              position: "fixed",
-              left: "50%",
-              top: "40%",
-              zIndex: 5,
-            }}
-            color="var(--primaryColor)"
-          />
-        )}
+  const handleEnter = () => {
+    gsap.from(transitionRef?.current, {
+      opacity: 0,
+      x: 300,
+      duration: 0.5,
+      ease: "power3.inOut",
+    });
+  };
+
+  const handleExit = () => {
+    gsap.to(transitionRef?.current, {
+      opacity: 0,
+      x: 300,
+      duration: 0.5,
+      ease: "power3.inOut",
+    });
+  };
+
+  return (
+    <div>
+      {active && (
+        <div className="moveableMenuBackground mediumFade" />
+      )}
+      <Transition
+        nodeRef={transitionRef}
+        in={active}
+        timeout={300}
+        onEnter={handleEnter}
+        onExit={handleExit}
+        unmountOnExit
+      >
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "end",
-          }}
-          className="moveableMenuBackground mediumFade"
-          onClick={() => setIsActive(false)}
+          ref={transitionRef}
+          className="fillScreen"
+          onClick={() => onClose()}
         >
+          {isLoading && (
+            <HashLoader
+              className=""
+              style={{
+                position: "fixed",
+                left: "50%",
+                top: "40%",
+                zIndex: 15,
+              }}
+              color="var(--primaryColor)"
+            />
+          )}
           <div
-            className="boxedDark s2"
-            style={{ margin: 0, padding: 0 }}
-            onClick={(e) => handleMainClick(e)}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "end",
+            }}
           >
             <div
-              className="boxedDark"
-              style={{
-                minWidth: width,
-                minHeight: height,
-                margin: 0,
-                padding: 20,
-              }}
+              className=""
+              style={{ margin: 0, padding: 0 }}
+              onClick={(e) => handleMainClick(e)}
             >
-              {children}
+              <div
+                className="boxedDark p2"
+                style={{
+                  minWidth: width,
+                  minHeight: height,
+                  height: "100vh",
+                  margin: "0 15px 0 0",
+                }}
+              >
+                {children}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      </Transition>
+    </div>
+  );
 }
 export default EditMenu;
