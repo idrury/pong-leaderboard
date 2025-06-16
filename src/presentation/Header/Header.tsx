@@ -27,10 +27,10 @@ export default function Header ({
     useState(false);
   const location = useLocation();
 
-  // Hide certain elements on /event-id or /player-home
+  // Hide certain elements on /event-id or /
   const hideHeaderActions =
     location.pathname.startsWith("/event-id") ||
-    location.pathname.startsWith("/player-home");
+    location.pathname.startsWith("/");
 
   return (
     <div>

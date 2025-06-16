@@ -17,7 +17,7 @@ import {
 } from "../Authentication/AuthRouter";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
 
-function App() {
+function App () {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>();
   const [savedModal, setSavedModal] = useState<SavedModalType>({
@@ -31,14 +31,14 @@ function App() {
       }
       setSession(session);
     });
-  },[]);
+  }, []);
 
   /****************************
    * Set the profile object
    * @param userId
    * @param event
    */
-  async function getProfile(
+  async function getProfile (
     userId: string | undefined,
     event: string
   ) {
@@ -114,7 +114,7 @@ function App() {
           {/* Fallback route - redirect to appropriate page based on auth status */}
           <Route
             path="*"
-            element={<Navigate to="/player-home" replace />}
+            element={<Navigate to="/" replace />}
           />
         </Routes>
       </div>

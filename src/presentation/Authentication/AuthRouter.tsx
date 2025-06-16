@@ -18,11 +18,11 @@ export const ProtectedRoute = ({ session }: AuthRouterProps) => {
   return <Outlet />;
 };
 
-// Public route - redirects to /player-home if already authenticated
+// Public route - redirects to / if already authenticated
 export const PublicRoute = ({ session }: AuthRouterProps) => {
   if (session) {
     // If user is already signed in, redirect to player home
-    return <Navigate to="/player-home" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // If not authenticated, render the child routes
