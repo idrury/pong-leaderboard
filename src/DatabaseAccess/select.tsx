@@ -125,15 +125,15 @@ export async function insertPerson(
  */
 export async function insertRally(
   hits: number,
-  profileId: string,
   rallyType: number,
-  highScore: boolean = false
+  highScore: boolean = false,
+  eventId: string
 ): Promise<boolean> {
   const { error } = await supabase.from("rallys").insert({
     num_hits: hits,
-    profiles: profileId,
     rally_type_id: rallyType,
     is_high_score: highScore,
+    event_id: eventId
   });
 
   if (error) {

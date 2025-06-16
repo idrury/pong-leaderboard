@@ -26,6 +26,8 @@ import gsap from "gsap";
 interface AddRallyMenuProps extends ActivatableElement {
   currentRallyTypes?: CampaignRallyTypeObject[];
   activateSaved: PopSavedModalFn;
+  profile: ProfileObject;
+  eventId: string;
 }
 
 export default function AddRallyMenu({
@@ -33,11 +35,13 @@ export default function AddRallyMenu({
   currentRallyTypes,
   onClose,
   activateSaved,
+  profile,
+  eventId
 }: AddRallyMenuProps) {
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<number>();
-  const [people, setPeople] = useState<ProfileObject[]>([]);
+  const [people, setPeople] = useState<ProfileObject[]>([profile]);
   const [personSearch, setPersonSearch] = useState<string>();
 
   const [error, setError] = useState<ErrorLabelType>({
@@ -76,11 +80,14 @@ export default function AddRallyMenu({
     //   ease: 'back'
     // })
   }, [active]);
+
   /*****************************
    * Refresh the required data
    */
   async function getData() {
+    console.log(profile)
     console.log("FETCHING RALLY TYPES AGAIN");
+    console.log(currentRallyTypes)
     try {
       setRallyOptions(createRallyTypes(currentRallyTypes || []));
     } catch (error) {}
@@ -96,7 +103,7 @@ export default function AddRallyMenu({
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
-        value: type.id,
+        value: type.rally_types.id,
         label: type.rally_types.name,
       });
     });
@@ -185,10 +192,11 @@ export default function AddRallyMenu({
       setError({ active: false });
       await insertRally(
         pendingValue || hits,
-        "",
         rallyType,
-        isHighScore
+        isHighScore,
+        eventId
       );
+
       activateSaved("New rally added!");
       onClose();
     } catch (error) {
@@ -253,11 +261,10 @@ export default function AddRallyMenu({
               <label>Rally type</label>
             </div>
             <TypeInput
-              onChange={(val: any) => setRallyType(val?.value)}
+              onChange={(val: any) => {setRallyType(val); console.log(val)}}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}
-              defaultValue={""}
               placeholder="select a rally type"
             />
           </div>
@@ -293,8 +300,8 @@ export default function AddRallyMenu({
             <label>Name (or group)</label>
           </div>
           {people.map((person) => (
-            <div key={person.id} className="mb2 pr3">
-              <input disabled value={person.name}/>
+            <div key={person?.id || 0} className="mb2 pr3">
+              <input disabled value={person?.name || ""}/>
             </div>
           ))}
           <form action="submit" onSubmit={(f) => addPerson(f)}>

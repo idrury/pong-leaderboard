@@ -17,8 +17,10 @@ import {
 } from "../Authentication/AuthRouter";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
 import Event from "../Event/Event";
+import Aurora from "../Animations/Aurora";
+import Noise from "../Animations/Noise";
 
-function App () {
+function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>();
   const [savedModal, setSavedModal] = useState<SavedModalType>({
@@ -39,7 +41,7 @@ function App () {
    * @param userId
    * @param event
    */
-  async function getProfile (
+  async function getProfile(
     userId: string | undefined,
     event: string
   ) {
@@ -98,32 +100,42 @@ function App () {
           body={savedModal.body}
           state={savedModal.state}
         />
-        <Header
-          profile={profile}
-          session={session || undefined}
-          activeSavedModal={popSavedModal}
-        />
         <Routes>
           {/* Public routes - accessible when not signed in */}
-          <Route element={<PublicRoute session={session} />}>
-            <Route path="/:eventId" element={<Event />} />
-            {/* <Route path="*" element={<Navigate to="/event-id"  />} /> */}
-          </Route>
+          {/* <Route element={<PublicRoute session={session} />}> */}
+          <Route path="/:eventId" element={<Event profile={profile} session={session} popSavedModal={popSavedModal} />} />
+          {/* <Route path="*" element={<Navigate to="/event-id"  />} /> */}
+          {/* </Route> */}
 
           {/* Protected routes - require authentication */}
-          <Route element={<ProtectedRoute session={session} />}>
-            <Route path="/" element={<PlayerHome popModal={popSavedModal} />} />
-            <Route path="/:eventId" element={<Event/>} />
+          {/* <Route element={<ProtectedRoute session={session} />}> */}
+          <Route
+            path="/"
+            element={<PlayerHome popModal={popSavedModal} />}
+          />
 
-          </Route>
+          {/* </Route> */}
 
           {/* Fallback route - redirect to appropriate page based on auth status */}
-          <Route
+          {/* <Route
             path="*"
             element={<Navigate to="/"  />}
-          />
+          /> */}
         </Routes>
       </div>
+      {/* <Aurora
+        colorStops={["#050c0f", "#124450", "#146679"]}
+        blend={0.9}
+        amplitude={2}
+        speed={1}
+      />
+      <Noise
+        patternSize={250}
+        patternScaleX={1}
+        patternScaleY={1}
+        patternRefreshInterval={2}
+        patternAlpha={15}
+      /> */}
     </>
   );
 }
