@@ -20,7 +20,9 @@ export interface RallyTypeObject extends SupabaseTable {
     tags: string[]
 }
 
-export interface ProfileObject extends SupabaseTable {
+export interface ProfileObject {
+    id: string,
+    created_at: Date,
     name: string,
 }
 

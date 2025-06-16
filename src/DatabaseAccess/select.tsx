@@ -41,11 +41,8 @@ export async function fetchRallyTypes(
     .eq("event_id", eventId);
 
   if (error) {
-    console.error(error.message);
     throw error;
   }
-
-  console.log(data);
 
   /*@ts-ignore */
   return data;
@@ -58,7 +55,6 @@ export async function fetchProfiles(): Promise<ProfileObject[]> {
   const { data, error } = await supabase.from("profiles").select();
 
   if (error) {
-    console.error(error.message);
     throw error;
   }
 
@@ -128,17 +124,45 @@ export async function insertRally(
   rallyType: number,
   highScore: boolean = false,
   eventId: string
-): Promise<boolean> {
-  const { error } = await supabase.from("rallys").insert({
-    num_hits: hits,
-    rally_type_id: rallyType,
-    is_high_score: highScore,
-    event_id: eventId
-  });
+): Promise<number> {
+  const { data, error } = await supabase
+    .from("rallys")
+    .insert({
+      num_hits: hits,
+      rally_type_id: rallyType,
+      is_high_score: highScore,
+      event_id: eventId,
+    })
+    .select("id")
+    .single();
 
   if (error) {
     throw error;
   }
+
+  return data.id;
+}
+
+/**
+ * 
+ * @param id 
+ * @param people 
+ * @returns 
+ */
+export async function insertPeopleForRally(
+  id: number,
+  people: ProfileObject[],
+  profile: ProfileObject,
+) {
+  const values = new Array<{ rally_id: number; user_id: string }>();
+  people.forEach((p) => values.push({ user_id: p.id, rally_id: id }));
+  values.push({ user_id: profile.id, rally_id: id })
+
+  const { error } = await supabase
+    .from("users_to_rallys")
+    .insert(values);
+
+  if (error) throw error;
 
   return true;
 }
@@ -199,7 +223,6 @@ export async function fetchProfile(
 
   return data;
 }
-
 
 export async function searchUser(
   name: string | undefined

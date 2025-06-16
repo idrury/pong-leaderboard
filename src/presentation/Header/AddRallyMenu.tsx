@@ -12,6 +12,7 @@ import {
   ProfileObject,
 } from "../../Types";
 import {
+  insertPeopleForRally,
   insertRally,
   insertRallyType,
   searchUser,
@@ -36,12 +37,12 @@ export default function AddRallyMenu({
   onClose,
   activateSaved,
   profile,
-  eventId
+  eventId,
 }: AddRallyMenuProps) {
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<number>();
-  const [people, setPeople] = useState<ProfileObject[]>([profile]);
+  const [people, setPeople] = useState<ProfileObject[]>([]);
   const [personSearch, setPersonSearch] = useState<string>();
 
   const [error, setError] = useState<ErrorLabelType>({
@@ -85,9 +86,7 @@ export default function AddRallyMenu({
    * Refresh the required data
    */
   async function getData() {
-    console.log(profile)
     console.log("FETCHING RALLY TYPES AGAIN");
-    console.log(currentRallyTypes)
     try {
       setRallyOptions(createRallyTypes(currentRallyTypes || []));
     } catch (error) {}
@@ -166,9 +165,11 @@ export default function AddRallyMenu({
       return;
     }
 
-    const prevHighRally = currentRallyTypes?.find((type) => {
-      return type.id == rallyType;
+
+    const prevHighRally = currentRallyTypes?.find((t) => {
+      return t.rally_types.id == rallyType;
     })?.rallys;
+
 
     //Prompt for password if high score
     if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
@@ -190,15 +191,17 @@ export default function AddRallyMenu({
 
     try {
       setError({ active: false });
-      await insertRally(
+      const id = await insertRally(
         pendingValue || hits,
         rallyType,
         isHighScore,
         eventId
       );
 
+      if (id) await insertPeopleForRally(id, people, profile);
       activateSaved("New rally added!");
       onClose();
+      setHits(undefined);
     } catch (error) {
       console.error((error as QueryError).message);
     }
@@ -226,12 +229,17 @@ export default function AddRallyMenu({
         setPeople([...people, person]);
       }
     } catch (error) {
-      console.log(error);
+      activateSaved("That person doesn't exist", undefined, true);
     }
 
     setPersonSearch(undefined);
   }
 
+  function removePerson(id: string) {
+    setPeople(people.filter((p) => p.id != id));
+  }
+
+  if (!profile) return;
   return (
     <div>
       <PasswordMenu
@@ -261,7 +269,9 @@ export default function AddRallyMenu({
               <label>Rally type</label>
             </div>
             <TypeInput
-              onChange={(val: any) => {setRallyType(val); console.log(val)}}
+              onChange={(val: any) => {
+                setRallyType(val);
+              }}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}
@@ -297,20 +307,34 @@ export default function AddRallyMenu({
           />
           <div className="row mb1 middle">
             <IonIcon name="person-circle" className="mr1" />
-            <label>Name (or group)</label>
+            <label>Add your group</label>
           </div>
-          {people.map((person) => (
-            <div key={person?.id || 0} className="mb2 pr3">
-              <input disabled value={person?.name || ""}/>
-            </div>
-          ))}
+          {people?.length > 0 &&
+            people
+              .filter((p) => p?.id != profile?.id)
+              .map((person) => (
+                <div key={person.id} className="row middle">
+                  <div
+                    key={person.id}
+                    className="boxed p2 w100 mb1 row middle"
+                  >
+                    <p>{person.name}</p>
+                  </div>
+                  <IonIcon
+                    onClick={() => removePerson(person.id)}
+                    name="close-circle"
+                    className="ml1 m0 h2Icon clickable"
+                    style={{ color: "var(--danger)" }}
+                  />
+                </div>
+              ))}
           <form action="submit" onSubmit={(f) => addPerson(f)}>
             <div className="mb2 pr3">
               <input
                 value={personSearch || ""}
                 onChange={(e) => setPersonSearch(e.target.value)}
                 disabled={false}
-                placeholder="no name selected"
+                placeholder="Enter username"
               />
             </div>
           </form>

@@ -127,20 +127,19 @@ function App() {
       <div style={{ position: "fixed", top: 0, left: 0, zIndex: -5 }}>
         <div style={{ zIndex: -1 }}></div>
 
-          <Aurora
-            colorStops={["#050c0f", "#124450", "#146679"]}
-            blend={0.9}
-            amplitude={2}
-            speed={1}
-          />
-          <Noise
-            patternSize={250}
-            patternScaleX={1}
-            patternScaleY={1}
-            patternRefreshInterval={2}
-            patternAlpha={15}
-          />
-
+        <Aurora
+          colorStops={["#050c0f", "#124450", "#146679"]}
+          blend={0.9}
+          amplitude={2}
+          speed={1}
+        />
+        <Noise
+          patternSize={250}
+          patternScaleX={1}
+          patternScaleY={1}
+          patternRefreshInterval={2}
+          patternAlpha={15}
+        />
       </div>
     </>
   );
