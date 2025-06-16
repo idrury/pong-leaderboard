@@ -77,6 +77,22 @@ export async function fetchEvent(code: string) {
   return data;
 }
 
+/**********************************************
+ * Fetch the events from the database for an organisation
+ * @param orgId The organisation id to fetch events for
+ */
+export async function fetchEvents(orgId: number) {
+  const { data, error } = await supabase
+    .from("events")
+    .select()
+    .eq("org_id", orgId)
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
 /*****************************************
  * Insert a new person
  * @param name The name of the person
