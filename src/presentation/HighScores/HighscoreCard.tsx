@@ -1,6 +1,6 @@
 import IonIcon from "@reacticons/ionicons";
 import Card from "react-bootstrap/Card";
-import { RallyTypeObject } from "../../Types";
+import { CampaignRallyTypeObject } from "../../Types";
 import { DateTime } from "luxon";
 import { timeToHex } from "./HsBusinessLogic";
 import ShinyText from "../Animations/ShinyText";
@@ -8,7 +8,7 @@ import Counter from "../Animations/Counter";
 import { getPlaces } from "../../common/CommonFunctions";
 import { Ref } from "react";
 interface HighscoreCardProps {
-  rallyType: RallyTypeObject;
+  rallyType: CampaignRallyTypeObject;
   maxHits: number;
   nodeRef?: Ref<HTMLDivElement>;
 }
@@ -41,7 +41,7 @@ function HighscoreCard({
             style={{ textTransform: "capitalize" }}
           >
             <IonIcon name="bowling-ball" className="mr1" />
-            <p className="">{rallyType?.name || "Other"}</p>
+            <p className="">{rallyType?.rally_types.name || "Other"}</p>
           </div>
           {time < 10 && rallyType.rallys.num_hits > 0 && (
             <div
@@ -65,7 +65,7 @@ function HighscoreCard({
           <div className="row middle center mt2 mb2">
             <IonIcon name="person-circle" className="mr1" />
             <div className="m0" style={{ fontSize: "10pt" }}>
-              {rallyType.rallys.people?.name ? (
+              {rallyType.rallys.profiles?.name ? (
                 <div className="row">
                   <p className="pr1">
                     {DateTime.now()
@@ -77,7 +77,7 @@ function HighscoreCard({
                     style={{ textTransform: "capitalize" }}
                     className="bold"
                   >
-                    {rallyType.rallys.people.name}
+                    {rallyType.rallys.profiles.name}
                   </p>
                 </div>
               ) : (

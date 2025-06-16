@@ -7,7 +7,7 @@ interface RecentScoresProps {
 }
 
 function RecentScores({ rally }: RecentScoresProps) {
-  const playerName = rally.people?.name || "";
+  const playerName = rally.profiles?.name || "";
 
   return (
     <div
@@ -35,7 +35,7 @@ function RecentScores({ rally }: RecentScoresProps) {
             }}
           >
             <p className="pb1  m0">
-              {rally.people?.name || "Cras justo odio"}
+              {rally.profiles?.name || "Cras justo odio"}
             </p>
           </div>
         </div>

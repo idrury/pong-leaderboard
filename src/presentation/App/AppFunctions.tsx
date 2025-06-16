@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import {
-  RallyTypeObject,
+  CampaignRallyTypeObject,
 } from "../../Types";
 
 /*******************************
@@ -55,10 +55,10 @@ import {
 //   return allHighestRallies;
 // }
 
-export function getHighestMins(rallies: RallyTypeObject[]): number {
-  if (rallies.length === 0) return 0;
+export function getHighestMins(types: CampaignRallyTypeObject[]): number {
+  if (types.length === 0) return 0;
 
-  return Math.max(...rallies.map((type) =>  Math.round(
+  return Math.max(...types.map((type) =>  Math.round(
       DateTime.now()
         .diff(DateTime.fromJSDate(new Date(type?.rallys?.created_at || new Date())))
         .as("minutes")
