@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './EventId.css';
 import IonIcon from '@reacticons/ionicons';
-import Header from '../Header/Header';
 import { fetchEvent } from "../../DatabaseAccess/select";
 import { PopSavedModalFn } from "../../Types";
 import { useNavigate } from 'react-router-dom';
