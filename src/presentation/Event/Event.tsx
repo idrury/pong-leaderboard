@@ -1,20 +1,26 @@
 import { PacmanLoader } from "react-spinners";
-import { CampaignRallyTypeObject, RallyObject } from "../../Types";
+import {
+  CampaignRallyTypeObject,
+  EventObject,
+  RallyObject,
+} from "../../Types";
 import HighscoreCard from "../HighScores/HighscoreCard";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useStopwatch } from "react-timer-hook";
-import { fetchRallies, fetchRallyTypes } from "../../DatabaseAccess/select";
+import {
+  fetchRallies,
+  fetchRallyTypes,
+} from "../../DatabaseAccess/select";
 import { getHighestMins } from "../App/AppFunctions";
 import RecentScores from "../RecentScores/RecentScores";
-import { useParams } from "react-router-dom";
 
 interface EventProps {
-
+  event: EventObject;
 }
 
-export default function Event({  }: EventProps) {
+export default function Event({ event }: EventProps) {
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -24,10 +30,7 @@ export default function Event({  }: EventProps) {
     autoStart: true,
     interval: 10000,
   });
-  const [event, setEvent] = useState();
-  const eventId = useParams().eventId;
 
-  
   useEffect(() => {
     fetchData();
   }, [totalSeconds]);
@@ -42,16 +45,15 @@ export default function Event({  }: EventProps) {
     });
   }, [rallyTypes?.length]);
 
-
   /*******************************
    * Get rally data from the DB
    */
   async function fetchData() {
     console.log("Fetching data...");
-      if(!eventId) return;
+    if (!event) return;
     try {
-      setRallies(await fetchRallies(eventId));
-      const fetchedRallyTypes = await fetchRallyTypes(eventId);
+      setRallies(await fetchRallies(event.id));
+      const fetchedRallyTypes = await fetchRallyTypes(event.id);
       setRallyTypes(fetchedRallyTypes);
       setMaxHits(getHighestMins(fetchedRallyTypes || []));
     } catch (error) {
