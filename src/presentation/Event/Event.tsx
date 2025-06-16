@@ -23,7 +23,7 @@ import AddRallyMenu from "../Header/AddRallyMenu";
 
 interface EventProps {
   profile: ProfileObject;
-  session: Session;
+  session: Session | undefined;
   popSavedModal: PopSavedModalFn;
 }
 

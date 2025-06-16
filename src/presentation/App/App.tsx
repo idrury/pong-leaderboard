@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { fetchProfile } from "../../DatabaseAccess/select";
 
-import Header from "../Header/Header";
 import { PopSavedModalFn, SavedModalType } from "../../Types";
 
 import SavedModal from "../SavedModal";
@@ -11,11 +10,8 @@ import SavedModal from "../SavedModal";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
 import { Session } from "@supabase/supabase-js";
 
-import {
-  PublicRoute,
-  ProtectedRoute,
-} from "../Authentication/AuthRouter";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
+import EventId from "../eventId/EventId";
 import Event from "../Event/Event";
 import Aurora from "../Animations/Aurora";
 import Noise from "../Animations/Noise";
@@ -100,42 +96,52 @@ function App() {
           body={savedModal.body}
           state={savedModal.state}
         />
-        <Routes>
-          {/* Public routes - accessible when not signed in */}
-          {/* <Route element={<PublicRoute session={session} />}> */}
-          <Route path="/:eventId" element={<Event profile={profile} session={session} popSavedModal={popSavedModal} />} />
-          {/* <Route path="*" element={<Navigate to="/event-id"  />} /> */}
-          {/* </Route> */}
 
-          {/* Protected routes - require authentication */}
-          {/* <Route element={<ProtectedRoute session={session} />}> */}
+        <Routes>
           <Route
             path="/"
-            element={<PlayerHome popModal={popSavedModal} />}
+            element={
+              session ? (
+                <PlayerHome
+                  popModal={popSavedModal}
+                  session={session}
+                  profile={profile}
+                />
+              ) : (
+                <EventId />
+              )
+            }
           />
-
-          {/* </Route> */}
-
-          {/* Fallback route - redirect to appropriate page based on auth status */}
-          {/* <Route
-            path="*"
-            element={<Navigate to="/"  />}
-          /> */}
+          <Route
+            path="/:eventId"
+            element={
+              <Event
+                session={session || undefined}
+                profile={profile}
+                popSavedModal={popSavedModal}
+              />
+            }
+          />
         </Routes>
       </div>
-      {/* <Aurora
-        colorStops={["#050c0f", "#124450", "#146679"]}
-        blend={0.9}
-        amplitude={2}
-        speed={1}
-      />
-      <Noise
-        patternSize={250}
-        patternScaleX={1}
-        patternScaleY={1}
-        patternRefreshInterval={2}
-        patternAlpha={15}
-      /> */}
+      <div style={{ position: "fixed", top: 0, left: 0, zIndex: -5 }}>
+        <div style={{ zIndex: -1 }}></div>
+
+          <Aurora
+            colorStops={["#050c0f", "#124450", "#146679"]}
+            blend={0.9}
+            amplitude={2}
+            speed={1}
+          />
+          <Noise
+            patternSize={250}
+            patternScaleX={1}
+            patternScaleY={1}
+            patternRefreshInterval={2}
+            patternAlpha={15}
+          />
+
+      </div>
     </>
   );
 }

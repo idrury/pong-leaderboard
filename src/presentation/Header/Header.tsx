@@ -7,7 +7,7 @@ import Auth from "../Authentication/Auth";
 interface HeaderProps {
   rallyTypesState?: CampaignRallyTypeObject[];
   activeSavedModal: PopSavedModalFn;
-  activateEditModal: () => void;
+  activateEditModal?: () => void;
   session: Session | undefined;
   profile: any | undefined;
 }
@@ -67,7 +67,7 @@ export default function Header ({
           {session && (
             <button
               className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
-              onClick={() => activateEditModal()}
+              onClick={() => activateEditModal && activateEditModal()}
             >
               <div className="row middle center">
                 <IonIcon
