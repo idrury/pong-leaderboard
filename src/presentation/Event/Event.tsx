@@ -1,7 +1,6 @@
 import { PacmanLoader } from "react-spinners";
 import {
   CampaignRallyTypeObject,
-  EventObject,
   RallyObject,
 } from "../../Types";
 import HighscoreCard from "../HighScores/HighscoreCard";
@@ -15,12 +14,12 @@ import {
 } from "../../DatabaseAccess/select";
 import { getHighestMins } from "../App/AppFunctions";
 import RecentScores from "../RecentScores/RecentScores";
+import { useParams } from "react-router-dom";
 
 interface EventProps {
-  event: EventObject;
 }
 
-export default function Event({ event }: EventProps) {
+export default function Event({  }: EventProps) {
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -30,6 +29,7 @@ export default function Event({ event }: EventProps) {
     autoStart: true,
     interval: 10000,
   });
+  const eventId = useParams().eventId;
 
   useEffect(() => {
     fetchData();
@@ -50,10 +50,10 @@ export default function Event({ event }: EventProps) {
    */
   async function fetchData() {
     console.log("Fetching data...");
-    if (!event) return;
+    if (!eventId) return;
     try {
-      setRallies(await fetchRallies(event.id));
-      const fetchedRallyTypes = await fetchRallyTypes(event.id);
+      setRallies(await fetchRallies(eventId));
+      const fetchedRallyTypes = await fetchRallyTypes(eventId);
       setRallyTypes(fetchedRallyTypes);
       setMaxHits(getHighestMins(fetchedRallyTypes || []));
     } catch (error) {

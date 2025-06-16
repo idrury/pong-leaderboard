@@ -3,8 +3,8 @@ import './PlayerHome.css';
 import { useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { fetchEvent } from '../../DatabaseAccess/select';
-import { EventObject, PopSavedModalFn } from '../../Types';
-import Event from '../../presentation/Event/Event';
+import { PopSavedModalFn } from '../../Types';
+import { useNavigate } from 'react-router-dom';
 
 interface PlayerHomeProps {
   popModal: PopSavedModalFn;
@@ -17,14 +17,15 @@ export function PlayerHome({popModal}:PlayerHomeProps) {
     { name: 'Campaign 3', year: '2021' },
   ];
   const [eventId, setEventId] = useState('');
-  const [currentEvent,setCurrentEvent] = useState<EventObject>();
+  const navigate = useNavigate();
 
   async function handleSubmit (e: React.FormEvent) {
     e.preventDefault();
     // Handle event ID submission logic here
     
     try {
-      setCurrentEvent(await fetchEvent(eventId));
+      const event = await fetchEvent(eventId);
+      if(event) navigate(eventId);
     } catch(error) {
       popModal("Looks like that event doesn't exist!",undefined, true);
       return;
@@ -34,7 +35,6 @@ export function PlayerHome({popModal}:PlayerHomeProps) {
 
   return (
     <div>
-     {currentEvent ? <Event event={currentEvent} /> : <div>
         <div>
           <h1>Player Home</h1>
           <p>Welcome to your Ping-Pong-A-Thon dashboard!</p>
@@ -65,7 +65,6 @@ export function PlayerHome({popModal}:PlayerHomeProps) {
             ))}
           </ListGroup>
         </div>
-      </div>}
     </div>
   );
 };
