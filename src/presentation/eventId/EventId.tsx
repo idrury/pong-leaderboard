@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './EventId.css';
 import IonIcon from '@reacticons/ionicons';
+import Header from '../Header/Header';
 
 interface EventIdProps {
   onSubmit?: (eventId: string) => void;

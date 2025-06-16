@@ -1,6 +1,8 @@
 import { PacmanLoader } from "react-spinners";
 import {
   CampaignRallyTypeObject,
+  PopSavedModalFn,
+  ProfileObject,
   RallyObject,
 } from "../../Types";
 import HighscoreCard from "../HighScores/HighscoreCard";
@@ -15,11 +17,21 @@ import {
 import { getHighestMins } from "../App/AppFunctions";
 import RecentScores from "../RecentScores/RecentScores";
 import { useParams } from "react-router-dom";
+import Header from "../Header/Header";
+import { Session } from "@supabase/supabase-js";
+import AddRallyMenu from "../Header/AddRallyMenu";
 
 interface EventProps {
+  profile: ProfileObject;
+  session: Session | undefined;
+  popSavedModal: PopSavedModalFn;
 }
 
-export default function Event({  }: EventProps) {
+export default function Event({
+  profile,
+  session,
+  popSavedModal,
+}: EventProps) {
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -29,6 +41,7 @@ export default function Event({  }: EventProps) {
     autoStart: true,
     interval: 10000,
   });
+  const [editActive, setEditActive] = useState(false);
   const eventId = useParams().eventId;
 
   useEffect(() => {
@@ -66,59 +79,77 @@ export default function Event({  }: EventProps) {
       highScoreRefs.current.push(element);
     }
   };
+
+  if (!eventId) return <div>none</div>;
   return (
-    <div className="row shrinkWrap">
-      <div className="w100">
-        {rallyTypes?.length === 0 ? (
-          <div
-            className="col middle center mediumFade"
-            style={{ minHeight: "60vh" }}
-          >
-            <PacmanLoader color="var(--primaryColor)" />
-            <p
-              className="bold mt2"
-              style={{
-                color: "var(--primaryColor)",
-              }}
-            >
-              Loading your scores...
-            </p>
-          </div>
-        ) : (
-          <div className="">
+    <div>
+      <Header
+        profile={profile}
+        session={session || undefined}
+        activeSavedModal={popSavedModal}
+        activateEditModal={() => setEditActive(true)}
+      />
+      <AddRallyMenu
+        profile={profile}
+        active={editActive}
+        currentRallyTypes={rallyTypes}
+        onClose={() => setEditActive(false)}
+        activateSaved={popSavedModal}
+        eventId={eventId}
+      />
+      <div className="row shrinkWrap">
+        <div className="w100">
+          {rallyTypes?.length === 0 ? (
             <div
-              className="mt2"
-              style={{
-                display: "grid",
-                gridTemplateColumns:
-                  "repeat(auto-fit, minmax(350px, 1fr))",
-              }}
+              className="col middle center mediumFade"
+              style={{ minHeight: "60vh" }}
             >
-              {rallyTypes?.map((type, index) => (
-                <HighscoreCard
-                  key={index}
-                  nodeRef={addToRefs}
-                  rallyType={type}
-                  maxHits={maxHits}
-                />
-              ))}
+              <PacmanLoader color="var(--primaryColor)" />
+              <p
+                className="bold mt2"
+                style={{
+                  color: "var(--primaryColor)",
+                }}
+              >
+                Loading your scores...
+              </p>
             </div>
+          ) : (
+            <div className="">
+              <div
+                className="mt2"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(350px, 1fr))",
+                }}
+              >
+                {rallyTypes?.map((type, index) => (
+                  <HighscoreCard
+                    key={index}
+                    nodeRef={addToRefs}
+                    rallyType={type}
+                    maxHits={maxHits}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="mr2" />
+        <div
+          className="w25"
+          style={{
+            maxHeight: "90vh",
+            overflow: "auto",
+            minWidth: 300,
+          }}
+        >
+          <div className="pr1 mt2">
+            {rallies?.map((rally, index) => (
+              <RecentScores key={index} rally={rally} />
+            ))}
           </div>
-        )}
-      </div>
-      <div className="mr2" />
-      <div
-        className="w25"
-        style={{
-          maxHeight: "90vh",
-          overflow: "auto",
-          minWidth: 300,
-        }}
-      >
-        <div className="pr1 mt2">
-          {rallies?.map((rally, index) => (
-            <RecentScores key={index} rally={rally} />
-          ))}
         </div>
       </div>
     </div>

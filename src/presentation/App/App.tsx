@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { fetchProfile } from "../../DatabaseAccess/select";
 
-import Header from "../Header/Header";
 import { PopSavedModalFn, SavedModalType } from "../../Types";
 
 import SavedModal from "../SavedModal";
@@ -11,15 +10,13 @@ import SavedModal from "../SavedModal";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
 import { Session } from "@supabase/supabase-js";
 
-import {
-  PublicRoute,
-  ProtectedRoute,
-} from "../Authentication/AuthRouter";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
 import EventId from "../eventId/EventId";
 import Event from "../Event/Event";
+import Aurora from "../Animations/Aurora";
+import Noise from "../Animations/Noise";
 
-function App () {
+function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>();
   const [savedModal, setSavedModal] = useState<SavedModalType>({
@@ -40,7 +37,7 @@ function App () {
    * @param userId
    * @param event
    */
-  async function getProfile (
+  async function getProfile(
     userId: string | undefined,
     event: string
   ) {
@@ -99,15 +96,51 @@ function App () {
           body={savedModal.body}
           state={savedModal.state}
         />
-        <Header
-          profile={profile}
-          session={session || undefined}
-          activeSavedModal={popSavedModal}
-        />
+
         <Routes>
-          <Route path="/" element={session ? <PlayerHome popModal={popSavedModal} /> : <EventId />} />
-          <Route path="/:eventId" element={<Event />} />
+          <Route
+            path="/"
+            element={
+              session ? (
+                <PlayerHome
+                  popModal={popSavedModal}
+                  session={session}
+                  profile={profile}
+                />
+              ) : (
+                <EventId />
+              )
+            }
+          />
+          <Route
+            path="/:eventId"
+            element={
+              <Event
+                session={session || undefined}
+                profile={profile}
+                popSavedModal={popSavedModal}
+              />
+            }
+          />
         </Routes>
+      </div>
+      <div style={{ position: "fixed", top: 0, left: 0, zIndex: -5 }}>
+        <div style={{ zIndex: -1 }}></div>
+
+          <Aurora
+            colorStops={["#050c0f", "#124450", "#146679"]}
+            blend={0.9}
+            amplitude={2}
+            speed={1}
+          />
+          <Noise
+            patternSize={250}
+            patternScaleX={1}
+            patternScaleY={1}
+            patternRefreshInterval={2}
+            patternAlpha={15}
+          />
+
       </div>
     </>
   );
