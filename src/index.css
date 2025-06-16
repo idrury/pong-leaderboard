@@ -148,10 +148,7 @@ input:focus {
 }
 
 input:disabled {
-  border: 0;
-  border-radius: 3px 3px 0 0;
-  padding: 0px;
-  background-color: #00000000;
+  color: var(--mediumAccent)
 }
 
 input.noBorder {

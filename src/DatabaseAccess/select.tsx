@@ -183,3 +183,22 @@ export async function fetchProfile(
 
   return data;
 }
+
+
+export async function searchUser(
+  name: string | undefined
+): Promise<ProfileObject | undefined> {
+  if (!name) return;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("name", name)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}

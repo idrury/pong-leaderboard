@@ -1,25 +1,25 @@
 import IonIcon from "@reacticons/ionicons";
 import ErrorLabel from "../ErrorLabel";
-import TypeInput, { CreatableTypeInput } from "../TypeInput";
-import { useEffect,  useState } from "react";
+import TypeInput from "../TypeInput";
+import { useEffect, useState } from "react";
 import {
   ActivatableElement,
   CampaignRallyTypeObject,
   ErrorLabelType,
   InputOption,
   PasswordType,
-
   PopSavedModalFn,
+  ProfileObject,
 } from "../../Types";
 import {
-  insertPerson,
   insertRally,
   insertRallyType,
+  searchUser,
 } from "../../DatabaseAccess/select";
 import PasswordMenu from "./PasswordMenu";
 import { QueryError } from "@supabase/supabase-js";
 import BasicMenu from "../BasicMenu";
-import { useGSAP } from '@gsap/react';
+import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
 
@@ -34,13 +34,11 @@ export default function AddRallyMenu({
   onClose,
   activateSaved,
 }: AddRallyMenuProps) {
-
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<number>();
-  const [peopleId, setPeopleId] = useState<string | number>();
-
-  const [peopleOptions, setPeopleOptions] = useState<InputOption[]>();
+  const [people, setPeople] = useState<ProfileObject[]>([]);
+  const [personSearch, setPersonSearch] = useState<string>();
 
   const [error, setError] = useState<ErrorLabelType>({
     active: false,
@@ -56,18 +54,19 @@ export default function AddRallyMenu({
     getData();
   }, [currentRallyTypes?.length]);
 
-
   useGSAP(() => {
     gsap.registerPlugin(SplitText);
 
-    const titleSplit = SplitText.create('.titleTransition', {type: 'words'})
+    const titleSplit = SplitText.create(".titleTransition", {
+      type: "words",
+    });
 
     gsap.from(titleSplit.words, {
       opacity: 0,
-      y:-30,
-      stagger: .05,
-      delay: .5
-    })
+      y: -30,
+      stagger: 0.05,
+      delay: 0.5,
+    });
 
     // gsap.from('.spinTransition', {
     //   opacity: 0,
@@ -76,13 +75,12 @@ export default function AddRallyMenu({
     //   delay: .5,
     //   ease: 'back'
     // })
-
-  }, [active])
+  }, [active]);
   /*****************************
    * Refresh the required data
    */
   async function getData() {
-    console.log("FETCHING RALLY TYPES AGAIN")
+    console.log("FETCHING RALLY TYPES AGAIN");
     try {
       setRallyOptions(createRallyTypes(currentRallyTypes || []));
     } catch (error) {}
@@ -104,20 +102,6 @@ export default function AddRallyMenu({
     });
 
     return returnArray;
-  }
-
-  /***************************
-   * Add a new person entry
-   * @param name The name of the person or group
-   */
-  async function addPeople(name: string) {
-    try {
-      await insertPerson(name);
-      await getData();
-    } catch (error) {
-      /*@ts-ignore*/
-      console.error(error?.message);
-    }
   }
 
   /********************************************
@@ -175,21 +159,18 @@ export default function AddRallyMenu({
       return;
     }
 
-    const prevHighRally = currentRallyTypes?.find(type => {
-      return type.id == rallyType
-    })?.rallys
+    const prevHighRally = currentRallyTypes?.find((type) => {
+      return type.id == rallyType;
+    })?.rallys;
 
     //Prompt for password if high score
     if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
-      if(!secured) {
-      setPasswordType("add_high_rally");
-      setPendingValue(hits);
-      setPasswordActive(true);
-      return;
-      }
-      else 
-        isHighScore = true;
-
+      if (!secured) {
+        setPasswordType("add_high_rally");
+        setPendingValue(hits);
+        setPasswordActive(true);
+        return;
+      } else isHighScore = true;
     }
     if (hits >= 30000) {
       setError({
@@ -204,7 +185,7 @@ export default function AddRallyMenu({
       setError({ active: false });
       await insertRally(
         pendingValue || hits,
-        profileId,
+        "",
         rallyType,
         isHighScore
       );
@@ -228,6 +209,21 @@ export default function AddRallyMenu({
     setPendingValue(undefined);
   }
 
+  async function addPerson(form: React.FormEvent) {
+    form.preventDefault();
+
+    try {
+      const person = await searchUser(personSearch);
+      if (person) {
+        setPeople([...people, person]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    setPersonSearch(undefined);
+  }
+
   return (
     <div>
       <PasswordMenu
@@ -237,30 +233,27 @@ export default function AddRallyMenu({
         onSuccess={(type) => onPasswordSuccess(type)}
       />
       <BasicMenu
-      disableClickOff
+        disableClickOff
         width={300}
         active={active}
         onClose={() => onClose()}
       >
         <div className="row middle center ">
-          <IonIcon name="add-circle" className="h2Icon spinTransition" />
+          <IonIcon
+            name="add-circle"
+            className="h2Icon spinTransition"
+          />
           <h2 className="textCenter titleTransition">Add a rally</h2>
         </div>
         <br />
-        <form
-          action="submit"
-          onSubmit={(f) => {
-            f.preventDefault();
-            addRally();
-          }}
-        >
+        <div>
           <div className="mb2">
             <div className="row mb1 middle">
               <IonIcon name="bowling-ball" className="mr1" />
               <label>Rally type</label>
             </div>
             <TypeInput
-              onChange={(val:any) => setRallyType(val?.value)}
+              onChange={(val: any) => setRallyType(val?.value)}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}
@@ -295,34 +288,38 @@ export default function AddRallyMenu({
             text={error.text || ""}
             color="var(--dangerColor)"
           />
-          <div className="mb2">
-            <div className="row mb1 middle">
-              <IonIcon name="person-circle" className="mr1" />
-              <label>Name (or group)</label>
-            </div>
-            <CreatableTypeInput
-              onChange={(val) => setPeopleId(val?.value || null)}
-              onCreate={(val) => addPeople(val)}
-              /*@ts-ignore*/
-              options={peopleOptions}
-              disabled={false}
-              defaultValue={""}
-              placeholder="no name selected"
-            />
+          <div className="row mb1 middle">
+            <IonIcon name="person-circle" className="mr1" />
+            <label>Name (or group)</label>
           </div>
+          {people.map((person) => (
+            <div key={person.id} className="mb2 pr3">
+              <input disabled value={person.name}/>
+            </div>
+          ))}
+          <form action="submit" onSubmit={(f) => addPerson(f)}>
+            <div className="mb2 pr3">
+              <input
+                value={personSearch || ""}
+                onChange={(e) => setPersonSearch(e.target.value)}
+                disabled={false}
+                placeholder="no name selected"
+              />
+            </div>
+          </form>
           <ErrorLabel
             active={error.selector == "people"}
             text={error.text || ""}
             color="var(--dangerColor)"
           />
           <button
-            type="submit"
+            onClick={() => addRally()}
             className="row center middle w100 accentButton p0 mt2"
           >
             <IonIcon name="add-circle" className="mr1 pt2 pb2" />
             Rally
           </button>
-        </form>
+        </div>
       </BasicMenu>
     </div>
   );
