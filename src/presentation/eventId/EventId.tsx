@@ -45,7 +45,7 @@ const EventId: React.FC<EventIdProps> = ({ popModal }) => {
             onChange={(e) => setEventId(e.target.value)}
             placeholder="Event ID"
             required
-            style={{ marginBottom: 16, textAlign: 'center', background: '#f7fafc', border: '1.5px solid #146679', fontWeight: 500 }}
+            style={{ marginBottom: 16, textAlign: 'center', fontWeight: 500 }}
           />
           <button type="submit" className="event-id-btn">Enter</button>
         </form>

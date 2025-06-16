@@ -53,19 +53,22 @@ export function PlayerHome ({
       />
       <div>
         <h1>Dashboard</h1>
+        <p style={{ marginTop: 40, color: 'grey', fontSize: 18 }}>Enter your event ID to access the leaderboard</p>
       </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          className="event-id-input"
-          type="text"
-          value={eventId}
-          onChange={(e) => setEventId(e.target.value)}
-          placeholder="Event ID"
-          required
-        />
-        <br />
-        <button type="submit">Enter</button>
-      </form>
+      <div className="player-home-container">
+        <form onSubmit={handleSubmit}>
+          <input
+            className="event-id-input"
+            type="text"
+            value={eventId}
+            onChange={(e) => setEventId(e.target.value)}
+            placeholder="Event ID"
+            required
+          />
+          <br />
+          <button className="player-home-btn" type="submit">Enter</button>
+        </form>
+      </div>
       <div className="CampaignList">
         <ListGroup className="CampaignTable">
           <ListGroup.Item className="CampaignRow CampaignHeaderRow">
