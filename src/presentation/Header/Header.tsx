@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import AddRallyMenu from "./AddRallyMenu";
 import { CampaignRallyTypeObject, PopSavedModalFn } from "../../Types";
 import IonIcon from "@reacticons/ionicons";
@@ -16,7 +17,7 @@ interface HeaderProps {
   profile: any | undefined;
 }
 
-export default function Header({
+export default function Header ({
   session,
   rallyTypesState,
   activeSavedModal,
@@ -24,6 +25,12 @@ export default function Header({
 }: HeaderProps) {
   const [editActive, setEditActive] =
     useState(false);
+  const location = useLocation();
+
+  // Hide certain elements on /event-id or /player-home
+  const hideHeaderActions =
+    location.pathname.startsWith("/event-id") ||
+    location.pathname.startsWith("/player-home");
 
   return (
     <div>
@@ -51,7 +58,7 @@ export default function Header({
         activateSaved={activeSavedModal}
       />
       <div className="m0 between middle w100 pt1 pb1">
-        {!isMobileBrowser() && <QrCodeModal />}
+        {!hideHeaderActions && !isMobileBrowser() && <QrCodeModal />}
         <div className="row middle pl2">
           <IonIcon
             name="bowling-ball-sharp"
@@ -74,7 +81,7 @@ export default function Header({
           </h2>
         </div>
         <div className="row middle">
-          {session && (
+          {!hideHeaderActions && session && (
             <button
               className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
               onClick={() => setEditActive(true)}
