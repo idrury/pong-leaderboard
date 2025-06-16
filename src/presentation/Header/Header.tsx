@@ -57,9 +57,18 @@ export default function Header ({
         onClose={() => setEditActive(false)}
         activateSaved={activeSavedModal}
       />
-      <div className="m0 between middle w100 pt1 pb1">
-        {!hideHeaderActions && !isMobileBrowser() && <QrCodeModal />}
-        <div className="row middle pl2">
+      <div className="m0 between middle w100 pt1 pb1" style={{ position: "relative" }}>
+        {/* Centered Title and Icon */}
+        <div
+          className="row middle"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 1,
+          }}
+        >
           <IonIcon
             name="bowling-ball-sharp"
             className="mr1"
@@ -75,12 +84,18 @@ export default function Header ({
               fontWeight: 500,
               fontSize: "large",
               cursor: "pointer",
+              margin: 0,
             }}
           >
             Ping-Pong-A-Thon 2025
           </h2>
         </div>
-        <div className="row middle">
+        {/* Left side: QR code */}
+        <div className="row middle" style={{ minWidth: 0 }}>
+          {!hideHeaderActions && !isMobileBrowser() && <QrCodeModal />}
+        </div>
+        {/* Right side: Add rally and Auth */}
+        <div className="row middle" style={{ minWidth: 0 }}>
           {!hideHeaderActions && session && (
             <button
               className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
