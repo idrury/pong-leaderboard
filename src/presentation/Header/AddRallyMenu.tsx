@@ -69,13 +69,13 @@ export default function AddRallyMenu({
       delay: .5
     })
 
-    gsap.from('.spinTransition', {
-      opacity: 0,
-      rotate: 360,
-      duration: .5,
-      delay: .5,
-      ease: 'back'
-    })
+    // gsap.from('.spinTransition', {
+    //   opacity: 0,
+    //   rotate: 360,
+    //   duration: .5,
+    //   delay: .5,
+    //   ease: 'back'
+    // })
 
   }, [active])
   /*****************************

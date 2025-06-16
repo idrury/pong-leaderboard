@@ -1,29 +1,22 @@
 import { useState } from "react";
 import ErrorLabel from "../ErrorLabel";
-import {
-  ErrorLabelType,
-  PopSavedModalFn,
-} from "../../Types";
+import { ErrorLabelType, PopSavedModalFn } from "../../Types";
 import { SignUpUser } from "../../DatabaseAccess/authentication";
 
 interface SignUpProps {
   popModal?: PopSavedModalFn;
+  onSuccess: () => void;
 }
 
-export default function SignUp({
-  popModal,
-}: SignUpProps) {
-  const [password, setPassword] =
-    useState<string>();
-  const [confirmPassword, setConfirmPassword] =
-    useState<string>();
+export default function SignUp({ popModal }: SignUpProps) {
+  const [password, setPassword] = useState<string>();
+  const [confirmPassword, setConfirmPassword] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [name, setName] = useState<string>();
 
-  const [error, setError] =
-    useState<ErrorLabelType>({
-      active: false,
-    });
+  const [error, setError] = useState<ErrorLabelType>({
+    active: false,
+  });
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,9 +82,7 @@ export default function SignUp({
             type="name"
             placeholder="Name"
             value={name || ""}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
+            onChange={(e) => setName(e.target.value)}
           />
           <ErrorLabel
             text={error.text}
@@ -103,9 +94,7 @@ export default function SignUp({
             type="email"
             placeholder="Email"
             value={email || ""}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
           />
           <ErrorLabel
             text={error.text}
@@ -116,37 +105,25 @@ export default function SignUp({
             type="password"
             placeholder="Password"
             value={password || ""}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
           />
           <ErrorLabel
             text={error.text}
-            active={
-              error?.selector === "password"
-            }
+            active={error?.selector === "password"}
           />
           <input
             className="mb2"
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword || ""}
-            onChange={(e) =>
-              setConfirmPassword(e.target.value)
-            }
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <ErrorLabel
             text={error.text}
-            active={
-              error?.selector ===
-              "confirmPassword"
-            }
+            active={error?.selector === "confirmPassword"}
           />
         </div>
-        <button
-          className="w100 accentButton"
-          type="submit"
-        >
+        <button className="w100 accentButton" type="submit">
           Sign up
         </button>
       </form>
