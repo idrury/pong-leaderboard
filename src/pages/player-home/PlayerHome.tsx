@@ -1,6 +1,13 @@
 import React from 'react';
-import './PlayerHome.css'; // You might need to create this file
+import './PlayerHome.css';
 import { useState } from 'react';
+import ListGroup from 'react-bootstrap/ListGroup';
+
+const campaigns = [
+  { name: 'Campaign 1', year: 2023 },
+  { name: 'Campaign 2', year: 2024 },
+  { name: 'Campaign 3', year: 2025 },
+];
 
 const PlayerHome: React.FC = () => {
   const [eventId, setEventId] = useState('');
@@ -12,16 +19,10 @@ const PlayerHome: React.FC = () => {
   };
 
   return (
-    <div className="player-home-page">
-      <div className="player-home-container">
+    <div>
+      <div>
         <h1>Player Home</h1>
         <p>Welcome to your Ping-Pong-A-Thon dashboard!</p>
-
-        {/* More player-specific content can go here */}
-        <div className="stats-container">
-          <h2>Your Stats</h2>
-          <p>Hello World! This is your player dashboard.</p>
-        </div>
       </div>
       <form onSubmit={handleSubmit}>
         <input
@@ -35,6 +36,20 @@ const PlayerHome: React.FC = () => {
         <br />
         <button type="submit">Enter</button>
       </form>
+      <div className="CampaignList">
+        <ListGroup className="CampaignTable">
+          <ListGroup.Item className="CampaignRow CampaignHeaderRow">
+            <span className="CampaignCol CampaignColName">Campaign Name</span>
+            <span className="CampaignCol CampaignColYear">Year</span>
+          </ListGroup.Item>
+          {campaigns.map((item, idx) => (
+            <ListGroup.Item className="CampaignRow" key={idx}>
+              <span className="CampaignCol CampaignColName">{item.name}</span>
+              <span className="CampaignCol CampaignColYear">{item.year}</span>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </div>
     </div>
   );
 };
