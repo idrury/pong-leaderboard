@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import { fetchProfile } from "../../DatabaseAccess/select";
 
@@ -17,6 +17,7 @@ import {
 } from "../Authentication/AuthRouter";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
 import EventId from "../eventId/EventId";
+import Event from "../Event/Event";
 
 function App () {
   const [session, setSession] = useState<Session | null>(null);
@@ -105,6 +106,7 @@ function App () {
         />
         <Routes>
           <Route path="/" element={session ? <PlayerHome popModal={popSavedModal} /> : <EventId />} />
+          <Route path="/:eventId" element={<Event />} />
         </Routes>
       </div>
     </>
