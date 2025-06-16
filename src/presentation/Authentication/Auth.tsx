@@ -89,9 +89,9 @@ export default function Auth({
               Sign up
             </div>
             {isSignUp ? (
-              <SignUp popModal={popModal} />
+              <SignUp popModal={popModal} onSuccess={() => setActive(false)}/>
             ) : (
-              <Login popModal={popModal} />
+              <Login popModal={popModal}  onSuccess={() => setActive(false)} />
             )}
           </div>
         )}
