@@ -16,7 +16,7 @@ import {
   ProtectedRoute,
 } from "../Authentication/AuthRouter";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
-import Event from "../Event/Event";
+import EventId from "../eventId/EventId";
 
 function App () {
   const [session, setSession] = useState<Session | null>(null);
@@ -104,25 +104,7 @@ function App () {
           activeSavedModal={popSavedModal}
         />
         <Routes>
-          {/* Public routes - accessible when not signed in */}
-          <Route element={<PublicRoute session={session} />}>
-            <Route path="/:eventId" element={<Event />} />
-            {/* <Route path="*" element={<Navigate to="/event-id"  />} /> */}
-          </Route>
-
-          {/* Protected routes - require authentication */}
-          <Route element={<ProtectedRoute session={session} />}>
-                      <Route path="/:eventId" element={<Event/>} />
-
-            <Route path="/" element={<PlayerHome popModal={popSavedModal} />} />
-
-          </Route>
-
-          {/* Fallback route - redirect to appropriate page based on auth status */}
-          {/* <Route
-            path="*"
-            element={<Navigate to="/"  />}
-          /> */}
+          <Route path="/" element={session ? <PlayerHome popModal={popSavedModal} /> : <EventId />} />
         </Routes>
       </div>
     </>
