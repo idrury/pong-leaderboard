@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './EventId.css';
 import IonIcon from '@reacticons/ionicons';
-import Header from '../Header/Header';
 import { fetchEvent } from "../../DatabaseAccess/select";
 import { PopSavedModalFn } from "../../Types";
 import { useNavigate } from 'react-router-dom';
@@ -45,7 +44,7 @@ const EventId: React.FC<EventIdProps> = ({ popModal }) => {
             onChange={(e) => setEventId(e.target.value)}
             placeholder="Event ID"
             required
-            style={{ marginBottom: 16, textAlign: 'center', background: '#f7fafc', border: '1.5px solid #146679', fontWeight: 500 }}
+            style={{ marginBottom: 16, textAlign: 'center', fontWeight: 500 }}
           />
           <button type="submit" className="event-id-btn">Enter</button>
         </form>
