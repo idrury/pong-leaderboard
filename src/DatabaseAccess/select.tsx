@@ -29,13 +29,13 @@ export async function fetchRallies(): Promise<
  * Fetch the rally types for a campaign with the campaign records
  * @param campaignId The id of the campaign to get
  */
-export async function fetchRallyTypes(campaignId=1): Promise<
+export async function fetchRallyTypes(eventId=1): Promise<
   CampaignRallyTypeObject[]
 > {
   const { data, error } = await supabase
     .from("campaigns_to_rally_types")
     .select("rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))")
-    .eq('campaign_id', campaignId);
+    .eq('event_id', eventId);
 
   if (error) {
     console.error(error.message);
@@ -165,6 +165,7 @@ export async function fetchProfile(
 ): Promise<ProfileObject | null> {
   if (!userId) return null;
 
+
   const { data, error } = await supabase
     .from("profiles")
     .select()
@@ -174,6 +175,6 @@ export async function fetchProfile(
   if (error) {
     throw error;
   }
-  console.log("Fetched profile:", data);
+
   return data;
 }

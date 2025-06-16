@@ -5,6 +5,7 @@ import ErrorLabel from "../ErrorLabel";
 import { signInUser } from "../../DatabaseAccess/authentication";
 interface LoginProps {
   popModal?: PopSavedModalFn;
+  onSuccess: () => void;
 }
 export default function Login({ popModal }: LoginProps) {
   const [email, setEmail] = useState<string>();
@@ -34,7 +35,7 @@ export default function Login({ popModal }: LoginProps) {
     }
 
     try {
-      const result = await signInUser(email, password);
+      await signInUser(email, password);
       popModal?.(`Welcome back!`)
     } catch (error) {
         popModal?.(
