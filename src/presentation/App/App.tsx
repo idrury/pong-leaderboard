@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { fetchProfile } from "../../DatabaseAccess/select";
 
@@ -105,20 +105,24 @@ function App () {
         />
         <Routes>
           {/* Public routes - accessible when not signed in */}
-          <Route element={<PublicRoute session={session} />} />
+          <Route element={<PublicRoute session={session} />}>
+            <Route path="/:eventId" element={<Event />} />
+            {/* <Route path="*" element={<Navigate to="/event-id"  />} /> */}
+          </Route>
 
           {/* Protected routes - require authentication */}
           <Route element={<ProtectedRoute session={session} />}>
+                      <Route path="/:eventId" element={<Event/>} />
+
             <Route path="/" element={<PlayerHome popModal={popSavedModal} />} />
-                        <Route path="/:eventId" element={<Event/>} />
 
           </Route>
 
           {/* Fallback route - redirect to appropriate page based on auth status */}
-          <Route
+          {/* <Route
             path="*"
             element={<Navigate to="/"  />}
-          />
+          /> */}
         </Routes>
       </div>
     </>

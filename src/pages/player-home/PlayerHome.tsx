@@ -10,7 +10,7 @@ interface PlayerHomeProps {
   popModal: PopSavedModalFn;
 }
 
-export function PlayerHome({popModal}:PlayerHomeProps) {
+export function PlayerHome ({ popModal }: PlayerHomeProps) {
   const campaigns = [
     { name: 'Campaign 1', year: '2023' },
     { name: 'Campaign 2', year: '2022' },
@@ -22,7 +22,7 @@ export function PlayerHome({popModal}:PlayerHomeProps) {
   async function handleSubmit (e: React.FormEvent) {
     e.preventDefault();
     // Handle event ID submission logic here
-    
+
     try {
       const event = await fetchEvent(eventId);
       if(event) navigate(eventId);
@@ -54,7 +54,7 @@ export function PlayerHome({popModal}:PlayerHomeProps) {
         <div className="CampaignList">
           <ListGroup className="CampaignTable">
             <ListGroup.Item className="CampaignRow CampaignHeaderRow">
-              <span className="CampaignCol CampaignColName">Campaign Name</span>
+              <span className="CampaignCol CampaignColName">Campaigns</span>
               <span className="CampaignCol CampaignColYear">Year</span>
             </ListGroup.Item>
             {campaigns.map((item, idx) => (
