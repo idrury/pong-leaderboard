@@ -108,7 +108,7 @@ function App() {
                   profile={profile}
                 />
               ) : (
-                <EventId />
+                <EventId popModal={popSavedModal} />
               )
             }
           />

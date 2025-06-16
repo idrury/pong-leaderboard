@@ -1,3 +1,5 @@
+import { RallyObject, UserRalliesObject } from "../Types";
+
 export default function toString(item: any): string {
   if (item === null || item === undefined) {
     return "";
@@ -26,9 +28,50 @@ export function getPlaces(number: number): number[] {
   const idxs = [10000, 1000, 100, 10, 1];
   const returnIdxs = new Array<number>();
 
-  idxs.forEach(idx => {
-    if(number >= idx) returnIdxs.push(idx);
-  })
+  idxs.forEach((idx) => {
+    if (number >= idx) returnIdxs.push(idx);
+  });
 
-  return (returnIdxs.length > 0 ? returnIdxs : [1]);
+  return returnIdxs.length > 0 ? returnIdxs : [1];
+}
+
+/***********************************
+ * Group rallies with people by the rally id
+ * @param rallies The rallies to group
+ */
+export function groupRalliesById(
+  rallies: UserRalliesObject[]
+): RallyObject[] {
+  const returnArray = new Array<RallyObject>();
+
+  rallies.forEach((pr) => {
+    let current = returnArray.find((r) => (r.id == pr.rally_id));
+
+    //If it's been added, add the user to this rally
+    if (current) {
+      current.profiles.push({
+        id: pr.profile_id,
+        created_at: new Date(),
+        name: pr.user_name,
+      });
+    // Else add the new rally
+    } else {
+      returnArray.push({
+        num_hits: pr.num_hits,
+        is_high_score: pr.is_high_score,
+        profiles: [{
+        id: pr.profile_id,
+        created_at: new Date(),
+        name: pr.user_name,
+      }],
+        rally_types: {id: 0, created_at: new Date(), name: pr.type_name, tags: []},
+        id: pr.rally_id,
+        created_at: new Date(pr.created_at)
+      })
+    }
+
+    current = undefined;
+  });
+
+  return returnArray;
 }

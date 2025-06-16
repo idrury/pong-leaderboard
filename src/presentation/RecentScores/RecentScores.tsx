@@ -7,7 +7,18 @@ interface RecentScoresProps {
 }
 
 function RecentScores({ rally }: RecentScoresProps) {
-  const playerName = rally.profiles?.name || "";
+  const playerNames = extractPlayerNames();
+
+  function extractPlayerNames() {
+    let returnString = "";
+    rally.profiles.forEach((p, idx) => {
+      returnString = returnString.concat(p.name)
+      
+      if(idx < rally.profiles.length-1)
+        returnString = returnString.concat(" | ")})    
+
+    return (returnString);
+  }
 
   return (
     <div
@@ -15,7 +26,7 @@ function RecentScores({ rally }: RecentScoresProps) {
     >
       <div className="row middle w50">
         <div style={{ width: 30 }}>
-          <PlayerIcons playerName={playerName} />
+          <PlayerIcons playerName={playerNames || ""} />
         </div>
         <div>
           <p
@@ -35,7 +46,7 @@ function RecentScores({ rally }: RecentScoresProps) {
             }}
           >
             <p className="pb1  m0">
-              {rally.profiles?.name || "Cras justo odio"}
+              {playerNames || "Cras justo odio"}
             </p>
           </div>
         </div>
@@ -49,7 +60,7 @@ function RecentScores({ rally }: RecentScoresProps) {
           {DateTime.fromJSDate(new Date(rally.created_at)).toRelative({style:'short'})}
         </p>
       </div>
-      <div className="boxedAccent w10">
+      <div className={`${rally.is_high_score ? "boxedDark": "boxedAccent"} m0 row middle center w10`}>
         <h3 className="m0 p0 textCenter">{rally.num_hits}</h3>
       </div>
     </div>

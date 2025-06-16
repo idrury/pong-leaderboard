@@ -10,6 +10,7 @@ interface HeaderProps {
   activateEditModal?: () => void;
   session: Session | undefined;
   profile: any | undefined;
+  title?: string
 }
 
 export default function Header ({
@@ -17,6 +18,7 @@ export default function Header ({
   activeSavedModal,
   activateEditModal,
   profile,
+  title
 }: HeaderProps) {
 
   return (
@@ -39,7 +41,7 @@ export default function Header ({
         >
           <IonIcon
             name="bowling-ball-sharp"
-            className="mr1"
+            className="mr2 h2Icon"
           />
           <h2
             onClick={() =>
@@ -49,13 +51,13 @@ export default function Header ({
               )
             }
             style={{
-              fontWeight: 500,
-              fontSize: "large",
+              fontWeight: 700,
+              fontSize: 30,
               cursor: "pointer",
               margin: 0,
             }}
           >
-            Ping-Pong-A-Thon 2025
+            {title || "Ping-Pong-A-Thon leaderboard"}
           </h2>
         </div>
         {/* Left side: QR code */}

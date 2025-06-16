@@ -1,7 +1,7 @@
 import type {
   CampaignRallyTypeObject,
   ProfileObject,
-  RallyObject,
+  UserRalliesObject,
 } from "../Types";
 import { supabase } from "./SupabaseClient";
 
@@ -10,19 +10,12 @@ import { supabase } from "./SupabaseClient";
  */
 export async function fetchRallies(
   eventId: string
-): Promise<RallyObject[]> {
-  const { data, error } = await supabase
-    .from("rallys")
-    .select("*, profiles(*)")
-    .eq("event_id", eventId)
-    .order("created_at", { ascending: false })
-    .limit(50);
+): Promise<UserRalliesObject[]> {
+  const { data, error } = await supabase.rpc("get_user_rallies", {
+    evt_id: eventId,
+  });
 
-  if (error) {
-    console.error(error.message);
-    throw error;
-  }
-
+  if (error) throw error;
   return data;
 }
 
@@ -38,7 +31,8 @@ export async function fetchRallyTypes(
     .select(
       "rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))"
     )
-    .eq("event_id", eventId);
+    .eq("event_id", eventId)
+    .order('id', {ascending: false});
 
   if (error) {
     throw error;
@@ -144,19 +138,19 @@ export async function insertRally(
 }
 
 /**
- * 
- * @param id 
- * @param people 
- * @returns 
+ *
+ * @param id
+ * @param people
+ * @returns
  */
 export async function insertPeopleForRally(
   id: number,
   people: ProfileObject[],
-  profile: ProfileObject,
+  profile: ProfileObject
 ) {
   const values = new Array<{ rally_id: number; user_id: string }>();
   people.forEach((p) => values.push({ user_id: p.id, rally_id: id }));
-  values.push({ user_id: profile.id, rally_id: id })
+  values.push({ user_id: profile.id, rally_id: id });
 
   const { error } = await supabase
     .from("users_to_rallys")

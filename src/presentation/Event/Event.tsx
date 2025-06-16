@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import Header from "../Header/Header";
 import { Session } from "@supabase/supabase-js";
 import AddRallyMenu from "../Header/AddRallyMenu";
+import { groupRalliesById } from "../../common/CommonFunctions";
 
 interface EventProps {
   profile: ProfileObject;
@@ -65,7 +66,9 @@ export default function Event({
     console.log("Fetching data...");
     if (!eventId) return;
     try {
-      setRallies(await fetchRallies(eventId));
+      const rallies = groupRalliesById(await fetchRallies(eventId));
+      setRallies(rallies);
+
       const fetchedRallyTypes = await fetchRallyTypes(eventId);
       setRallyTypes(fetchedRallyTypes);
       setMaxHits(getHighestMins(fetchedRallyTypes || []));
@@ -84,6 +87,7 @@ export default function Event({
   return (
     <div>
       <Header
+      title={`Enter code ${eventId} to join`}
         profile={profile}
         session={session || undefined}
         activeSavedModal={popSavedModal}
