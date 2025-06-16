@@ -2,8 +2,14 @@ import React from 'react';
 import './PlayerHome.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ListGroup } from 'react-bootstrap';
 
 const PlayerHome: React.FC = () => {
+  const campaigns = [
+    { name: 'Campaign 1', year: '2023' },
+    { name: 'Campaign 2', year: '2022' },
+    { name: 'Campaign 3', year: '2021' },
+  ];
   const [eventId, setEventId] = useState('');
   const navigate = useNavigate();
 
@@ -11,7 +17,7 @@ const PlayerHome: React.FC = () => {
     e.preventDefault();
     // Handle event ID submission logic here
     console.log('Event ID:', eventId);
-   navigate(eventId)
+    navigate(eventId)
   };
 
   return (
