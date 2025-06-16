@@ -17,7 +17,7 @@
 .event-id-btn {
   width: 80%;
   height: 44px;
-  background: linear-gradient(90deg, #146679 60%, #124450 100%);
+  background: var(--primaryColor);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -26,6 +26,7 @@
   cursor: pointer;
   box-shadow: 0 2px 8px 0 rgba(20, 102, 121, 0.10);
   transition: background 0.2s, transform 0.1s;
+  box-sizing: border-box;
 }
 .event-id-btn:hover {
   background: linear-gradient(90deg, #124450 60%, #146679 100%);
@@ -38,4 +39,8 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
+  border-radius: 18px;
+  padding: 40px 32px 32px 32px;
+  max-width: 350px;
+  margin: 60px auto;
 }

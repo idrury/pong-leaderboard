@@ -14,7 +14,7 @@ interface PlayerHomeProps {
   session: Session
 }
 
-export function PlayerHome({
+export function PlayerHome ({
   popModal,
   profile,
   session,
@@ -27,7 +27,7 @@ export function PlayerHome({
   const [eventId, setEventId] = useState("");
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit (e: React.FormEvent) {
     e.preventDefault();
     // Handle event ID submission logic here
 
@@ -52,8 +52,7 @@ export function PlayerHome({
         activeSavedModal={popModal}
       />
       <div>
-        <h1>Player Home</h1>
-        <p>Welcome to your Ping-Pong-A-Thon dashboard!</p>
+        <h1>Dashboard</h1>
       </div>
       <form onSubmit={handleSubmit}>
         <input
