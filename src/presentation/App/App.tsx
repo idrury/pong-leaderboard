@@ -15,7 +15,6 @@ import {
   PublicRoute,
   ProtectedRoute,
 } from "../Authentication/AuthRouter";
-import Event from "../Event/Event";
 import { PlayerHome } from "../../pages/player-home/PlayerHome";
 
 function App() {

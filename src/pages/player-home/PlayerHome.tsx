@@ -1,7 +1,6 @@
 import React from 'react';
 import './PlayerHome.css';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ListGroup } from 'react-bootstrap';
 import { fetchEvent } from '../../DatabaseAccess/select';
 import { EventObject, PopSavedModalFn } from '../../Types';
@@ -19,7 +18,6 @@ export function PlayerHome({popModal}:PlayerHomeProps) {
   ];
   const [eventId, setEventId] = useState('');
   const [currentEvent,setCurrentEvent] = useState<EventObject>();
-  const navigate = useNavigate();
 
   async function handleSubmit (e: React.FormEvent) {
     e.preventDefault();

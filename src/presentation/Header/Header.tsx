@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddRallyMenu from "./AddRallyMenu";
-import { PopSavedModalFn, RallyTypeObject } from "../../Types";
+import { CampaignRallyTypeObject, PopSavedModalFn } from "../../Types";
 import IonIcon from "@reacticons/ionicons";
 import QrCodeModal from "../App/QrCodeModal";
 import { isMobileBrowser } from "../../common/CommonFunctions";
@@ -10,7 +10,7 @@ import Aurora from "../Animations/Aurora";
 import Noise from "../Animations/Noise";
 
 interface HeaderProps {
-  rallyTypesState?: RallyTypeObject[];
+  rallyTypesState?: CampaignRallyTypeObject[];
   activeSavedModal: PopSavedModalFn;
   session: Session | undefined;
   profile: any | undefined;

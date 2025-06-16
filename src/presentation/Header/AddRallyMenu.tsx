@@ -1,6 +1,6 @@
 import IonIcon from "@reacticons/ionicons";
 import ErrorLabel from "../ErrorLabel";
-import { CreatableTypeInput } from "../TypeInput";
+import TypeInput, { CreatableTypeInput } from "../TypeInput";
 import { useEffect,  useState } from "react";
 import {
   ActivatableElement,
@@ -259,11 +259,8 @@ export default function AddRallyMenu({
               <IonIcon name="bowling-ball" className="mr1" />
               <label>Rally type</label>
             </div>
-            <CreatableTypeInput
-              onCreate={(val) => {
-                addRallyType(val);
-              }}
-              onChange={(val) => setRallyType(val?.value)}
+            <TypeInput
+              onChange={(val:any) => setRallyType(val?.value)}
               /*@ts-ignore*/
               options={rallyOptions}
               disabled={false}
