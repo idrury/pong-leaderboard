@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddRallyMenu from "./AddRallyMenu";
 import { PopSavedModalFn, RallyTypeObject } from "../../Types";
 import IonIcon from "@reacticons/ionicons";

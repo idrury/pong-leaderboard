@@ -10,10 +10,10 @@ import HighscoreCard from "../HighScores/HighscoreCard";
 import RecentScores from "../RecentScores/RecentScores";
 import Header from "../Header/Header";
 import {
+  CampaignRallyTypeObject,
   PopSavedModalFn,
   SavedModalType,
   type RallyObject,
-  type RallyTypeObject,
 } from "../../Types";
 import { useStopwatch } from "react-timer-hook";
 import SavedModal from "../SavedModal";
@@ -31,7 +31,7 @@ function App() {
   const [rallies, setRallies] =
     useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] =
-    useState<RallyTypeObject[]>();
+    useState<CampaignRallyTypeObject[]>();
   const { totalSeconds } = useStopwatch({
     autoStart: true,
     interval: 10000,

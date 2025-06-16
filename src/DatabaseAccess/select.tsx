@@ -1,7 +1,7 @@
 import type {
-  PeopleObject,
+  CampaignRallyTypeObject,
+  ProfileObject,
   RallyObject,
-  RallyTypeObject,
 } from "../Types";
 import { supabase } from "./SupabaseClient";
 
@@ -25,28 +25,34 @@ export async function fetchRallies(): Promise<
   return data;
 }
 
-/**************************************
- * Fetch all rally types from the database
+/*********************************************************
+ * Fetch the rally types for a campaign with the campaign records
+ * @param campaignId The id of the campaign to get
  */
-export async function fetchRallyTypes(): Promise<
-  RallyTypeObject[]
+export async function fetchRallyTypes(campaignId=1): Promise<
+  CampaignRallyTypeObject[]
 > {
   const { data, error } = await supabase
-    .from("rally_types")
-    .select("*, rallys!rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))");
+    .from("campaigns_to_rally_types")
+    .select("rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))")
+    .eq('campaign_id', campaignId);
 
   if (error) {
     console.error(error.message);
     throw error;
   }
+
+  console.log(data)
+
+  /*@ts-ignore */
   return data;
 }
 
 /***************
  *
  */
-export async function fetchPeople(): Promise<
-  PeopleObject[]
+export async function fetchProfiles(): Promise<
+  ProfileObject[]
 > {
   const { data, error } = await supabase
     .from("profiles")
@@ -92,7 +98,7 @@ export async function insertPerson(
  */
 export async function insertRally(
   hits: number,
-  peopleId: number,
+  profileId: string,
   rallyType: number,
   highScore: boolean=false
 ): Promise<boolean> {
@@ -100,7 +106,7 @@ export async function insertRally(
     .from("rallys")
     .insert({
       num_hits: hits,
-      people: peopleId,
+      profiles: profileId,
       rally_type_id: rallyType,
       is_high_score: highScore
     });
@@ -156,7 +162,7 @@ export async function upsertProfile(
 
 export async function fetchProfile(
   userId: string | undefined
-): Promise<PeopleObject | null> {
+): Promise<ProfileObject | null> {
   if (!userId) return null;
 
   const { data, error } = await supabase

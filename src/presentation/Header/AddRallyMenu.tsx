@@ -4,15 +4,14 @@ import { CreatableTypeInput } from "../TypeInput";
 import { useEffect,  useState } from "react";
 import {
   ActivatableElement,
+  CampaignRallyTypeObject,
   ErrorLabelType,
   InputOption,
   PasswordType,
-  PeopleObject,
+
   PopSavedModalFn,
-  RallyTypeObject,
 } from "../../Types";
 import {
-  fetchPeople,
   insertPerson,
   insertRally,
   insertRallyType,
@@ -25,7 +24,7 @@ import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
 
 interface AddRallyMenuProps extends ActivatableElement {
-  currentRallyTypes?: RallyTypeObject[];
+  currentRallyTypes?: CampaignRallyTypeObject[];
   activateSaved: PopSavedModalFn;
 }
 
@@ -85,28 +84,8 @@ export default function AddRallyMenu({
   async function getData() {
     console.log("FETCHING RALLY TYPES AGAIN")
     try {
-      const people = await fetchPeople();
       setRallyOptions(createRallyTypes(currentRallyTypes || []));
-      setPeopleOptions(createInputOptions(people));
     } catch (error) {}
-  }
-
-  /************************************
-   * Turn the list of people into a format
-   * accepted by the input box
-   * @param people The list of people
-   * @returns The new InputOption array
-   */
-  function createInputOptions(people: PeopleObject[]) {
-    const returnArray = new Array<InputOption>();
-    people.forEach((person) => {
-      returnArray.push({
-        value: person.id,
-        label: person.name,
-      });
-    });
-
-    return returnArray;
   }
 
   /************************************
@@ -115,12 +94,12 @@ export default function AddRallyMenu({
    * @param types The raw list of types
    * @returns A new InputOption array
    */
-  function createRallyTypes(types: RallyTypeObject[]) {
+  function createRallyTypes(types: CampaignRallyTypeObject[]) {
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
         value: type.id,
-        label: type.name,
+        label: type.rally_types.name,
       });
     });
 
@@ -195,14 +174,6 @@ export default function AddRallyMenu({
       });
       return;
     }
-    if (!peopleId) {
-      setError({
-        active: true,
-        text: "Please enter a valid name",
-        selector: "people",
-      });
-      return;
-    }
 
     const prevHighRally = currentRallyTypes?.find(type => {
       return type.id == rallyType
@@ -233,7 +204,7 @@ export default function AddRallyMenu({
       setError({ active: false });
       await insertRally(
         pendingValue || hits,
-        peopleId as number,
+        profileId,
         rallyType,
         isHighScore
       );
