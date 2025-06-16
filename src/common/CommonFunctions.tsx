@@ -1,4 +1,4 @@
-import { RallyObject, UserRalliesObject } from "../Types";
+import { ProfileObject, RallyObject, UserRalliesObject } from "../Types";
 
 export default function toString(item: any): string {
   if (item === null || item === undefined) {
@@ -49,7 +49,7 @@ export function groupRalliesById(
 
     //If it's been added, add the user to this rally
     if (current) {
-      current.profiles.push({
+      (current.profiles as ProfileObject[]).push({
         id: pr.profile_id,
         created_at: new Date(),
         name: pr.user_name,

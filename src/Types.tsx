@@ -29,7 +29,7 @@ export interface ProfileObject {
 export interface RallyObject extends SupabaseTable {
   num_hits: number;
   is_high_score: boolean;
-  profiles: ProfileObject[];
+  profiles: ProfileObject[] | ProfileObject;
   rally_types: RallyTypeObject;
 }
 

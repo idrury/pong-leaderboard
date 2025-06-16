@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import type { RallyObject } from "../../Types";
+import type { ProfileObject, RallyObject } from "../../Types";
 import PlayerIcons from "./PlayerIcons";
 
 interface RecentScoresProps {
@@ -11,10 +11,10 @@ function RecentScores({ rally }: RecentScoresProps) {
 
   function extractPlayerNames() {
     let returnString = "";
-    rally.profiles.forEach((p, idx) => {
+    (rally.profiles as ProfileObject[]).forEach((p, idx) => {
       returnString = returnString.concat(p.name)
       
-      if(idx < rally.profiles.length-1)
+      if(idx < (rally.profiles as ProfileObject[]).length-1)
         returnString = returnString.concat(" | ")})    
 
     return (returnString);

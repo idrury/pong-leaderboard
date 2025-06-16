@@ -1,6 +1,6 @@
 import IonIcon from "@reacticons/ionicons";
 import Card from "react-bootstrap/Card";
-import { CampaignRallyTypeObject } from "../../Types";
+import { CampaignRallyTypeObject, ProfileObject } from "../../Types";
 import { DateTime } from "luxon";
 import { timeToHex } from "./HsBusinessLogic";
 import ShinyText from "../Animations/ShinyText";
@@ -65,7 +65,7 @@ function HighscoreCard({
           <div className="row middle center mt2 mb2">
             <IonIcon name="person-circle" className="mr1" />
             <div className="m0" style={{ fontSize: "10pt" }}>
-              {rallyType.rallys.profiles?.name ? (
+              {(rallyType.rallys.profiles as ProfileObject)?.name ? (
                 <div className="row">
                   <p className="pr1">
                     {DateTime.now()
@@ -77,7 +77,7 @@ function HighscoreCard({
                     style={{ textTransform: "capitalize" }}
                     className="bold"
                   >
-                    {rallyType.rallys.profiles.name}
+                    {(rallyType.rallys.profiles as ProfileObject)?.name}
                   </p>
                 </div>
               ) : (
