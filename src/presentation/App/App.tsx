@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import {
   fetchProfile,
@@ -25,9 +26,11 @@ import { supabase } from "../../DatabaseAccess/SupabaseClient";
 import { Session } from "@supabase/supabase-js";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { PublicRoute, ProtectedRoute } from "../Authentication/AuthRouter";
+import EventId from "../../pages/EventId/EventId";
+import PlayerHome from "../../pages/player-home/PlayerHome";
 
-
-function App() {
+function App () {
   const [rallies, setRallies] =
     useState<RallyObject[]>();
   const [rallyTypes, setRallyTypes] =
@@ -50,7 +53,7 @@ function App() {
     // Fetch the user's profile
     supabase.auth.onAuthStateChange(
       (_event, session) => {
-        if (_event=="SIGNED_IN" || _event=="TOKEN_REFRESHED") {
+        if (_event == "SIGNED_IN" || _event == "TOKEN_REFRESHED") {
           getProfile(session?.user?.id, _event);
         }
         setSession(session);
@@ -64,7 +67,7 @@ function App() {
    * @param userId
    * @param event
    */
-  async function getProfile(
+  async function getProfile (
     userId: string | undefined,
     event: string
   ) {
@@ -97,13 +100,13 @@ function App() {
   /*******************************
    * Get rally data from the DB
    */
-  async function fetchData() {
+  async function fetchData () {
     console.log("Fetching data...");
     try {
       setRallies(await fetchRallies());
       const fetchedRallyTypes = await fetchRallyTypes()
       setRallyTypes(fetchedRallyTypes)
-      setMaxHits(getHighestMins(fetchedRallyTypes||[]));
+      setMaxHits(getHighestMins(fetchedRallyTypes || []));
     } catch (error) {
       console.error(
         "Error fetching data:",
@@ -166,61 +169,89 @@ function App() {
           session={session || undefined}
           activeSavedModal={popSavedModal}
         />
-        <div className="row shrinkWrap">
-          <div className="w100">
-            {rallyTypes?.length === 0 ? (
-              <div
-                className="col middle center mediumFade"
-                style={{ minHeight: "60vh" }}
-              >
-                <PacmanLoader color="var(--primaryColor)" />
-                <p
-                  className="bold mt2"
-                  style={{
-                    color: "var(--primaryColor)",
-                  }}
-                >
-                  Loading your scores...
-                </p>
-              </div>
-            ) : (
-              <div className="">
-                <div
-                  className="mt2"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(350px, 1fr))",
-                  }}
-                >
-                  {rallyTypes?.map((type, index) => (
-                    <HighscoreCard
-                      key={index}
-                      nodeRef={addToRefs}
-                      rallyType={type}
-                      maxHits={maxHits}
-                    />
-                  ))}
+        <Routes>
+          {/* Public routes - accessible when not signed in */}
+          <Route element={<PublicRoute session={session} />}>
+            <Route path="/event-id" element={<EventId />} />
+          </Route>
+
+          {/* Protected routes - require authentication */}
+          <Route element={<ProtectedRoute session={session} />}>
+            <Route path="/player-home" element={<PlayerHome />} />
+            <Route
+              path="/"
+              element={
+                <div className="row shrinkWrap">
+                  <div className="w100">
+                    {rallyTypes?.length === 0 ? (
+                      <div
+                        className="col middle center mediumFade"
+                        style={{ minHeight: "60vh" }}
+                      >
+                        <PacmanLoader color="var(--primaryColor)" />
+                        <p
+                          className="bold mt2"
+                          style={{
+                            color: "var(--primaryColor)",
+                          }}
+                        >
+                          Loading your scores...
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="">
+                        <div
+                          className="mt2"
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                              "repeat(auto-fit, minmax(350px, 1fr))",
+                          }}
+                        >
+                          {rallyTypes?.map((type, index) => (
+                            <HighscoreCard
+                              key={index}
+                              nodeRef={addToRefs}
+                              rallyType={type}
+                              maxHits={maxHits}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mr2" />
+                  <div
+                    className="w25"
+                    style={{
+                      maxHeight: "90vh",
+                      overflow: "auto",
+                      minWidth: 300,
+                    }}
+                  >
+                    <div className="pr1 mt2">
+                      {rallies?.map((rally, index) => (
+                        <RecentScores key={index} rally={rally} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-            <div className="mr2"/>
-          <div
-            className="w25"
-            style={{
-              maxHeight: "90vh",
-              overflow: "auto",
-              minWidth: 300,
-            }}
-          >
-            <div className="pr1 mt2">
-              {rallies?.map((rally, index) => (
-                <RecentScores key={index} rally={rally} />
-              ))}
-            </div>
-          </div>
-        </div>
+              }
+            />
+          </Route>
+
+          {/* Fallback route - redirect to appropriate page based on auth status */}
+          <Route
+            path="*"
+            element={
+              session ? (
+                <Navigate to="/player-home" replace />
+              ) : (
+                <Navigate to="/event-id" replace />
+              )
+            }
+          />
+        </Routes>
       </div>
     </>
   );
