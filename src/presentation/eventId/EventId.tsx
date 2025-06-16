@@ -17,10 +17,10 @@ const EventId: React.FC<EventIdProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="event-id-container card">
-      <IonIcon name="trophy-outline" style={{ fontSize: 48, color: '#146679', marginBottom: 16 }} />
-      <h1 style={{ marginBottom: 8, color: '#124450', fontWeight: 700 }}>Enter Event ID</h1>
-      <p style={{ marginBottom: 24, color: '#333', fontSize: 18 }}>Please enter your event ID to access the leaderboard</p>
+    <div className="event-id-container">
+      <IonIcon name="trophy-outline" style={{ fontSize: 48, color: 'var(--primaryColor)', marginBottom: 16 }} />
+      <h1 style={{ marginBottom: 8, color: 'var(--primaryColor)', fontWeight: 700 }}>Enter Event ID</h1>
+      <p style={{ marginBottom: 24, color: 'grey', fontSize: 18 }}>Please enter your event ID to access the leaderboard</p>
       <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <input
           className='event-id-input'
