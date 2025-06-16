@@ -11,7 +11,7 @@ export const ProtectedRoute = ({ session }: AuthRouterProps) => {
 
   if (!session) {
     // Redirect to the event ID page, but save where they were trying to go
-    return <Navigate to="/event-id" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   // If authenticated, render the child routes

@@ -1,14 +1,17 @@
 import React from 'react';
 import './PlayerHome.css'; // You might need to create this file
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PlayerHome: React.FC = () => {
   const [eventId, setEventId] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle event ID submission logic here
     console.log('Event ID:', eventId);
+   navigate(eventId)
   };
 
   return (

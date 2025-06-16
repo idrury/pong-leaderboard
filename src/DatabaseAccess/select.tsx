@@ -8,12 +8,13 @@ import { supabase } from "./SupabaseClient";
 /**************************************
  * Fetch all rallies from the database
  */
-export async function fetchRallies(): Promise<
-  RallyObject[]
-> {
+export async function fetchRallies(
+  eventId: string
+): Promise<RallyObject[]> {
   const { data, error } = await supabase
     .from("rallys")
     .select("*, profiles(*)")
+    .eq("event_id", eventId)
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -29,20 +30,22 @@ export async function fetchRallies(): Promise<
  * Fetch the rally types for a campaign with the campaign records
  * @param campaignId The id of the campaign to get
  */
-export async function fetchRallyTypes(eventId=1): Promise<
-  CampaignRallyTypeObject[]
-> {
+export async function fetchRallyTypes(
+  eventId: string
+): Promise<CampaignRallyTypeObject[]> {
   const { data, error } = await supabase
     .from("campaigns_to_rally_types")
-    .select("rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))")
-    .eq('event_id', eventId);
+    .select(
+      "rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))"
+    )
+    .eq("event_id", eventId);
 
   if (error) {
     console.error(error.message);
     throw error;
   }
 
-  console.log(data)
+  console.log(data);
 
   /*@ts-ignore */
   return data;
@@ -51,17 +54,24 @@ export async function fetchRallyTypes(eventId=1): Promise<
 /***************
  *
  */
-export async function fetchProfiles(): Promise<
-  ProfileObject[]
-> {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select();
+export async function fetchProfiles(): Promise<ProfileObject[]> {
+  const { data, error } = await supabase.from("profiles").select();
 
   if (error) {
     console.error(error.message);
     throw error;
   }
+
+  return data;
+}
+
+export async function fetchEvent(code: string) {
+  const { data, error } = await supabase
+    .from("events")
+    .select()
+    .eq("id", code);
+
+  if (error) throw error;
 
   return data;
 }
@@ -100,16 +110,14 @@ export async function insertRally(
   hits: number,
   profileId: string,
   rallyType: number,
-  highScore: boolean=false
+  highScore: boolean = false
 ): Promise<boolean> {
-  const { error } = await supabase
-    .from("rallys")
-    .insert({
-      num_hits: hits,
-      profiles: profileId,
-      rally_type_id: rallyType,
-      is_high_score: highScore
-    });
+  const { error } = await supabase.from("rallys").insert({
+    num_hits: hits,
+    profiles: profileId,
+    rally_type_id: rallyType,
+    is_high_score: highScore,
+  });
 
   if (error) {
     throw error;
@@ -147,10 +155,7 @@ export async function insertRallyType(
  * @returns True if successful
  * @throws Error if fails
  */
-export async function upsertProfile(
-  name: string,
-  email: string
-) {
+export async function upsertProfile(name: string, email: string) {
   const { error } = await supabase
     .from("profiles")
     .upsert({ name: name, email: email });
@@ -164,7 +169,6 @@ export async function fetchProfile(
   userId: string | undefined
 ): Promise<ProfileObject | null> {
   if (!userId) return null;
-
 
   const { data, error } = await supabase
     .from("profiles")

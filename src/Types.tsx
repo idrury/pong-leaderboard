@@ -30,6 +30,21 @@ export interface RallyObject extends SupabaseTable {
     rally_types: RallyTypeObject;
 }
 
+export interface EventObject {
+    id: string,
+    created_at: Date,
+    is_locked: boolean,
+    name: string,
+    organisation: OrganisationObject
+
+}
+
+export interface OrganisationObject extends SupabaseTable {
+    name: string,
+    pin: string,
+    state: string,
+}
+
 export interface HighestRallyType {
     rallyType: string;
     highestHits: number;
