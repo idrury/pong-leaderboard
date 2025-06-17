@@ -648,6 +648,17 @@ option {
   transition: 0.2s;
 }
 
+.boxedLight {
+  border-radius: 3px;
+
+  padding: 5px;
+
+  background: var(--text);
+  color: var(--background);
+
+  transition: 0.2s;
+}
+
 input[type="checkbox"] {
   display: flex;
 

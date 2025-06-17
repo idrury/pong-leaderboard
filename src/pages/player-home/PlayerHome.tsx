@@ -1,13 +1,12 @@
 import "./PlayerHome.css";
-
-import { ListGroup } from "react-bootstrap";
-
 import { PopSavedModalFn, ProfileObject } from "../../Types";
 
 import Header from "../../presentation/Header/Header";
 import { Session } from "@supabase/supabase-js";
 
 import EnterCode from "../../presentation/Event/EnterCode";
+import OrganisationDetails from "../../presentation/Event/OrganisationDetails";
+import { useEffect, useState } from "react";
 
 interface PlayerHomeProps {
   popModal: PopSavedModalFn;
@@ -15,48 +14,27 @@ interface PlayerHomeProps {
   session: Session;
 }
 
-const campaigns = [
-  { name: "Campaign 2", year: "2023" },
-  { name: "Campaign 2", year: "2022" },
-  { name: "Campaign 3", year: "2021" },
-];
-
 export function PlayerHome({
   popModal,
   profile,
   session,
 }: PlayerHomeProps) {
+  const [profileObj, setProfileObj] = useState<ProfileObject>();
+
+  useEffect(() => {
+    setProfileObj(profile);
+  });
   return (
     <div>
       <Header
-        profile={profile}
+        profile={profileObj}
         session={session || undefined}
         activeSavedModal={popModal}
       />
       <div className="col w100 middle">
         <EnterCode popModal={popModal} />
-        <div className="CampaignList">
-          <ListGroup className="CampaignTable">
-            <ListGroup.Item className="CampaignRow CampaignHeaderRow">
-              <span className="CampaignCol CampaignColName">
-                Campaigns
-              </span>
-              <span className="CampaignCol CampaignColYear">
-                Year
-              </span>
-            </ListGroup.Item>
-            {campaigns.map((item, idx) => (
-              <ListGroup.Item className="CampaignRow" key={idx}>
-                <span className="CampaignCol CampaignColName">
-                  {item.name}
-                </span>
-                <span className="CampaignCol CampaignColYear">
-                  {item.year}
-                </span>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </div>
+        <div style={{ height: 50 }} />
+        <OrganisationDetails profile={profileObj} />
       </div>
     </div>
   );

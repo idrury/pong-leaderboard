@@ -1,31 +1,36 @@
 import IonIcon from "@reacticons/ionicons";
 import { useState } from "react";
 import { fetchEvent } from "../../DatabaseAccess/select";
-import { PopSavedModalFn } from "../../Types";
+import { ErrorLabelType, PopSavedModalFn } from "../../Types";
 import { useNavigate } from "react-router-dom";
+import toString from "../../common/CommonFunctions";
 
 interface EnterCodeProps {
-  popModal: PopSavedModalFn;
+  popModal?: PopSavedModalFn;
 }
 
-export default function EnterCode({ popModal }: EnterCodeProps) {
+export default function EnterCode({ }: EnterCodeProps) {
   const [eventId, setEventId] = useState("");
+  const [error, setError] = useState<ErrorLabelType>({
+    active: false,
+  });
 
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // Handle event ID submission logic here
-
+    const localEvent = toString(eventId).toUpperCase();
+    setError({active: false})
     try {
-      const event = await fetchEvent(eventId);
-      if (event) navigate(eventId);
+      const event = await fetchEvent(localEvent);
+      if (event) navigate(localEvent);
     } catch (error) {
-      popModal(
-        "Looks like that event doesn't exist!",
-        undefined,
-        true
-      );
+      setError({
+        text: "Looks like that event doesn't exist!",
+        selector: "code",
+        active: true,
+      });
       return;
     }
   }
@@ -42,6 +47,23 @@ export default function EnterCode({ popModal }: EnterCodeProps) {
           <h4>
             Please enter your event ID to access the leaderboard
           </h4>
+          {error.selector == "code" && (
+            <div className="boxedLight mb2 row middle center">
+              <IonIcon
+                name="alert-circle"
+                className="mr2"
+                style={{ color: "var(--dangerColor" }}
+              />
+              <p
+                style={{
+                  color: "var(--dangerColor)",
+                  fontWeight: 600,
+                }}
+              >
+                {error.text}
+              </p>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="w100">
             <input
               className="w100 mb2 textCenter"
@@ -51,6 +73,7 @@ export default function EnterCode({ popModal }: EnterCodeProps) {
               placeholder="XY3F"
               required
             />
+
             <button
               type="submit"
               className="w100 accentButton outline middle center"

@@ -1,5 +1,7 @@
 import type {
   CampaignRallyTypeObject,
+  EventObject,
+  OrganisationObject,
   ProfileObject,
   UserRalliesObject,
 } from "../Types";
@@ -71,12 +73,11 @@ export async function fetchEvent(code: string) {
  * Fetch the events from the database for an organisation
  * @param orgId The organisation id to fetch events for
  */
-export async function fetchEvents(orgId: number) {
+export async function fetchEvents(orgId: number):Promise<EventObject[]> {
   const { data, error } = await supabase
     .from("events")
     .select()
-    .eq("org_id", orgId)
-    .single();
+    .eq("org_id", orgId);
 
   if (error) throw error;
 
@@ -232,6 +233,27 @@ export async function fetchProfileByName(
     .select()
     .eq("name", name)
     .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/********************************
+ * Fetch a users organisation
+ * @param userId 
+ */
+export async function fetchOrganisation(userId: string):Promise<OrganisationObject> {
+
+  const { data, error } = await supabase
+  .from("organisations")
+  .select()
+  .eq('creator_id', userId)
+  .single();
+
+  console.log(userId)
 
   if (error) {
     throw error;

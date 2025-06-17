@@ -56,6 +56,7 @@ export interface OrganisationObject extends SupabaseTable {
   name: string;
   pin: string;
   state: string;
+  creator_id: string;
 }
 
 export interface HighestRallyType {
