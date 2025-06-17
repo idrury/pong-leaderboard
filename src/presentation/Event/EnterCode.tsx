@@ -66,6 +66,7 @@ export default function EnterCode({ }: EnterCodeProps) {
           )}
           <form onSubmit={handleSubmit} className="w100">
             <input
+            autoFocus
               className="w100 mb2 textCenter"
               type="text"
               value={eventId}
