@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorLabel from "../ErrorLabel";
 import { ErrorLabelType, PopSavedModalFn } from "../../Types";
 import { SignUpUser } from "../../DatabaseAccess/authentication";
+import IonIcon from "@reacticons/ionicons";
+import { fetchProfileByName } from "../../DatabaseAccess/select";
 
 interface SignUpProps {
   popModal?: PopSavedModalFn;
@@ -13,15 +15,26 @@ export default function SignUp({ popModal }: SignUpProps) {
   const [confirmPassword, setConfirmPassword] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [name, setName] = useState<string>();
+  const [nameIsUnique, setNameIsUnique] = useState(false);
 
   const [error, setError] = useState<ErrorLabelType>({
     active: false,
   });
 
+  useEffect(() => {
+    // Set a new timeout to execute the action after 1 second
+    const timer = setTimeout(() => {
+      checkNameIsUnique();
+    }, 1000);
+
+    // Cleanup function to clear the timeout if the component unmounts or the value changes
+    return () => clearTimeout(timer);
+  }, [name]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!name || name.length < 3) {
+    if (!name || name.length < 3 || nameIsUnique == false) {
       setError({
         active: true,
         selector: "name",
@@ -73,23 +86,59 @@ export default function SignUp({ popModal }: SignUpProps) {
     });
   }
 
+  async function checkNameIsUnique() {
+    if (!name || name.length <= 2) return;
+
+    try {
+      await fetchProfileByName(name);
+      setError({
+        selector: "name",
+        active: true,
+        text: "That username already exists :(",
+      });
+      setNameIsUnique(false);
+      console.log("set false");
+    } catch (error) {
+      setError({
+        selector: "name",
+        active: true,
+        text: "That one's good!",
+        safe: true,
+      });
+      setNameIsUnique(true);
+    }
+
+    console.log("set true");
+  }
+
   return (
     <div>
       <form onSubmit={(f) => onSubmit(f)}>
-        <div className="pr3">
+        <div className="">
+          <label className="pb2 row">
+            User name (must be unique)
+          </label>
           <input
             className="mb2"
+            autoComplete="username"
             type="name"
-            placeholder="Name"
+            placeholder="Tryvern123"
             value={name || ""}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {setName(e.target.value); setNameIsUnique(false)}}
           />
           <ErrorLabel
             text={error.text}
             active={error?.selector === "name"}
+            color={
+              error?.safe == true ? "var(--safeColor)" : undefined
+            }
+            icon={
+              error?.safe == true ? "checkmark-circle" : undefined
+            }
           />
-
+          <label className="pb2 row">Email address</label>
           <input
+            autoComplete="email"
             className="mb2"
             type="email"
             placeholder="Email"
@@ -100,8 +149,10 @@ export default function SignUp({ popModal }: SignUpProps) {
             text={error.text}
             active={error?.selector === "email"}
           />
+          <label className="pb2 row">Password</label>
           <input
             className="mb2"
+            autoComplete="new-password"
             type="password"
             placeholder="Password"
             value={password || ""}
@@ -111,9 +162,11 @@ export default function SignUp({ popModal }: SignUpProps) {
             text={error.text}
             active={error?.selector === "password"}
           />
+          <label className="pb2 row">Confirm password</label>
           <input
             className="mb2"
             type="password"
+            autoComplete="new-password"
             placeholder="Confirm Password"
             value={confirmPassword || ""}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -123,7 +176,11 @@ export default function SignUp({ popModal }: SignUpProps) {
             active={error?.selector === "confirmPassword"}
           />
         </div>
-        <button className="w100 accentButton" type="submit">
+        <button
+          className="w100 accentButton row middle center"
+          type="submit"
+        >
+          <IonIcon name="log-in-sharp" className="mr2" />
           Sign up
         </button>
       </form>

@@ -55,11 +55,13 @@ export default function Login({ popModal }: LoginProps) {
   return (
     <div>
       <form onSubmit={(f) => onSubmit(f)}>
-        <div className="pr3">
+        <div className="">
+          <label className="pb2 row">Email address</label>
           <input
             className="mb2"
             type="email"
-            placeholder="Email"
+            placeholder="johnSmith@gmail.com"
+            autoComplete="email"
             value={email || ""}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -67,10 +69,12 @@ export default function Login({ popModal }: LoginProps) {
             text={error.text}
             active={error?.selector === "email"}
           />
+            <label className="pb2 row">Password</label>
           <input
           className="mb2"
             type="password"
             placeholder="Password"
+            autoComplete="password"
             value={password || ""}
             onChange={(e) => setPassword(e.target.value)}
           />

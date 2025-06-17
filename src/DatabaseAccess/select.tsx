@@ -218,6 +218,28 @@ export async function fetchProfile(
   return data;
 }
 
+/***********************************
+ * Check if a username is unique in the db
+ * @param userName 
+ * @returns 
+ */
+export async function fetchProfileByName(
+  name: string
+): Promise<ProfileObject | null> {
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("name", name)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 export async function searchUser(
   name: string | undefined
 ): Promise<ProfileObject | undefined> {

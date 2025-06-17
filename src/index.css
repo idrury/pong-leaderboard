@@ -73,6 +73,12 @@ h3 {
   color: var(--text);
 }
 
+h4 {
+  font-size: 12pt;
+  font-weight: 400;
+  color: var(--text);
+}
+
 label {
   text-align: start !important;
   justify-content: start;
@@ -124,14 +130,17 @@ h3 {
 
 input {
   font-family: "Inter", sans-serif;
-  color: var(--text);
+  color: var(--background);
+  background-color: var(--mediumAccent);
 
-  border: 1px solid var(--smallAccent);
+  border: none;
   border-radius: 0.2em;
 
-  background-color: var(--lightBackground);
+  box-shadow: 0 0 5px 2px var(--background);
 
-  padding: 10px;
+  text-indent: 5px;
+  padding: 10px 0;
+  margin: 0;
 
   width: 100%;
 
@@ -140,9 +149,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: var(--mediumAccent);
-
-  background-color: var(--smallAccent);
+  background-color: var(--text);
 
   transition: 0.25s;
 }

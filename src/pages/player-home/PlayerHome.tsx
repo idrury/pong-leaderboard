@@ -1,49 +1,31 @@
-import React from "react";
 import "./PlayerHome.css";
-import { useState } from "react";
+
 import { ListGroup } from "react-bootstrap";
-import { fetchEvent } from "../../DatabaseAccess/select";
+
 import { PopSavedModalFn, ProfileObject } from "../../Types";
-import { useNavigate } from "react-router-dom";
+
 import Header from "../../presentation/Header/Header";
 import { Session } from "@supabase/supabase-js";
 
+import EnterCode from "../../presentation/Event/EnterCode";
+
 interface PlayerHomeProps {
   popModal: PopSavedModalFn;
-  profile: ProfileObject,
-  session: Session
+  profile: ProfileObject;
+  session: Session;
 }
 
-export function PlayerHome ({
+const campaigns = [
+  { name: "Campaign 2", year: "2023" },
+  { name: "Campaign 2", year: "2022" },
+  { name: "Campaign 3", year: "2021" },
+];
+
+export function PlayerHome({
   popModal,
   profile,
   session,
 }: PlayerHomeProps) {
-  const campaigns = [
-    { name: "Campaign 1", year: "2023" },
-    { name: "Campaign 2", year: "2022" },
-    { name: "Campaign 3", year: "2021" },
-  ];
-  const [eventId, setEventId] = useState("");
-  const navigate = useNavigate();
-
-  async function handleSubmit (e: React.FormEvent) {
-    e.preventDefault();
-    // Handle event ID submission logic here
-
-    try {
-      const event = await fetchEvent(eventId);
-      if (event) navigate(eventId);
-    } catch (error) {
-      popModal(
-        "Looks like that event doesn't exist!",
-        undefined,
-        true
-      );
-      return;
-    }
-  }
-
   return (
     <div>
       <Header
@@ -51,43 +33,30 @@ export function PlayerHome ({
         session={session || undefined}
         activeSavedModal={popModal}
       />
-      <div>
-        <h1>Dashboard</h1>
-        <p style={{ marginTop: 40, color: 'grey', fontSize: 18 }}>Enter your event ID to access the leaderboard</p>
-      </div>
-      <div className="player-home-container">
-        <form onSubmit={handleSubmit}>
-          <input
-            className="event-id-input"
-            type="text"
-            value={eventId}
-            onChange={(e) => setEventId(e.target.value)}
-            placeholder="Event ID"
-            required
-          />
-          <br />
-          <button className="player-home-btn" type="submit">Enter</button>
-        </form>
-      </div>
-      <div className="CampaignList">
-        <ListGroup className="CampaignTable">
-          <ListGroup.Item className="CampaignRow CampaignHeaderRow">
-            <span className="CampaignCol CampaignColName">
-              Campaigns
-            </span>
-            <span className="CampaignCol CampaignColYear">Year</span>
-          </ListGroup.Item>
-          {campaigns.map((item, idx) => (
-            <ListGroup.Item className="CampaignRow" key={idx}>
+      <div className="col w100 middle">
+        <EnterCode popModal={popModal} />
+        <div className="CampaignList">
+          <ListGroup className="CampaignTable">
+            <ListGroup.Item className="CampaignRow CampaignHeaderRow">
               <span className="CampaignCol CampaignColName">
-                {item.name}
+                Campaigns
               </span>
               <span className="CampaignCol CampaignColYear">
-                {item.year}
+                Year
               </span>
             </ListGroup.Item>
-          ))}
-        </ListGroup>
+            {campaigns.map((item, idx) => (
+              <ListGroup.Item className="CampaignRow" key={idx}>
+                <span className="CampaignCol CampaignColName">
+                  {item.name}
+                </span>
+                <span className="CampaignCol CampaignColYear">
+                  {item.year}
+                </span>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </div>
       </div>
     </div>
   );

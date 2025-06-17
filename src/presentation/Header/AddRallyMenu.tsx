@@ -59,6 +59,13 @@ export default function AddRallyMenu({
     getData();
   }, [currentRallyTypes?.length]);
 
+  // Reset the component
+  useEffect(() => {
+    setError({active: false})
+    setPeople([]);
+    setHits(undefined)
+  }, [active])
+
   useGSAP(() => {
     gsap.registerPlugin(SplitText);
 
@@ -165,11 +172,9 @@ export default function AddRallyMenu({
       return;
     }
 
-
     const prevHighRally = currentRallyTypes?.find((t) => {
       return t.rally_types.id == rallyType;
     })?.rallys;
-
 
     //Prompt for password if high score
     if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
@@ -229,7 +234,7 @@ export default function AddRallyMenu({
         setPeople([...people, person]);
       }
     } catch (error) {
-      activateSaved("That person doesn't exist", undefined, true);
+      setError({text: "That person doesn't exist", selector: "people", active: true});
     }
 
     setPersonSearch(undefined);
@@ -241,6 +246,8 @@ export default function AddRallyMenu({
 
   if (!profile) return;
   return (
+
+
     <div>
       <PasswordMenu
         active={passwordActive}
@@ -288,7 +295,7 @@ export default function AddRallyMenu({
               <IonIcon name="stats-chart" className="mr1" />
               <label className="">Number of hits</label>
             </div>
-            <div className="pr2 mr2">
+            <div className="">
               <input
                 placeholder="0"
                 value={hits || ""}
@@ -307,7 +314,7 @@ export default function AddRallyMenu({
           />
           <div className="row mb1 middle">
             <IonIcon name="person-circle" className="mr1" />
-            <label>Add your group</label>
+            <label>Add your group (by username)</label>
           </div>
           {people?.length > 0 &&
             people
@@ -329,20 +336,29 @@ export default function AddRallyMenu({
                 </div>
               ))}
           <form action="submit" onSubmit={(f) => addPerson(f)}>
-            <div className="mb2 pr3">
+            <div className="row">
               <input
                 value={personSearch || ""}
                 onChange={(e) => setPersonSearch(e.target.value)}
                 disabled={false}
                 placeholder="Enter username"
               />
+              <button type="submit" className="m0 p0">
+                <IonIcon
+                  name="add-circle"
+                  className="h2Icon m0"
+                  style={{ color: "var(--danger)" }}
+                />
+              </button>
             </div>
           </form>
-          <ErrorLabel
-            active={error.selector == "people"}
-            text={error.text || ""}
-            color="var(--dangerColor)"
-          />
+          <div className="mt2">
+            <ErrorLabel
+              active={error.selector == "people"}
+              text={error.text || ""}
+              color="var(--dangerColor)"
+            />
+          </div>
           <button
             onClick={() => addRally()}
             className="row center middle w100 accentButton p0 mt2"

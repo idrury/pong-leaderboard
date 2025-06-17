@@ -74,6 +74,7 @@ export type ErrorLabelType = {
   selector?: string;
   active: boolean;
   text?: string;
+  safe?: boolean
 };
 
 export type SavedModalType = {

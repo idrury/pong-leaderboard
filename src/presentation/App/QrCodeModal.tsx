@@ -7,29 +7,33 @@ export default function qrCodeModal() {
 
   return (
     <div className="pl1">
-      <div className="row middle fixed outline boxedAccent" style={{top: 25, left: 100, height: 30}}>
+      <div className="row middle boxed" style={{background: "#FFF"}}>
+        <img
+          onClick={() => setOpen(!open)}
+          className="clickable mr2"
+          style={{ maxWidth: 75 }}
+          src="/qr-code.png"
+          alt="QR Code"
+        />
+        <div
+          className="row middle pr2"
+          style={{ top: 25, left: 100, height: 30 }}
+        >
           <IonIcon
             className="h2Icon"
             name="arrow-back-circle"
-            style={{ color: "var(--text)" }}
+            style={{ color: "var(--primaryColor)" }}
           />
           <h3
             style={{
               textTransform: "uppercase",
-
+              color: 'var(--primaryColor)'
             }}
-            className=""
           >
             Join in!
           </h3>
         </div>
-      <img
-        onClick={() => setOpen(!open)}
-        className="clickable"
-        style={{ maxWidth: 75 }}
-        src="/qr-code.png"
-        alt="QR Code"
-      />
+      </div>
       <MoveableMenu
         width={350}
         x={10}
@@ -43,7 +47,7 @@ export default function qrCodeModal() {
         <div className="boxedAccent outline w100 p2">
           <h2 className="p2 mb2">Scan to add your rallies!</h2>
           <img
-          className="outline"
+            className="outline"
             style={{ width: 300 }}
             src="/qr-code.png"
             alt="QR Code"

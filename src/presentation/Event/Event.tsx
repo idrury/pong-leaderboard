@@ -87,7 +87,7 @@ export default function Event({
   return (
     <div>
       <Header
-      title={`Enter code ${eventId} to join`}
+      gameCode={eventId}
         profile={profile}
         session={session || undefined}
         activeSavedModal={popSavedModal}
