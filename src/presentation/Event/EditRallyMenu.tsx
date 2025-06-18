@@ -8,12 +8,13 @@ import {
 import BasicMenu from "../BasicMenu";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { patchRally } from "../../DatabaseAccess/patch";
+import { blockUser, patchRally } from "../../DatabaseAccess/patch";
 
 interface EditRallyMenuProps extends ActivatableElement {
   rally: RallyObject | undefined;
   isAdmin: boolean;
   popModal: PopSavedModalFn;
+  orgId: number;
 }
 
 export default function EditRallyMenu({
@@ -21,6 +22,7 @@ export default function EditRallyMenu({
   onClose,
   isAdmin,
   rally,
+  orgId,
   popModal,
 }: EditRallyMenuProps) {
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
@@ -50,6 +52,16 @@ export default function EditRallyMenu({
         true
       );
       console.log(error);
+    }
+  }
+
+  async function onBlock(userId: string) {
+    console.log(orgId, userId)
+    try {
+      await blockUser(orgId, userId);
+    } catch (error) {
+      popModal("We can't block this user right now");
+      console.log(error)
     }
   }
 
@@ -88,11 +100,16 @@ export default function EditRallyMenu({
         <input className="mb2" disabled value={rally.num_hits} />
         <label className="mb2">People</label>
 
-        {(rally.profiles as ProfileObject[]).map((r, i) => (
-          <div key={i} className="boxed row middle mb2">
-            <input className="" disabled value={r.name} />
+        {(rally.profiles as ProfileObject[]).map((p) => (
+          <div key={p.id} className="boxed row middle mb2">
+            <input className="" disabled value={p.name} />
             {isAdmin && (
-              <button className="dangerButton">Block</button>
+              <button
+                onClick={() => onBlock(p.id)}
+                className="dangerButton"
+              >
+                Block
+              </button>
             )}
           </div>
         ))}

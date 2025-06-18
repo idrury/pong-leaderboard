@@ -119,7 +119,7 @@ export default function Event({
     setEditMenuActive(true);
   }
 
-  if (!eventId) return <div>none</div>;
+  if (!eventId || !org) return <div>none</div>;
   return (
     <div>
       <Header
@@ -143,6 +143,7 @@ export default function Event({
         rally={selectedRally}
         isAdmin={isAdmin}
         popModal={popSavedModal}
+        orgId={org.org_id}
       />
       <div className="row shrinkWrap">
         <div className="w100">

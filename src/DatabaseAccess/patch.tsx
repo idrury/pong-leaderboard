@@ -15,10 +15,21 @@ export async function patchRally(
   const { error } = await supabase
     .from("rallys")
     .update({ [attribute]: value })
-    .eq('id', id);
+    .eq("id", id);
 
-    if(error)
-        throw error;
+  if (error) throw error;
 
-    return true;
+  return true;
+}
+
+export async function blockUser(orgId: number, userId: string) {
+  const { data, error } = await supabase.rpc("block_user_from_org", {
+    user_id: userId,
+    org_id: orgId,
+  });
+
+  if(error)
+    throw error;
+
+  return data;
 }
