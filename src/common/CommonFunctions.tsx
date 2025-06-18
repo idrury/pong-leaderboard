@@ -53,16 +53,19 @@ export function groupRalliesById(
         id: pr.profile_id,
         created_at: new Date(),
         name: pr.user_name,
+        blocked_event_ids: []
       });
     // Else add the new rally
     } else {
       returnArray.push({
         num_hits: pr.num_hits,
         is_high_score: pr.is_high_score,
+        hidden: false,
         profiles: [{
         id: pr.profile_id,
         created_at: new Date(),
         name: pr.user_name,
+        blocked_event_ids: []
       }],
         rally_types: {id: 0, created_at: new Date(), name: pr.type_name, tags: []},
         id: pr.rally_id,

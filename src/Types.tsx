@@ -24,7 +24,7 @@ export interface ProfileObject {
   id: string;
   created_at: Date;
   name: string;
-  blocked_event_ids: string;
+  blocked_event_ids: string[];
 }
 
 export interface RallyObject extends SupabaseTable {
