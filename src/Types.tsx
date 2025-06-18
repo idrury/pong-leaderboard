@@ -24,6 +24,7 @@ export interface ProfileObject {
   id: string;
   created_at: Date;
   name: string;
+  blocked_event_ids: string;
 }
 
 export interface RallyObject extends SupabaseTable {
@@ -31,6 +32,7 @@ export interface RallyObject extends SupabaseTable {
   is_high_score: boolean;
   profiles: ProfileObject[] | ProfileObject;
   rally_types: RallyTypeObject;
+  hidden: boolean;
 }
 
 export interface EventObject {
@@ -59,6 +61,15 @@ export interface OrganisationObject extends SupabaseTable {
   creator_id: string;
 }
 
+export interface OrganisationSummaryObject {
+  org_id: number; // Corresponds to PostgreSQL 'bigint'
+  event_id: string; // Corresponds to PostgreSQL 'text'
+  is_locked: boolean; // Corresponds to PostgreSQL 'BOOLEAN'
+  org_name: string; // Corresponds to PostgreSQL 'text'
+  blocked_user_ids: Record<string, any>[]; // Corresponds to PostgreSQL 'jsonb[]' (array of JSON objects)
+  admin_ids: string[]; // Corresponds to PostgreSQL 'UUID[]' (array of UUID strings)
+}
+
 export interface HighestRallyType {
   rallyType: string;
   highestHits: number;
@@ -75,7 +86,7 @@ export type ErrorLabelType = {
   selector?: string;
   active: boolean;
   text?: string;
-  safe?: boolean
+  safe?: boolean;
 };
 
 export type SavedModalType = {

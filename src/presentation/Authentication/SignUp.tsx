@@ -97,7 +97,6 @@ export default function SignUp({ popModal }: SignUpProps) {
         text: "That username already exists :(",
       });
       setNameIsUnique(false);
-      console.log("set false");
     } catch (error) {
       setError({
         selector: "name",
@@ -107,8 +106,6 @@ export default function SignUp({ popModal }: SignUpProps) {
       });
       setNameIsUnique(true);
     }
-
-    console.log("set true");
   }
 
   return (

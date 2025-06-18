@@ -2,6 +2,7 @@ import type {
   CampaignRallyTypeObject,
   EventObject,
   OrganisationObject,
+  OrganisationSummaryObject,
   ProfileObject,
   UserRalliesObject,
 } from "../Types";
@@ -34,7 +35,7 @@ export async function fetchRallyTypes(
       "rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))"
     )
     .eq("event_id", eventId)
-    .order('id', {ascending: false});
+    .order("id", { ascending: false });
 
   if (error) {
     throw error;
@@ -73,7 +74,9 @@ export async function fetchEvent(code: string) {
  * Fetch the events from the database for an organisation
  * @param orgId The organisation id to fetch events for
  */
-export async function fetchEvents(orgId: number):Promise<EventObject[]> {
+export async function fetchEvents(
+  orgId: number
+): Promise<EventObject[]> {
   const { data, error } = await supabase
     .from("events")
     .select()
@@ -221,13 +224,12 @@ export async function fetchProfile(
 
 /***********************************
  * Check if a username is unique in the db
- * @param userName 
- * @returns 
+ * @param userName
+ * @returns
  */
 export async function fetchProfileByName(
   name: string
 ): Promise<ProfileObject | null> {
-
   const { data, error } = await supabase
     .from("profiles")
     .select()
@@ -241,19 +243,30 @@ export async function fetchProfileByName(
   return data;
 }
 
+export async function fetchOrganisationFromEvent(eventId: string):Promise<OrganisationSummaryObject> {
+  const { data, error } = await supabase.rpc(
+    "get_organisation_from_event",
+    { evt_id: eventId }
+  ).select().single();
+
+  if(error)
+    throw error;
+
+  return data;
+}
+
 /********************************
  * Fetch a users organisation
- * @param userId 
+ * @param userId
  */
-export async function fetchOrganisation(userId: string):Promise<OrganisationObject> {
-
+export async function fetchOrganisation(
+  userId: string
+): Promise<OrganisationObject> {
   const { data, error } = await supabase
-  .from("organisations")
-  .select()
-  .eq('creator_id', userId)
-  .single();
-
-  console.log(userId)
+    .from("organisations")
+    .select()
+    .eq("creator_id", userId)
+    .single();
 
   if (error) {
     throw error;

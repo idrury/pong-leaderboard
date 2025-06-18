@@ -7,17 +7,14 @@ import {
   CampaignRallyTypeObject,
   ErrorLabelType,
   InputOption,
-  PasswordType,
   PopSavedModalFn,
   ProfileObject,
 } from "../../Types";
 import {
   insertPeopleForRally,
   insertRally,
-  insertRallyType,
   searchUser,
 } from "../../DatabaseAccess/select";
-import PasswordMenu from "./PasswordMenu";
 import { QueryError } from "@supabase/supabase-js";
 import BasicMenu from "../BasicMenu";
 import { useGSAP } from "@gsap/react";
@@ -49,22 +46,17 @@ export default function AddRallyMenu({
     active: false,
   });
 
-  const [passwordActive, setPasswordActive] = useState(false);
-  const [passwordType, setPasswordType] = useState<
-    PasswordType | undefined
-  >();
-  const [pendingValue, setPendingValue] = useState<any>();
-
   useEffect(() => {
     getData();
   }, [currentRallyTypes?.length]);
 
   // Reset the component
   useEffect(() => {
-    setError({active: false})
+    setError({ active: false });
     setPeople([]);
-    setHits(undefined)
-  }, [active])
+    setHits(undefined);
+    setRallyType(undefined);
+  }, [active]);
 
   useGSAP(() => {
     gsap.registerPlugin(SplitText);
@@ -117,43 +109,10 @@ export default function AddRallyMenu({
     return returnArray;
   }
 
-  /********************************************
-   * Handle inserting a new rally type to the database
-   * @param rallyType The rally type to add
-   * @param secured
-   * @returns
-   */
-  async function addRallyType(rallyType: string, secured = false) {
-    if (!rallyType) {
-      activateSaved("Please enter a rally type", undefined, true);
-      return;
-    }
-
-    if (!secured) {
-      setPasswordType("add_rally_type");
-      setPendingValue(rallyType);
-      setPasswordActive(true);
-      return;
-    }
-
-    try {
-      await insertRallyType(rallyType);
-      activateSaved("New rally type added!");
-      await getData();
-    } catch (error) {
-      console.error(error);
-      activateSaved(
-        "An issue occured adding the rally.",
-        "Refresh the page and try again!",
-        true
-      );
-    }
-  }
-
   /**************************
    * Add a new rally
    */
-  async function addRally(secured = false) {
+  async function addRally() {
     let isHighScore = false;
     if (!rallyType) {
       setError({
@@ -176,14 +135,9 @@ export default function AddRallyMenu({
       return t.rally_types.id == rallyType;
     })?.rallys;
 
-    //Prompt for password if high score
+    //Check if high score
     if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
-      if (!secured) {
-        setPasswordType("add_high_rally");
-        setPendingValue(hits);
-        setPasswordActive(true);
-        return;
-      } else isHighScore = true;
+      isHighScore = true;
     }
     if (hits >= 30000) {
       setError({
@@ -197,7 +151,7 @@ export default function AddRallyMenu({
     try {
       setError({ active: false });
       const id = await insertRally(
-        pendingValue || hits,
+        hits,
         rallyType,
         isHighScore,
         eventId
@@ -207,22 +161,12 @@ export default function AddRallyMenu({
       activateSaved("New rally added!");
       onClose();
       setHits(undefined);
-    } catch (error) {
-      console.error((error as QueryError).message);
+    } catch (error: any) {
+      if (error.code == "P0002") {
+        activateSaved("Could not add your rally", error.hint, true);
+      }
+      console.error(error as QueryError);
     }
-  }
-
-  /**********************************
-   * What to do when the password is successfully entered
-   * @param type The type of request
-   */
-  function onPasswordSuccess(type: PasswordType) {
-    setPasswordActive(false);
-    if (type === "add_rally_type")
-      addRallyType(pendingValue || "", true);
-    else if (type === "add_high_rally") addRally(true);
-
-    setPendingValue(undefined);
   }
 
   async function addPerson(form: React.FormEvent) {
@@ -234,7 +178,11 @@ export default function AddRallyMenu({
         setPeople([...people, person]);
       }
     } catch (error) {
-      setError({text: "That person doesn't exist", selector: "people", active: true});
+      setError({
+        text: "That person doesn't exist",
+        selector: "people",
+        active: true,
+      });
     }
 
     setPersonSearch(undefined);
@@ -246,15 +194,7 @@ export default function AddRallyMenu({
 
   if (!profile) return;
   return (
-
-
     <div>
-      <PasswordMenu
-        active={passwordActive}
-        type={passwordType}
-        onClose={() => setPasswordActive(false)}
-        onSuccess={(type) => onPasswordSuccess(type)}
-      />
       <BasicMenu
         disableClickOff
         width={300}

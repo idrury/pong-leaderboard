@@ -41,7 +41,7 @@ function App() {
     userId: string | undefined,
     event: string
   ) {
-    console.log(event);
+    console.info(event);
     try {
       setProfile(await fetchProfile(userId));
     } catch (error) {

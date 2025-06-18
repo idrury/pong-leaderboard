@@ -1,6 +1,7 @@
 import { PacmanLoader } from "react-spinners";
 import {
   CampaignRallyTypeObject,
+  OrganisationSummaryObject,
   PopSavedModalFn,
   ProfileObject,
   RallyObject,
@@ -11,6 +12,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useStopwatch } from "react-timer-hook";
 import {
+  fetchOrganisationFromEvent,
   fetchRallies,
   fetchRallyTypes,
 } from "../../DatabaseAccess/select";
@@ -21,6 +23,7 @@ import Header from "../Header/Header";
 import { Session } from "@supabase/supabase-js";
 import AddRallyMenu from "../Header/AddRallyMenu";
 import { groupRalliesById } from "../../common/CommonFunctions";
+import EditRallyMenu from "./EditRallyMenu";
 
 interface EventProps {
   profile: ProfileObject;
@@ -42,11 +45,20 @@ export default function Event({
     autoStart: true,
     interval: 10000,
   });
-  const [editActive, setEditActive] = useState(false);
+  const [addMenuActive, setAddMenuActive] = useState(false);
+  const [editMenuActive, setEditMenuActive] = useState(false);
+  const [selectedRally, setSelectedRally] = useState<RallyObject>();
+
+  const [org, setOrg] = useState<OrganisationSummaryObject>();
+  const [isAdmin, setIsAdmin] = useState(false);
   const eventId = useParams().eventId;
 
   useEffect(() => {
-    fetchData();
+    getOrganisation();
+  }, [profile]);
+
+  useEffect(() => {
+    getData(org);
   }, [totalSeconds]);
 
   useGSAP(() => {
@@ -59,17 +71,36 @@ export default function Event({
     });
   }, [rallyTypes?.length]);
 
+  async function getOrganisation() {
+    if (!eventId || !profile) return;
+    try {
+      const organisation = await fetchOrganisationFromEvent(eventId);
+      getData(organisation);
+      setOrg(organisation);
+      setIsAdmin(organisation.admin_ids.includes(profile.id));
+    } catch (error) {
+      console.log(error);
+      popSavedModal(
+        "Error fetching event!",
+        "Refresh the page and try again!",
+        true
+      );
+    }
+  }
+
   /*******************************
    * Get rally data from the DB
    */
-  async function fetchData() {
+  async function getData(org: OrganisationSummaryObject | undefined) {
     console.log("Fetching data...");
-    if (!eventId) return;
+    if (!org) return;
     try {
-      const rallies = groupRalliesById(await fetchRallies(eventId));
+      const rallies = groupRalliesById(
+        await fetchRallies(org.event_id)
+      );
       setRallies(rallies);
 
-      const fetchedRallyTypes = await fetchRallyTypes(eventId);
+      const fetchedRallyTypes = await fetchRallyTypes(org.event_id);
       setRallyTypes(fetchedRallyTypes);
       setMaxHits(getHighestMins(fetchedRallyTypes || []));
     } catch (error) {
@@ -83,23 +114,35 @@ export default function Event({
     }
   };
 
+  function onRallyClick(rally: RallyObject) {
+    setSelectedRally(rally);
+    setEditMenuActive(true);
+  }
+
   if (!eventId) return <div>none</div>;
   return (
     <div>
       <Header
-      gameCode={eventId}
+        gameCode={eventId}
         profile={profile}
         session={session || undefined}
         activeSavedModal={popSavedModal}
-        activateEditModal={() => setEditActive(true)}
+        activateEditModal={() => setAddMenuActive(true)}
       />
       <AddRallyMenu
         profile={profile}
-        active={editActive}
+        active={addMenuActive}
         currentRallyTypes={rallyTypes}
-        onClose={() => setEditActive(false)}
+        onClose={() => setAddMenuActive(false)}
         activateSaved={popSavedModal}
         eventId={eventId}
+      />
+      <EditRallyMenu
+        active={editMenuActive}
+        onClose={() => setEditMenuActive(false)}
+        rally={selectedRally}
+        isAdmin={isAdmin}
+        popModal={popSavedModal}
       />
       <div className="row shrinkWrap">
         <div className="w100">
@@ -151,7 +194,11 @@ export default function Event({
         >
           <div className="pr1 mt2">
             {rallies?.map((rally, index) => (
-              <RecentScores key={index} rally={rally} />
+              <RecentScores
+                key={index}
+                rally={rally}
+                onRallyClick={(rally) => onRallyClick(rally)}
+              />
             ))}
           </div>
         </div>

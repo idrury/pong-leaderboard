@@ -4,9 +4,10 @@ import PlayerIcons from "./PlayerIcons";
 
 interface RecentScoresProps {
   rally: RallyObject;
+  onRallyClick:(rally: RallyObject) => void;
 }
 
-function RecentScores({ rally }: RecentScoresProps) {
+function RecentScores({ rally, onRallyClick }: RecentScoresProps) {
   const playerNames = extractPlayerNames();
 
   function extractPlayerNames() {
@@ -22,9 +23,10 @@ function RecentScores({ rally }: RecentScoresProps) {
 
   return (
     <div
-      className="boxed middle row between w100 mb1"
+    onClick={() => onRallyClick(rally)}
+      className="boxed middle row between w100 mb1 clickable"
     >
-      <div className="row middle w50">
+      <div className="row middle w50 ">
         <div style={{ width: 30 }}>
           <PlayerIcons playerName={playerNames || ""} />
         </div>

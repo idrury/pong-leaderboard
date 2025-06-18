@@ -155,7 +155,7 @@ input:focus {
 }
 
 input:disabled {
-  color: var(--mediumAccent)
+  color: var(--background)
 }
 
 input.noBorder {
@@ -561,9 +561,10 @@ option {
   transform: scale(1.02);
 }
 
-.actionableButton {
-  background-color: var(--primaryColor);
-  color: #222222;
+.dangerButtonOutline {
+  background-color: var(--text);
+  box-shadow: 0 0 0 2px var(--dangerColor) inset;
+  color: var(--dangerColor);
   font-family: "Inter", sans-serif;
 }
 

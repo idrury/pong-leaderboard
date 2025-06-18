@@ -1,6 +1,6 @@
 import IonIcon from "@reacticons/ionicons";
 import { useEffect } from "react";
-import {  useTimer } from "react-timer-hook";
+import { useTimer } from "react-timer-hook";
 import { ActivatableElement } from "../Types";
 
 interface SavedModalProps extends ActivatableElement {
@@ -17,14 +17,10 @@ export default function SavedModal({
   header,
   body,
   state = "success",
-}:SavedModalProps) {
-  const timerExpiry:Date = new Date();
-  timerExpiry.setSeconds(
-    new Date().getSeconds() + timeout
-  );
-  const {
-    restart,
-  } = useTimer({
+}: SavedModalProps) {
+  const timerExpiry: Date = new Date();
+  timerExpiry.setSeconds(new Date().getSeconds() + timeout);
+  const { restart } = useTimer({
     autoStart: false,
     expiryTimestamp: timerExpiry,
     onExpire: () => onClose(),
@@ -34,16 +30,17 @@ export default function SavedModal({
     if (active == true) restart(timerExpiry, true);
   }, [active]);
 
-  if (active) {
+  if (active)
     return (
       <div
-        className="boxedAccent boxedOutline s1 slowFade m0 p0"
+        className="boxedAccent s1 slowFade m0 p0"
         style={{
-          backgroundColor: `${
-            state == "success"
-              ? "var(--primaryColor)"
-              : "var(--dangerColor)"
-          }`,
+          backgroundColor: `${"#FFFFFF"}`,
+          boxShadow: `0 0 0px 2px ${
+            state == "fail"
+              ? "var(--dangerColor)"
+              : "var(--primaryColor)"
+          } inset`,
           position: "fixed",
           zIndex: 100,
           height: "auto",
@@ -72,17 +69,24 @@ export default function SavedModal({
                   ? "checkmark-circle-outline"
                   : "close-circle-outline"
               }`}
-              style={{ width: 20, color: "#111111" }}
+              style={{
+                width: 20,
+                color: `${
+                  state == "fail"
+                    ? "var(--dangerColor)"
+                    : "var(--primaryColor)"
+                }`,
+              }}
             />
           </div>
           <div>
             {header && (
-              <h3 style={{ color: "#111111" }} className="m1">
+              <h3 style={{ color: "#111111" }} className="m1 textLeft">
                 {header}
               </h3>
             )}
             {body && (
-              <p style={{ color: "#111111" }} className="m1">
+              <p style={{ color: "#111111" }} className="m1 textLeft">
                 {body}
               </p>
             )}
@@ -90,5 +94,4 @@ export default function SavedModal({
         </div>
       </div>
     );
-  }
 }
