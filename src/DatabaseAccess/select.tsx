@@ -41,6 +41,8 @@ export async function fetchRallyTypes(
     throw error;
   }
 
+  console.log("D",data)
+
   /*@ts-ignore */
   return data;
 }
@@ -243,14 +245,15 @@ export async function fetchProfileByName(
   return data;
 }
 
-export async function fetchOrganisationFromEvent(eventId: string):Promise<OrganisationSummaryObject> {
-  const { data, error } = await supabase.rpc(
-    "get_organisation_from_event",
-    { evt_id: eventId }
-  ).select().single();
+export async function fetchOrganisationFromEvent(
+  eventId: string
+): Promise<OrganisationSummaryObject> {
+  const { data, error } = await supabase
+    .rpc("get_organisation_from_event", { evt_id: eventId })
+    .select()
+    .single();
 
-  if(error)
-    throw error;
+  if (error) throw error;
 
   return data;
 }
@@ -267,6 +270,18 @@ export async function fetchOrganisation(
     .select()
     .eq("creator_id", userId)
     .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function fetchAllRallyTypes() {
+const { data, error } = await supabase
+    .from("rally_types")
+    .select();
 
   if (error) {
     throw error;

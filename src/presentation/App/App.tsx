@@ -10,8 +10,8 @@ import SavedModal from "../SavedModal";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
 import { Session } from "@supabase/supabase-js";
 
-import { PlayerHome } from "../../pages/player-home/PlayerHome";
-import EventId from "../eventId/EventId";
+import { PlayerHome } from "../Home/PlayerHome";
+import EventId from "../Home/EventId";
 import Event from "../Event/Event";
 import Aurora from "../Animations/Aurora";
 import Noise from "../Animations/Noise";

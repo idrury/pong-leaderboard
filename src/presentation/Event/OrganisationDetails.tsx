@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   EventObject,
   OrganisationObject,
+  PopSavedModalFn,
   ProfileObject,
 } from "../../Types";
 import {
@@ -10,19 +11,24 @@ import {
 } from "../../DatabaseAccess/select";
 import IonIcon from "@reacticons/ionicons";
 import { useNavigate } from "react-router-dom";
+import EditEventMenu from "./EditEventMenu";
 
 interface OrganisationDetailsProps {
   profile: ProfileObject | undefined;
+  popModal: PopSavedModalFn;
 }
 
 export default function OrganisationDetails({
   profile,
+  popModal
 }: OrganisationDetailsProps) {
   const [organisation, setOrganisation] =
     useState<OrganisationObject>();
   const [events, setEvents] = useState<EventObject[]>();
   const [createActive, setCreateActive] = useState(false);
   const [eventsActive, setEventsActive] = useState(false);
+  const [editEventActive, setEditEventActive] = useState<string>();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,6 +53,13 @@ export default function OrganisationDetails({
 
   return (
     <div className="w50 pt2 pb2">
+      <EditEventMenu
+        active={editEventActive!=undefined}
+        onClose={() => setEditEventActive(undefined)}
+        event={events?.find((e) => (e.id == editEventActive))}
+        popModal={popModal}
+      />
+
       <div className="m2 p2 boxed outline">
         <div className="row center middle">
           <IonIcon
@@ -64,8 +77,9 @@ export default function OrganisationDetails({
                   <h4 className="row">{organisation.name}</h4>
                   {events?.map((evt) => (
                     <div
+                      onClick={() => setEditEventActive(evt.id)}
                       key={evt.id}
-                      className="row between middle boxedDark w100 p0"
+                      className="row between middle boxedDark w100 p0 clickable"
                     >
                       <div className="row middle between w100 pr2 pl2">
                         <div className="row middle center">

@@ -17,7 +17,11 @@ export interface CampaignRallyTypeObject extends SupabaseTable {
 
 export interface RallyTypeObject extends SupabaseTable {
   name: string;
+  description: string;
+
   tags: string[];
+  min: number;
+  max: number;
 }
 
 export interface ProfileObject {

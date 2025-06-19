@@ -34,7 +34,7 @@ export function PlayerHome({
       <div className="col w100 middle">
         <EnterCode popModal={popModal} />
         <div style={{ height: 50 }} />
-        <OrganisationDetails profile={profileObj} />
+        <OrganisationDetails profile={profileObj} popModal={popModal} />
       </div>
     </div>
   );
