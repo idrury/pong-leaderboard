@@ -67,7 +67,7 @@ export function groupRalliesById(
         name: pr.user_name,
         blocked_event_ids: []
       }],
-        rally_types: {id: 0, created_at: new Date(), name: pr.type_name, tags: []},
+        rally_types: {id: 0, created_at: new Date(), name: pr.type_name, tags: [], min_people: 0, max_people: 1, description: '' },
         id: pr.rally_id,
         created_at: new Date(pr.created_at)
       })

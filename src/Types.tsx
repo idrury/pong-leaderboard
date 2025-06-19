@@ -20,8 +20,8 @@ export interface RallyTypeObject extends SupabaseTable {
   description: string;
 
   tags: string[];
-  min: number;
-  max: number;
+  min_people: number;
+  max_people: number;
 }
 
 export interface ProfileObject {
