@@ -1,6 +1,7 @@
 import IonIcon from "@reacticons/ionicons";
 import {
   ActivatableElement,
+  OrganisationSummaryObject,
   PopSavedModalFn,
   ProfileObject,
   RallyObject,
@@ -14,7 +15,7 @@ interface EditRallyMenuProps extends ActivatableElement {
   rally: RallyObject | undefined;
   isAdmin: boolean;
   popModal: PopSavedModalFn;
-  orgId: number;
+  organisation: OrganisationSummaryObject;
 }
 
 export default function EditRallyMenu({
@@ -22,7 +23,7 @@ export default function EditRallyMenu({
   onClose,
   isAdmin,
   rally,
-  orgId,
+  organisation,
   popModal,
 }: EditRallyMenuProps) {
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
@@ -56,12 +57,12 @@ export default function EditRallyMenu({
   }
 
   async function onBlock(userId: string) {
-    console.log(orgId, userId)
     try {
-      await blockUser(orgId, userId);
+      await blockUser(organisation.org_id, userId);
+      popModal("User banned!");
     } catch (error) {
-      popModal("We can't block this user right now");
-      console.log(error)
+      popModal("We can't ban this user right now", undefined, true);
+      console.log(error);
     }
   }
 
@@ -104,12 +105,26 @@ export default function EditRallyMenu({
           <div key={p.id} className="boxed row middle mb2">
             <input className="" disabled value={p.name} />
             {isAdmin && (
-              <button
-                onClick={() => onBlock(p.id)}
-                className="dangerButton"
-              >
-                Block
-              </button>
+              <div>
+                {organisation?.blocked_user_ids?.find(
+                  (b) => b == p?.id
+                ) ? (
+                  <button
+                    onClick={() => onBlock(p.id)}
+                    disabled
+                    className="dangerButton"
+                  >
+                    Banned
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => onBlock(p.id)}
+                    className="dangerButton"
+                  >
+                    Ban
+                  </button>
+                )}
+              </div>
             )}
           </div>
         ))}

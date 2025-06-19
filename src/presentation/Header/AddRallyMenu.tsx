@@ -7,6 +7,7 @@ import {
   CampaignRallyTypeObject,
   ErrorLabelType,
   InputOption,
+  OrganisationSummaryObject,
   PopSavedModalFn,
   ProfileObject,
 } from "../../Types";
@@ -26,6 +27,7 @@ interface AddRallyMenuProps extends ActivatableElement {
   activateSaved: PopSavedModalFn;
   profile: ProfileObject;
   eventId: string;
+  organisation: OrganisationSummaryObject;
 }
 
 export default function AddRallyMenu({

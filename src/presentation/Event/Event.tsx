@@ -24,6 +24,8 @@ import { Session } from "@supabase/supabase-js";
 import AddRallyMenu from "../Header/AddRallyMenu";
 import { groupRalliesById } from "../../common/CommonFunctions";
 import EditRallyMenu from "./EditRallyMenu";
+import Banner from "../Banner";
+import IonIcon from "@reacticons/ionicons";
 
 interface EventProps {
   profile: ProfileObject;
@@ -72,12 +74,13 @@ export default function Event({
   }, [rallyTypes?.length]);
 
   async function getOrganisation() {
-    if (!eventId || !profile) return;
+    if (!eventId) return;
     try {
       const organisation = await fetchOrganisationFromEvent(eventId);
+      console.log(org)
       getData(organisation);
       setOrg(organisation);
-      setIsAdmin(organisation.admin_ids.includes(profile.id));
+      setIsAdmin(organisation.admin_ids.includes(profile?.id));
     } catch (error) {
       console.log(error);
       popSavedModal(
@@ -122,15 +125,23 @@ export default function Event({
   if (!eventId || !org) return <div>none</div>;
   return (
     <div>
+       {org?.blocked_user_ids?.find(
+                  (b) => b == profile?.id
+                ) && <Banner background="var(--dangerColor)">
+        <IonIcon name="ban-sharp" className="pr2"/>
+        You've been banned from adding rallies from this event
+      </Banner>}
       <Header
         gameCode={eventId}
         profile={profile}
         session={session || undefined}
         activeSavedModal={popSavedModal}
         activateEditModal={() => setAddMenuActive(true)}
+        organisation={org}
       />
       <AddRallyMenu
         profile={profile}
+        organisation={org}
         active={addMenuActive}
         currentRallyTypes={rallyTypes}
         onClose={() => setAddMenuActive(false)}
@@ -143,7 +154,7 @@ export default function Event({
         rally={selectedRally}
         isAdmin={isAdmin}
         popModal={popSavedModal}
-        orgId={org.org_id}
+        organisation={org}
       />
       <div className="row shrinkWrap">
         <div className="w100">

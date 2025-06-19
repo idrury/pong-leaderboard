@@ -66,7 +66,7 @@ export interface OrganisationSummaryObject {
   event_id: string; // Corresponds to PostgreSQL 'text'
   is_locked: boolean; // Corresponds to PostgreSQL 'BOOLEAN'
   org_name: string; // Corresponds to PostgreSQL 'text'
-  blocked_user_ids: Record<string, any>[]; // Corresponds to PostgreSQL 'jsonb[]' (array of JSON objects)
+  blocked_user_ids: string[] | undefined; // Corresponds to PostgreSQL 'jsonb[]' (array of JSON objects)
   admin_ids: string[]; // Corresponds to PostgreSQL 'UUID[]' (array of UUID strings)
 }
 
