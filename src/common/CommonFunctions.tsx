@@ -1,4 +1,8 @@
-import { ProfileObject, RallyObject, UserRalliesObject } from "../Types";
+import {
+  ProfileObject,
+  RallyObject,
+  UserRalliesObject,
+} from "../Types";
 
 export default function toString(item: any): string {
   if (item === null || item === undefined) {
@@ -45,7 +49,7 @@ export function groupRalliesById(
   const returnArray = new Array<RallyObject>();
 
   rallies.forEach((pr) => {
-    let current = returnArray.find((r) => (r.id == pr.rally_id));
+    let current = returnArray.find((r) => r.id == pr.rally_id);
 
     //If it's been added, add the user to this rally
     if (current) {
@@ -53,24 +57,34 @@ export function groupRalliesById(
         id: pr.profile_id,
         created_at: new Date(),
         name: pr.user_name,
-        blocked_event_ids: []
+        blocked_event_ids: [],
       });
-    // Else add the new rally
+      // Else add the new rally
     } else {
       returnArray.push({
         num_hits: pr.num_hits,
         is_high_score: pr.is_high_score,
         hidden: false,
-        profiles: [{
-        id: pr.profile_id,
-        created_at: new Date(),
-        name: pr.user_name,
-        blocked_event_ids: []
-      }],
-        rally_types: {id: 0, created_at: new Date(), name: pr.type_name, tags: [], min_people: 0, max_people: 1, description: '' },
+        profiles: [
+          {
+            id: pr.profile_id,
+            created_at: new Date(),
+            name: pr.user_name,
+            blocked_event_ids: [],
+          },
+        ],
+        rally_types: {
+          id: 0,
+          created_at: new Date(),
+          name: pr.type_name,
+          tags: [],
+          min_people: 0,
+          max_people: 1,
+          description: "",
+        },
         id: pr.rally_id,
-        created_at: new Date(pr.created_at)
-      })
+        created_at: new Date(pr.created_at),
+      });
     }
 
     current = undefined;

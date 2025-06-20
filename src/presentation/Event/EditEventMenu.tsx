@@ -2,28 +2,42 @@ import { useEffect, useState } from "react";
 import {
   ActivatableElement,
   CampaignRallyTypeObject,
+  ErrorLabelType,
   EventObject,
   PopSavedModalFn,
+  ProfileObject,
   RallyTypeObject,
+  UserAdminOrgsObject,
 } from "../../Types";
 import BasicMenu from "../BasicMenu";
 import {
   fetchAllRallyTypes,
+  fetchOrgAdmins,
+  fetchProfileByName,
   fetchRallyTypes,
 } from "../../DatabaseAccess/select";
 import AddRallyTypeMenu from "./AddRallyTypeMenu";
-import { insertRallyTypeForEvent } from "../../DatabaseAccess/insert";
+import {
+  insertRallyTypeForEvent,
+  insertUserAdmin,
+} from "../../DatabaseAccess/insert";
 import IonIcon from "@reacticons/ionicons";
-import { deleteEventRallyType } from "../../DatabaseAccess/delete";
+import {
+  deleteEventRallyType,
+  deleteUserAdmin,
+} from "../../DatabaseAccess/delete";
+import ErrorLabel from "../ErrorLabel";
 
 interface EditEventMenuProps extends ActivatableElement {
   event: EventObject | undefined;
+  org: UserAdminOrgsObject | undefined;
   popModal: PopSavedModalFn;
 }
 
 export default function EditEventMenu({
   active,
   event,
+  org,
   onClose,
   popModal,
 }: EditEventMenuProps) {
@@ -32,7 +46,13 @@ export default function EditEventMenu({
   const [allRallyTypes, setAllRallyTypes] =
     useState<RallyTypeObject[]>();
   const [addRallyTypeActive, setAddRallyTypeActive] = useState(false);
-
+  const [adminProfiles, setAdminProfiles] = useState<
+    { profiles: ProfileObject }[]
+  >([]);
+  const [newAdminName, setNewAdminName] = useState<string>();
+  const [error, setError] = useState<ErrorLabelType>({
+    active: false,
+  });
   useEffect(() => {
     getData();
   }, [active]);
@@ -45,6 +65,7 @@ export default function EditEventMenu({
     try {
       await getEventRallyTypes();
       await getAllRallyTypes();
+      org?.id && (await getOrgAdmins(org.id));
     } catch (error) {
       popModal("An error occured getting the event", undefined, true);
     }
@@ -72,10 +93,23 @@ export default function EditEventMenu({
       popModal("An error occured getting the event", undefined, true);
     }
   }
+  async function getOrgAdmins(orgId: number) {
+    try {
+      const admins = await fetchOrgAdmins(orgId);
+      setAdminProfiles(admins);
+    } catch (error) {
+      console.log(error);
+      popModal(
+        "An error occured getting the admins for this organisation",
+        undefined,
+        true
+      );
+    }
+  }
 
   /**********************************************************
    * Handle the process of removing a rally type from the event
-   * @param typeId 
+   * @param typeId
    */
   async function onRemoveClick(typeId: number) {
     if (!event?.id) return;
@@ -112,6 +146,80 @@ export default function EditEventMenu({
     }
   }
 
+  /**
+   * Handle removing user as admin
+   * @param userId
+   */
+  async function removeUserFromOrg(userId: string) {
+    if (!org) return;
+
+    try {
+      await deleteUserAdmin(org.id, userId);
+      await getOrgAdmins(org.id);
+      popModal("User is no longer an admin");
+    } catch (error) {
+      console.log(error);
+      popModal(
+        "An error occurred removing the user",
+        "Refresh the page and try again",
+        true
+      );
+    }
+  }
+
+  /****************************************
+   * Add new admin to org
+   */
+  async function addNewAdmin() {
+    if (!org) return;
+    // Validate form
+    if (!newAdminName || newAdminName.length < 2) {
+      setError({
+        active: true,
+        selector: "name",
+        text: "Enter a valid user name",
+      });
+      return;
+    }
+    if (adminProfiles.some((p) => p.profiles.name == newAdminName)) {
+      setError({
+        active: true,
+        selector: "name",
+        text: "That user is already an admin",
+      });
+      return;
+    }
+
+    let user: ProfileObject | null = null;
+
+    // Try fetch user
+    try {
+      user = await fetchProfileByName(newAdminName);
+    } catch (error) {
+      setError({
+        active: true,
+        selector: "name",
+        text: "We couldn't find that user",
+      });
+    }
+
+    try {
+      if (!user) return;
+      await insertUserAdmin(org?.id, user.id);
+      setAdminProfiles([...adminProfiles].concat({ profiles: user }));
+    } catch (error) {
+      console.log(error);
+      setError({
+        active: true,
+        selector: "name",
+        text: "We found that user, but an issue occured adding them to the organisation!",
+      });
+    }
+
+    setError({ active: false });
+    popModal("New admin added");
+  }
+
   if (!event) return;
 
   return (
@@ -137,6 +245,62 @@ export default function EditEventMenu({
           <h2 className="p0 m0">{event.name}</h2>
           <div className="row w100">
             <div className="col w50">
+              <div>
+                <h3>User admins</h3>
+                <div>
+                  {adminProfiles?.map((profile, i) => (
+                    <div
+                      key={i}
+                      className="boxed row p2 between mb2 middle"
+                    >
+                      <p>{profile.profiles.name}</p>
+                      <div className="row end middle">
+                        <p className="mr2">{profile.profiles.id}</p>
+                        <IonIcon
+                          onClick={() =>
+                            removeUserFromOrg(profile.profiles.id)
+                          }
+                          name="remove-circle"
+                          className="clickable"
+                          style={{
+                            height: 20,
+                            width: 20,
+                            color: "var(--dangerColor)",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <form
+                  action="submit"
+                  onSubmit={(f) => {
+                    f.preventDefault();
+                    addNewAdmin();
+                  }}
+                >
+                  <div className="row mb2">
+                    <input
+                      value={newAdminName || ""}
+                      onChange={(e) =>
+                        setNewAdminName(e.target.value)
+                      }
+                      className="w75 mr2"
+                    />
+                    <button
+                      type="submit"
+                      className="accentButton w25"
+                    >
+                      + Admin
+                    </button>
+                  </div>
+                  <ErrorLabel
+                    text={error.text}
+                    active={error.selector == "name"}
+                  />
+                </form>
+              </div>
               <h3>Your rally types are</h3>
               <div style={{ maxHeight: "100%", overflow: "auto" }}>
                 {eventRallyTypes?.map((e, i) => (
@@ -144,9 +308,11 @@ export default function EditEventMenu({
                     key={i}
                     className="textLeft mb1 boxed p1 row between middle"
                   >
-                    <p style={{textTransform: "capitalize"}}>{e.rally_types.name}</p>
+                    <p style={{ textTransform: "capitalize" }}>
+                      {e.rally_types.name}
+                    </p>
                     <IonIcon
-                    onClick={() => onRemoveClick(e.rally_types.id)}
+                      onClick={() => onRemoveClick(e.rally_types.id)}
                       name="remove-circle"
                       className="clickable"
                       style={{

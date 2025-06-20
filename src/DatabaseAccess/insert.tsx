@@ -18,12 +18,27 @@ export async function insertRallyTypeForEvent(
   return data;
 }
 
+/**********************************
+ * Add a new admin to the organisation
+ * @param orgId The organisations id
+ * @param userId The id of the user to add to the organisation
+ */
+export async function insertUserAdmin(orgId: number, userId: string) {
+  const { data, error } = await supabase
+    .from("users_to_orgs")
+    .insert({ org_id: orgId, user_id: userId });
+
+  if (error) throw error;
+
+  return data;
+}
+
 /*************************************
  * Add a new rally type to the DB
- * @param name 
- * @param description 
- * @param min 
- * @param max 
+ * @param name
+ * @param description
+ * @param min
+ * @param max
  */
 export async function insertNewRallyType(
   name: string,
@@ -38,7 +53,8 @@ export async function insertNewRallyType(
       description: description,
       min_people: min,
       max_people: max,
-    }).select();
+    })
+    .select();
 
   if (error) throw error;
 

@@ -4,6 +4,7 @@ import type {
   OrganisationObject,
   OrganisationSummaryObject,
   ProfileObject,
+  UserAdminOrgsObject,
   UserRalliesObject,
 } from "../Types";
 import { supabase } from "./SupabaseClient";
@@ -41,7 +42,7 @@ export async function fetchRallyTypes(
     throw error;
   }
 
-  console.log("D",data)
+  console.log("D", data);
 
   /*@ts-ignore */
   return data;
@@ -278,10 +279,41 @@ export async function fetchOrganisation(
   return data;
 }
 
-export async function fetchAllRallyTypes() {
-const { data, error } = await supabase
-    .from("rally_types")
+/********************************
+ * Fetch a users organisation
+ * @param userId
+ */
+export async function fetchUsersOrganisations(
+  userId: string
+): Promise<UserAdminOrgsObject[]> {
+  const { data, error } = await supabase
+    .rpc("fetch_user_admin_orgs", { uid: userId })
     .select();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/*******************************************
+ * Get the profiles of admins of the organisation
+ * @param orgId Organisations ID
+ */
+export async function fetchOrgAdmins(orgId: number):Promise<any> {
+  const { data, error } = await supabase
+    .from("users_to_orgs")
+    .select('profiles(*)')
+    .eq("org_id", orgId);
+
+  if (error) throw error;
+
+  return data;
+}
+
+export async function fetchAllRallyTypes() {
+  const { data, error } = await supabase.from("rally_types").select();
 
   if (error) {
     throw error;

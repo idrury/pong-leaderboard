@@ -44,7 +44,7 @@ export interface EventObject {
   created_at: Date;
   is_locked: boolean;
   name: string;
-  organisation: OrganisationObject;
+  organisation?: OrganisationObject;
 }
 
 export interface UserRalliesObject {
@@ -63,6 +63,13 @@ export interface OrganisationObject extends SupabaseTable {
   pin: string;
   state: string;
   creator_id: string;
+}
+
+/**
+ * Represents the structure of the user_admin_orgs_type PostgreSQL composite type.
+ */
+export interface UserAdminOrgsObject extends OrganisationObject {
+  events: EventObject[]; // Corresponds to PostgreSQL 'jsonb' (a generic JSON object)
 }
 
 export interface OrganisationSummaryObject {

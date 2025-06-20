@@ -13,9 +13,9 @@ export async function deleteRally(rallyId: number) {
 
 /***********************************
  * Remove a rally type from an event
- * @param eventId 
- * @param typeId 
- * @returns 
+ * @param eventId
+ * @param typeId
+ * @returns
  */
 export async function deleteEventRallyType(
   eventId: string,
@@ -30,4 +30,22 @@ export async function deleteEventRallyType(
   if (error) throw error;
 
   return true;
+}
+
+/*************************************
+ * Delete user from org admins list
+ * @param orgId
+ * @param userId
+ * @returns
+ */
+export async function deleteUserAdmin(orgId: number, userId: string) {
+  const { data, error } = await supabase
+    .from("users_to_orgs")
+    .delete()
+    .eq("org_id", orgId)
+    .eq("user_id", userId);
+
+  if (error) throw error;
+
+  return data;
 }
