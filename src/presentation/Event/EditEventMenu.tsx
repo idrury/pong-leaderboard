@@ -34,7 +34,7 @@ interface EditEventMenuProps extends ActivatableElement {
   popModal: PopSavedModalFn;
 }
 
-export default function EditEventMenu({
+export default function EditEventMenu ({
   active,
   event,
   org,
@@ -61,11 +61,11 @@ export default function EditEventMenu({
    * Fetch on initial page load
    * @returns
    */
-  async function getData() {
+  async function getData () {
     try {
       await getEventRallyTypes();
       await getAllRallyTypes();
-      org?.id && (await getOrgAdmins(org.id));
+      org?.id && await getOrgAdmins(org.id);
     } catch (error) {
       popModal("An error occured getting the event", undefined, true);
     }
@@ -74,7 +74,7 @@ export default function EditEventMenu({
   /*************************
    * Get every rally type available
    */
-  async function getAllRallyTypes() {
+  async function getAllRallyTypes () {
     try {
       setAllRallyTypes(await fetchAllRallyTypes());
     } catch (error) {
@@ -85,7 +85,7 @@ export default function EditEventMenu({
   /*************************************
    * Get the rally types for this event
    */
-  async function getEventRallyTypes() {
+  async function getEventRallyTypes () {
     if (!event) return;
     try {
       setEventRallyTypes(await fetchRallyTypes(event.id));
@@ -93,7 +93,7 @@ export default function EditEventMenu({
       popModal("An error occured getting the event", undefined, true);
     }
   }
-  async function getOrgAdmins(orgId: number) {
+  async function getOrgAdmins (orgId: number) {
     try {
       const admins = await fetchOrgAdmins(orgId);
       setAdminProfiles(admins);
@@ -111,7 +111,7 @@ export default function EditEventMenu({
    * Handle the process of removing a rally type from the event
    * @param typeId
    */
-  async function onRemoveClick(typeId: number) {
+  async function onRemoveClick (typeId: number) {
     if (!event?.id) return;
     try {
       await deleteEventRallyType(event.id, typeId);
@@ -126,7 +126,7 @@ export default function EditEventMenu({
     }
   }
 
-  async function onAddClick(e: React.MouseEvent, typeId: number) {
+  async function onAddClick (e: React.MouseEvent, typeId: number) {
     if (!event || !allRallyTypes || !eventRallyTypes) return;
     e.stopPropagation();
 
@@ -150,7 +150,7 @@ export default function EditEventMenu({
    * Handle removing user as admin
    * @param userId
    */
-  async function removeUserFromOrg(userId: string) {
+  async function removeUserFromOrg (userId: string) {
     if (!org) return;
 
     try {
@@ -170,7 +170,7 @@ export default function EditEventMenu({
   /****************************************
    * Add new admin to org
    */
-  async function addNewAdmin() {
+  async function addNewAdmin () {
     if (!org) return;
     // Validate form
     if (!newAdminName || newAdminName.length < 2) {
@@ -241,7 +241,7 @@ export default function EditEventMenu({
         onClose={onClose}
         disableClickOff
       >
-        <div className="col w100 m0 p0">
+        <div className="col w100 m0 p0" style={{ maxHeight: "50vh" }}>
           <h2 className="p0 m0">{event.name}</h2>
           <div className="row w100">
             <div className="col w50">
@@ -302,7 +302,13 @@ export default function EditEventMenu({
                 </form>
               </div>
               <h3>Your rally types are</h3>
-              <div style={{ maxHeight: "100%", overflow: "auto" }}>
+              <div style={{ maxHeight: "50vh", overflow: "auto" }}>
+                <button
+                  className="p1 mt1 accentButton"
+                  onClick={() => setAddRallyTypeActive(true)}
+                >
+                  + Rally Type
+                </button>
                 {eventRallyTypes?.map((e, i) => (
                   <div
                     key={i}
@@ -324,12 +330,7 @@ export default function EditEventMenu({
                   </div>
                 ))}
               </div>
-              <button
-                className="p1 mt1 accentButton"
-                onClick={() => setAddRallyTypeActive(true)}
-              >
-                + Rally Type
-              </button>
+
             </div>
           </div>
         </div>
