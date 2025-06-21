@@ -88,7 +88,9 @@ export default function EditEventMenu ({
   async function getEventRallyTypes () {
     if (!event) return;
     try {
-      setEventRallyTypes(await fetchRallyTypes(event.id));
+      const data = await fetchRallyTypes(event.id);
+      console.log(data);
+      setEventRallyTypes(data);
     } catch (error) {
       popModal("An error occured getting the event", undefined, true);
     }

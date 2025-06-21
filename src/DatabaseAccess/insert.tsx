@@ -12,7 +12,6 @@ export async function insertRallyTypeForEvent(
   const { data, error } = await supabase
     .from("campaigns_to_rally_types")
     .insert({ rally_type_id: typeId, event_id: eventId });
-
   if (error) throw error;
 
   return data;

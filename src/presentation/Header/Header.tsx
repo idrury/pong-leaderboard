@@ -27,9 +27,9 @@ export default function Header({
   activateEditModal,
   profile,
   gameCode,
-  organisation,
 }: HeaderProps) {
-  const [mobileBrowser, setMobileBrowser] = useState(false);
+  const [mobileBrowser, setMobileBrowser] =
+    useState(false);
 
   useEffect(() => {
     setMobileBrowser(isMobileBrowser());
@@ -45,12 +45,21 @@ export default function Header({
         {gameCode && (
           <div className="pl2 row middle">
             <div className="clickable">
-              <a href="/" style={{ color: "var(--text)" }}>
-                <IonIcon name="home" className="h2Icon" />
+              <a
+                href="/"
+                style={{ color: "var(--text)" }}
+              >
+                <IonIcon
+                  name="home"
+                  className="h2Icon"
+                />
               </a>
             </div>
             {!mobileBrowser && (
-              <div className="row middle" style={{ minWidth: 0 }}>
+              <div
+                className="row middle"
+                style={{ minWidth: 0 }}
+              >
                 <QrCodeModal />
               </div>
             )}
@@ -90,25 +99,27 @@ export default function Header({
           )}
         </div>
         {/* Right side: Add rally and Auth */}
-        <div className="row middle" style={{ minWidth: 0 }}>
-          {session &&
-            !mobileBrowser &&
-            gameCode &&
-            !organisation?.blocked_user_ids?.find(
-              (b) => b == profile?.id
-            ) && (
-              <button
-                className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
-                onClick={() =>
-                  activateEditModal && activateEditModal()
-                }
-              >
-                <div className="row middle center">
-                  <IonIcon name="add-circle" className="h2Icon" />
-                  Add rally
-                </div>
-              </button>
-            )}
+        <div
+          className="row middle"
+          style={{ minWidth: 0 }}
+        >
+          {!mobileBrowser && gameCode && (
+            <button
+              className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
+              onClick={() =>
+                activateEditModal &&
+                activateEditModal()
+              }
+            >
+              <div className="row middle center">
+                <IonIcon
+                  name="add-circle"
+                  className="h2Icon"
+                />
+                Add rally
+              </div>
+            </button>
+          )}
           <div className="ml1">
             <Auth
               profile={profile}
@@ -118,15 +129,21 @@ export default function Header({
           </div>
         </div>
       </div>
-      {session && mobileBrowser && gameCode && (
+      {mobileBrowser && gameCode && (
         <div className="w100">
           <div className="pr2 pl2">
             <button
               className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline w100"
-              onClick={() => activateEditModal && activateEditModal()}
+              onClick={() =>
+                activateEditModal &&
+                activateEditModal()
+              }
             >
               <div className="row middle center">
-                <IonIcon name="add-circle" className="h2Icon" />
+                <IonIcon
+                  name="add-circle"
+                  className="h2Icon"
+                />
                 Add rally
               </div>
             </button>
