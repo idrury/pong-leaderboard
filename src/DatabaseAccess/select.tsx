@@ -31,12 +31,8 @@ export async function fetchRallyTypes(
   eventId: string
 ): Promise<CampaignRallyTypeObject[]> {
   const { data, error } = await supabase
-    .from("campaigns_to_rally_types")
-    .select(
-      "rally_types(*), rallys!campaigns_to_rally_types_high_score_id_fkey(id, created_at, num_hits, is_high_score, profiles(*))"
-    )
-    .eq("event_id", eventId)
-    .order("id", { ascending: false });
+    .rpc("get_rally_types", {evt_id: eventId})
+    .select();
 
   if (error) {
     throw error;

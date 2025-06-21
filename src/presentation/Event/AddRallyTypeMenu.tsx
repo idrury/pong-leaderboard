@@ -103,7 +103,7 @@ export default function AddRallyTypeMenu({
                     ?.filter(
                       (at) =>
                         !eventTypes?.find(
-                          (et) => et.rally_types.id == at.id
+                          (et) => et.id == at.id
                         )
                     )
                     ?.map((t) => (

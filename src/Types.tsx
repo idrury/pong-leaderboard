@@ -10,15 +10,16 @@ export interface ActivatableElement {
   onClose: () => void;
 }
 
-export interface CampaignRallyTypeObject extends SupabaseTable {
-  rally_types: RallyTypeObject;
-  rallys?: RallyObject;
+export interface CampaignRallyTypeObject extends RallyTypeObject {
+  num_hits: number;
+  rally_id: number;
+  profiles: ProfileObject[];
 }
 
 export interface RallyTypeObject extends SupabaseTable {
   name: string;
   description: string;
-
+  threshold: number | undefined;
   tags: string[];
   min_people: number;
   max_people: number;

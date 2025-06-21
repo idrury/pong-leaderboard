@@ -103,8 +103,8 @@ export default function AddRallyMenu({
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
-        value: type.rally_types.id,
-        label: type.rally_types.name,
+        value: type.id,
+        label: type.name,
       });
     });
 
@@ -133,9 +133,10 @@ export default function AddRallyMenu({
       return;
     }
 
+    /*TODO add .rallys*/
     const prevHighRally = currentRallyTypes?.find((t) => {
-      return t.rally_types.id == rallyType;
-    })?.rallys;
+      return t.id == rallyType;
+    });
 
     //Check if high score
     if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {

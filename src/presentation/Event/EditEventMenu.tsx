@@ -117,7 +117,7 @@ export default function EditEventMenu ({
       await deleteEventRallyType(event.id, typeId);
       popModal("Rally type removed!");
       setEventRallyTypes(
-        eventRallyTypes?.filter((t) => t.rally_types.id != typeId)
+        eventRallyTypes?.filter((t) => t.id != typeId)
       );
 
       await getAllRallyTypes();
@@ -315,10 +315,10 @@ export default function EditEventMenu ({
                     className="textLeft mb1 boxed p1 row between middle"
                   >
                     <p style={{ textTransform: "capitalize" }}>
-                      {e.rally_types.name}
+                      {e.name}
                     </p>
                     <IonIcon
-                      onClick={() => onRemoveClick(e.rally_types.id)}
+                      onClick={() => onRemoveClick(e.id)}
                       name="remove-circle"
                       className="clickable"
                       style={{

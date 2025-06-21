@@ -60,7 +60,7 @@ export function getHighestMins(types: CampaignRallyTypeObject[]): number {
 
   return Math.max(...types.map((type) =>  Math.round(
       DateTime.now()
-        .diff(DateTime.fromJSDate(new Date(type?.rallys?.created_at || new Date())))
+        .diff(DateTime.fromJSDate(new Date(type?.created_at || new Date())))
         .as("minutes")
     )));
 
