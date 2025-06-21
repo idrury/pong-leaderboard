@@ -80,6 +80,7 @@ export function groupRalliesById(
           tags: [],
           min_people: 0,
           max_people: 1,
+          threshold: 0,
           description: "",
         },
         id: pr.rally_id,
