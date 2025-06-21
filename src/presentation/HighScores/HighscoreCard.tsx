@@ -107,7 +107,7 @@ function HighscoreCard({
                       })}{" "}
                     by
                   </p>
-                  <p
+                  <div
                     style={{
                       textTransform: "capitalize",
                     }}
@@ -126,7 +126,7 @@ function HighscoreCard({
                         </p>
                       ))}
                     </div>
-                  </p>
+                  </div>
                 </div>
               ) : (
                 "not claimed yet!"
