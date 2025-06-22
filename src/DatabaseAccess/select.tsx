@@ -124,14 +124,10 @@ export async function insertRally(
  */
 export async function insertPeopleForRally(
   id: number,
-  people: ProfileObject[],
-  profile: ProfileObject | undefined
+  people: ProfileObject[]
 ) {
   const values = new Array<{ rally_id: number; user_id: string }>();
   people.forEach((p) => values.push({ user_id: p.id, rally_id: id }));
-  if(profile)
-  values.push({ user_id: profile.id, rally_id: id });
-
   const { error } = await supabase
     .from("users_to_rallys")
     .insert(values);

@@ -138,18 +138,17 @@ export default function AddRallyMenu({
    */
   async function addRally() {
     let isHighScore = false;
-
     let error = validateNewRallyForm(
       rallyType,
-      hits
+      hits,
+      people
     );
     if (error) {
       setError(error);
       return;
     }
     if (!hits || !rallyType) return;
-
-    /*TODO add .rallys*/
+    //Get the previous highest score
     const prevHighRally = currentRallyTypes?.find(
       (t) => {
         return t.id == rallyType;
@@ -185,7 +184,6 @@ export default function AddRallyMenu({
         await insertPeopleForRally(
           id,
           people,
-          profile
         );
       activateSaved("New rally added!");
       onClose();

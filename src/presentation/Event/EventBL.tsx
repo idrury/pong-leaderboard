@@ -1,5 +1,6 @@
 import {
   ErrorLabelType,
+  ProfileObject,
 } from "../../Types";
 
 export function ChecknewRallyTypeForm(
@@ -77,7 +78,8 @@ export function ChecknewRallyTypeForm(
 
 export function validateNewRallyForm(
   rallyType: number | undefined,
-  hits: number | undefined
+  hits: number | undefined,
+  people: ProfileObject[] | undefined
 ) {
   if (!rallyType) {
     return {
@@ -85,7 +87,6 @@ export function validateNewRallyForm(
       text: "Please enter a rally type",
       selector: "rally_type",
     };
-
   }
   if (!hits || hits <= 0) {
     return {
@@ -93,6 +94,12 @@ export function validateNewRallyForm(
       text: "Please enter a valid number of hits",
       selector: "hits",
     };
-
+  }
+  if (!people || people.length == 0) {
+    return {
+      active: true,
+      text: "Please enter at least one player!",
+      selector: "people",
+    };
   }
 }
