@@ -4,7 +4,9 @@ import {
   UserRalliesObject,
 } from "../Types";
 
-export default function toString(item: any): string {
+export default function toString(
+  item: any
+): string {
   if (item === null || item === undefined) {
     return "";
   }
@@ -25,10 +27,14 @@ export function isMobileBrowser() {
     typeof window.navigator === "undefined"
       ? ""
       : navigator.userAgent;
-  return /iPhone|iPad|iPod|Android/i.test(userAgent);
+  return /iPhone|iPad|iPod|Android/i.test(
+    userAgent
+  );
 }
 
-export function getPlaces(number: number): number[] {
+export function getPlaces(
+  number: number
+): number[] {
   const idxs = [10000, 1000, 100, 10, 1];
   const returnIdxs = new Array<number>();
 
@@ -49,7 +55,9 @@ export function groupRalliesById(
   const returnArray = new Array<RallyObject>();
 
   rallies.forEach((pr) => {
-    let current = returnArray.find((r) => r.id == pr.rally_id);
+    let current = returnArray.find(
+      (r) => r.id == pr.rally_id
+    );
 
     //If it's been added, add the user to this rally
     if (current) {
@@ -57,6 +65,8 @@ export function groupRalliesById(
         id: pr.profile_id,
         created_at: new Date(),
         name: pr.user_name,
+        lower_name: pr.user_name?.toLowerCase(),
+
         blocked_event_ids: [],
       });
       // Else add the new rally
@@ -70,6 +80,9 @@ export function groupRalliesById(
             id: pr.profile_id,
             created_at: new Date(),
             name: pr.user_name,
+            lower_name:
+              pr.user_name?.toLowerCase(),
+
             blocked_event_ids: [],
           },
         ],
