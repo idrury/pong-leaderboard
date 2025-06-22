@@ -1,4 +1,6 @@
-import { ErrorLabelType } from "../../Types";
+import {
+  ErrorLabelType,
+} from "../../Types";
 
 export function ChecknewRallyTypeForm(
   name: string | undefined,
@@ -6,7 +8,6 @@ export function ChecknewRallyTypeForm(
   parsedMin: number,
   parsedMax: number
 ): ErrorLabelType | null {
-    console.log(name, description, parsedMax, parsedMin)
   if (!name || name.length < 3) {
     return {
       active: true,
@@ -72,4 +73,26 @@ export function ChecknewRallyTypeForm(
   }
 
   return null;
+}
+
+export function validateNewRallyForm(
+  rallyType: number | undefined,
+  hits: number | undefined
+) {
+  if (!rallyType) {
+    return {
+      active: true,
+      text: "Please enter a rally type",
+      selector: "rally_type",
+    };
+
+  }
+  if (!hits || hits <= 0) {
+    return {
+      active: true,
+      text: "Please enter a valid number of hits",
+      selector: "hits",
+    };
+
+  }
 }

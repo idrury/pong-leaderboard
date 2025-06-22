@@ -25,7 +25,7 @@ export async function insertRallyTypeForEvent(
 export async function insertUserAdmin(orgId: number, userId: string) {
   const { data, error } = await supabase
     .from("users_to_orgs")
-    .insert({ org_id: orgId, user_id: userId });
+    .insert({ org_id: orgId, user_id: userId, profile_id: userId });
 
   if (error) throw error;
 

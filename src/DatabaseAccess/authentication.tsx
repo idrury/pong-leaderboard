@@ -21,18 +21,19 @@ export async function SignUpUser(
   return data;
 }
 
+/***********************
+ * Create a new profile not linked to a user
+ * @param name The name of the profile to create
+ */
 export async function createAnonProfile(
   name: string
 ) {
-  console.log("CREATING")
-  const { data, error } = await supabase.rpc(
-    "create_anon_user",
-    { nm: name }
-  ).select().single();
+  const { data, error } = await supabase
+    .rpc("create_anon_user", { nm: name })
+    .select()
+    .single();
 
-
-  if (error) throw error.message;
-  console.log("DATA", data)
+  if (error) throw error;
   return data;
 }
 

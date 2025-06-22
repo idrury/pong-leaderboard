@@ -77,12 +77,11 @@ export default function Event({
     if (!eventId) return;
     try {
       const organisation = await fetchOrganisationFromEvent(eventId);
-      console.log(org)
       getData(organisation);
       setOrg(organisation);
       setIsAdmin(organisation.admin_ids.includes(profile?.id));
     } catch (error) {
-      console.log(error);
+      console.error(error);
       popSavedModal(
         "Error fetching event!",
         "Refresh the page and try again!",
@@ -95,7 +94,7 @@ export default function Event({
    * Get rally data from the DB
    */
   async function getData(org: OrganisationSummaryObject | undefined) {
-    console.log("Fetching data...");
+    console.info("Fetching data...");
     if (!org) return;
     try {
       const rallies = groupRalliesById(

@@ -49,7 +49,7 @@ export default function OrganisationDetails({
   }
 
   function onEventClick(event: EventObject) {
-    navigate(event.id);
+    navigate(`events/${event.id}`);
   }
 
   return (

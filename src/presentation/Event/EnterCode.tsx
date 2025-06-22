@@ -24,7 +24,7 @@ export default function EnterCode({ }: EnterCodeProps) {
     setError({active: false})
     try {
       const event = await fetchEvent(localEvent);
-      if (event) navigate(localEvent);
+      if (event) navigate(`events/${localEvent}`);
     } catch (error) {
       setError({
         text: "Looks like that event doesn't exist!",

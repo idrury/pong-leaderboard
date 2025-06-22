@@ -29,6 +29,7 @@ export interface ProfileObject {
   id: string;
   created_at: Date;
   name: string;
+  lower_name: string;
   blocked_event_ids: string[];
 }
 

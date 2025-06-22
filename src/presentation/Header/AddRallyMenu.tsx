@@ -12,9 +12,9 @@ import {
   ProfileObject,
 } from "../../Types";
 import {
+  fetchProfileByName,
   insertPeopleForRally,
   insertRally,
-  searchUser,
 } from "../../DatabaseAccess/select";
 import { QueryError } from "@supabase/supabase-js";
 import BasicMenu from "../BasicMenu";
@@ -22,6 +22,8 @@ import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
 import { createAnonProfile } from "../../DatabaseAccess/authentication";
+import { validateNewRallyForm } from "../Event/EventBL";
+import ConfirmMenu from "./ConfirmMenu";
 
 interface AddRallyMenuProps
   extends ActivatableElement {
@@ -55,6 +57,10 @@ export default function AddRallyMenu({
     useState<ErrorLabelType>({
       active: false,
     });
+  const [
+    createConfirmActive,
+    setCreateConfirmActive,
+  ] = useState(false);
 
   useEffect(() => {
     getData();
@@ -66,6 +72,7 @@ export default function AddRallyMenu({
     setPeople([]);
     setHits(undefined);
     setRallyType(undefined);
+    if (profile) addPersonToRally(profile);
   }, [active]);
 
   useGSAP(() => {
@@ -98,7 +105,7 @@ export default function AddRallyMenu({
    * Refresh the required data
    */
   async function getData() {
-    console.log("FETCHING RALLY TYPES AGAIN");
+    console.info("Fetching rally types");
     try {
       setRallyOptions(
         createRallyTypes(currentRallyTypes || [])
@@ -127,26 +134,20 @@ export default function AddRallyMenu({
   }
 
   /**************************
-   * Add a new rally
+   * Insert a new rally
    */
   async function addRally() {
     let isHighScore = false;
-    if (!rallyType) {
-      setError({
-        active: true,
-        text: "Please enter a rally type",
-        selector: "rally_type",
-      });
+
+    let error = validateNewRallyForm(
+      rallyType,
+      hits
+    );
+    if (error) {
+      setError(error);
       return;
     }
-    if (!hits || hits <= 0) {
-      setError({
-        active: true,
-        text: "Please enter a valid number of hits",
-        selector: "hits",
-      });
-      return;
-    }
+    if (!hits || !rallyType) return;
 
     /*TODO add .rallys*/
     const prevHighRally = currentRallyTypes?.find(
@@ -201,7 +202,11 @@ export default function AddRallyMenu({
     }
   }
 
-  async function addPerson(
+  /*****************************************************
+   * Fetch a person from the database and add them to the rally
+   * @param form
+   */
+  async function getPerson(
     form: React.FormEvent
   ) {
     form.preventDefault();
@@ -220,48 +225,91 @@ export default function AddRallyMenu({
     let person: ProfileObject | null = null;
     try {
       person =
-        (await searchUser(formattedSearch)) ||
-        null;
+        (await fetchProfileByName(
+          formattedSearch
+        )) || null;
+
       if (person) {
-        setPeople([...people, person]);
+        addPersonToRally(person);
         setError({ active: false });
+        setPersonSearch(undefined);
       }
-    } catch (error) {
-      setError({
-        text: "That person doesn't exist",
-        selector: "people",
-        active: true,
-      });
+    } catch (error: any) {
+      if (error.code != "PGRST116") {
+        console.error(error);
+        return;
+      }
     }
 
     // Create a new profile based on search
     if (!person) {
-      try {
-        person = await createAnonProfile(
-          formattedSearch
-        );
-        if (person) {
-          setPeople([...people, person]);
-          setError({ active: false });
-        }
-      } catch (error) {
-        setError({
-          text: "Could not create a new person at this time",
-          selector: "people",
-          active: true,
-        });
-      }
+      setCreateConfirmActive(true);
     }
-
-    setPersonSearch(undefined);
   }
 
+  /******************************************
+   * Create a new user profile
+   * @param name The name of the profile
+   */
+  async function createNewProfile(name: string) {
+    if (!name || name.length <= 1) return;
+
+    try {
+      let person = await createAnonProfile(name);
+      if (person) {
+        addPersonToRally(person);
+        setError({ active: false });
+        setPersonSearch(undefined);
+      }
+    } catch (error) {
+      activateSaved(
+        "Could not create a new person",
+        "Referesh the page and try again",
+        true
+      );
+    }
+  }
+
+  /***************************************
+   * Add a new person to the list of people
+   * if they aren't already on there
+   * @param profile The profile to add
+   * @returns True if success, else false
+   */
+  function addPersonToRally(
+    profile: ProfileObject
+  ): boolean {
+    if (people.find((p) => p.id == profile.id))
+      return false;
+    setPeople(people.concat(profile));
+    return true;
+  }
+
+  /****************************
+   * Remove a person from the local rally list
+   * @param id The id of the person to remove
+   */
   function removePerson(id: string) {
     setPeople(people.filter((p) => p.id != id));
   }
 
   return (
     <div>
+      <ConfirmMenu
+        active={createConfirmActive}
+        onClose={() =>
+          setCreateConfirmActive(false)
+        }
+        onConfirm={() => {
+          setCreateConfirmActive(false);
+          createNewProfile(personSearch || "");
+        }}
+        header={`We can't find a player called ${personSearch}`}
+        body="Create a new player?"
+        icon="alert-circle"
+        width={400}
+        zIndex={25}
+      />
       <BasicMenu
         disableClickOff
         width={300}
@@ -337,23 +385,30 @@ export default function AddRallyMenu({
               className="mr1"
             />
             <label>
-              Add your group (by username)
+              Your group (
+              {people.length == 1
+                ? `1 person`
+                : `${people.length} people`}
+              )
             </label>
           </div>
-          {people?.length > 0 &&
-            people
-              .filter((p) => p?.id != profile?.id)
-              .map((person) => (
+          {people &&
+            people.map((person) => (
+              <div
+                key={person.id}
+                className="row middle"
+              >
                 <div
                   key={person.id}
-                  className="row middle"
+                  className="boxed p2 w100 mb1 row middle"
                 >
-                  <div
-                    key={person.id}
-                    className="boxed p2 w100 mb1 row middle"
-                  >
-                    <p>{person.name}</p>
-                  </div>
+                  <p>
+                    {person.name}{" "}
+                    {person.id == profile?.id &&
+                      "(you)"}{" "}
+                  </p>
+                </div>
+                {person.id != profile?.id && (
                   <IonIcon
                     onClick={() =>
                       removePerson(person.id)
@@ -364,11 +419,12 @@ export default function AddRallyMenu({
                       color: "var(--danger)",
                     }}
                   />
-                </div>
-              ))}
+                )}
+              </div>
+            ))}
           <form
             action="submit"
-            onSubmit={(f) => addPerson(f)}
+            onSubmit={(f) => getPerson(f)}
           >
             <div className="row">
               <input

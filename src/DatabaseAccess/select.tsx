@@ -38,8 +38,6 @@ export async function fetchRallyTypes(
     throw error;
   }
 
-  console.log("D", data);
-
   /*@ts-ignore */
   return data;
 }
@@ -84,28 +82,6 @@ export async function fetchEvents(
   if (error) throw error;
 
   return data;
-}
-
-/*****************************************
- * Insert a new person
- * @param name The name of the person
- * @param age The age of the person
- * @returns A boolean if successful
- * @thorws Error if unsuccessful
- */
-export async function insertPerson(
-  name: string,
-  age?: number
-): Promise<boolean> {
-  const { error } = await supabase
-    .from("profiles")
-    .insert({ name: name, age: age || null });
-
-  if (error) {
-    throw error;
-  }
-
-  return true;
 }
 
 /********************************
@@ -187,23 +163,6 @@ export async function insertRallyType(
   return true;
 }
 
-/************************************
- * Upsert a user profile
- * @param name The name of the user
- * @param email The email of the user
- * @returns True if successful
- * @throws Error if fails
- */
-export async function upsertProfile(name: string, email: string) {
-  const { error } = await supabase
-    .from("profiles")
-    .upsert({ name: name, email: email });
-
-  if (error) throw error.message;
-
-  return true;
-}
-
 export async function fetchProfile(
   userId: string | undefined
 ): Promise<ProfileObject | null> {
@@ -233,7 +192,7 @@ export async function fetchProfileByName(
   const { data, error } = await supabase
     .from("profiles")
     .select()
-    .eq("name", name)
+    .eq("lower_name", name.toLowerCase())
     .single();
 
   if (error) {
@@ -311,24 +270,6 @@ export async function fetchOrgAdmins(orgId: number):Promise<any> {
 
 export async function fetchAllRallyTypes() {
   const { data, error } = await supabase.from("rally_types").select();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
-}
-
-export async function searchUser(
-  name: string | undefined
-): Promise<ProfileObject | undefined> {
-  if (!name) return;
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .select()
-    .eq("name", name)
-    .single();
 
   if (error) {
     throw error;

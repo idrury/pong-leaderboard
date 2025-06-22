@@ -43,7 +43,7 @@ export async function deleteUserAdmin(orgId: number, userId: string) {
     .from("users_to_orgs")
     .delete()
     .eq("org_id", orgId)
-    .eq("user_id", userId);
+    .eq("profile_id", userId);
 
   if (error) throw error;
 
