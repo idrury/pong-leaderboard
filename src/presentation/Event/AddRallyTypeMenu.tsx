@@ -102,15 +102,24 @@ export default function AddRallyTypeMenu({
           className="col w100 m0 p0"
           style={{ height: "80vh", overflow: "scroll" }}
         >
-          <h2 className="p0 m0 pb2">Add rally type</h2>
+          <h2 className="p0 m0 pb2">Add new rally types</h2>
+          <div className="row middle center boxedLight">
+            <IonIcon
+              name="information-circle"
+              className="h2Icon mr2"
+            />
+            <p className="boxedLight bold">
+              Pick an existing one from the list or create your own!
+            </p>
+          </div>
           <div className="row w100 shrinkWrap">
             {(!isMobileBrowser() || !createActive) && (
               <div
                 className="col w50 mt2 between h100"
-                style={{maxHeight: "65vh"}}
+                style={{ maxHeight: "65vh" }}
               >
                 <div
-                className="col between"
+                  className="col between"
                   style={{
                     height: "100%",
                     overflow: "scroll",
@@ -129,13 +138,19 @@ export default function AddRallyTypeMenu({
                         className="textLeft mb1 boxed p2 col between start clickable"
                       >
                         <div className="row middle between w100">
-                          <h3
-                            style={{
-                              textTransform: "capitalize",
-                            }}
-                          >
-                            {t.name}
-                          </h3>
+                          <div className="row middle">
+                            <IonIcon
+                              name="trophy-sharp"
+                              className="mr2"
+                            />
+                            <h3
+                              style={{
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {t.name}
+                            </h3>
+                          </div>
                           <IonIcon
                             onClick={(e) => {
                               e.stopPropagation();

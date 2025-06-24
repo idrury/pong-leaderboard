@@ -28,10 +28,13 @@ import {
 } from "../../DatabaseAccess/delete";
 import ErrorLabel from "../ErrorLabel";
 import RallyTypeInformation from "./RallyTypeInformation";
+import { patchEvent } from "../../DatabaseAccess/patch";
+import { isMobileBrowser } from "../../common/CommonFunctions";
 
 interface EditEventMenuProps extends ActivatableElement {
   event: EventObject | undefined;
   org: UserAdminOrgsObject | undefined;
+  setEvent: (evt: EventObject) => void;
   popModal: PopSavedModalFn;
 }
 
@@ -39,6 +42,7 @@ export default function EditEventMenu({
   active,
   event,
   org,
+  setEvent,
   onClose,
   popModal,
 }: EditEventMenuProps) {
@@ -55,12 +59,15 @@ export default function EditEventMenu({
     active: false,
   });
   const [selectedType, setSelectedType] = useState<RallyTypeObject>();
+  const [eventName, setEventName] = useState(event?.name);
+
   useEffect(() => {
     getData();
     setSelectedType(undefined);
+    setEventName(event?.name);
   }, [active]);
 
-  /**
+  /************************************
    * Fetch on initial page load
    * @returns
    */
@@ -228,6 +235,34 @@ export default function EditEventMenu({
     }
   }
 
+  /****************************************
+   * Update the name of the event in the DB
+   */
+  async function changeEventAttribute(
+    attr: keyof EventObject,
+    value: any
+  ) {
+
+    if (!event || !attr) return;
+
+    try {
+      await patchEvent(event.id, attr, value);
+      setEvent({ ...event, [attr]: value });
+      if (attr == "name") popModal("Event name saved");
+      else if (attr == "is_locked" && value == true)
+        popModal("Your event is locked and can no longer be edited");
+      else if (attr == "is_locked" && value == false)
+        popModal("Your event has been unlocked!");
+    } catch (error) {
+      console.error(error);
+      popModal(
+        "An error occured updating the event name",
+        "Refresh the page and try again!",
+        true
+      );
+    }
+  }
+
   if (!event) return;
 
   return (
@@ -251,37 +286,88 @@ export default function EditEventMenu({
       >
         <div
           className="col w100 m0 p0"
-          style={{ overflow: "scroll" }}
+          style={{
+            overflow: "scroll",
+            overflowX: "hidden",
+            maxHeight: "80vh",
+          }}
         >
-          <h2 className="m0 boxed p2">{event.name}</h2>
+          <form
+            action="submit"
+            onSubmit={(e) => {
+              e.preventDefault();
+              changeEventAttribute("name", eventName);
+            }}
+          >
+            <div className="row start middle">
+              <div>
+                <IonIcon
+                  onClick={() =>
+                    changeEventAttribute(
+                      "is_locked",
+                      !event?.is_locked
+                    )
+                  }
+                  name={`${
+                    event.is_locked ? "lock-closed" : "lock-open"
+                  }`}
+                  className="ml2 mr2 mediumFade clickable"
+                  style={{
+                    height: "3.5em",
+                    width: "3.5em",
+                  }}
+                />
+              </div>
+              <input
+                className="headerInput mediumFade boxed pt2 pb2"
+                style={{ fontSize: `${isMobileBrowser() && 30}pt` }}
+                value={eventName || ""}
+                onChange={(e) => setEventName(e.target.value)}
+              />
+              {eventName != event.name && (
+                <div>
+                  <IonIcon
+                    onClick={() =>
+                      changeEventAttribute("name", eventName)
+                    }
+                    name="checkmark-circle"
+                    className="ml2 mr2 clickable mediumFade"
+                    style={{
+                      height: "4em",
+                      width: "4em",
+                      color: "var(--safeColor)",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </form>
           <div className="row w100 shrinkWrap">
-            <div
-              className="col w50 between"
-              style={{ maxHeight: "80vh" }}
-            >
-              <h2 className="textLeft pl1">Event Admins</h2>
-              <div
-                className=""
-                style={{
-                  overflow: "scroll",
-                  overflowX: "hidden",
-                  minHeight: "20%",
-                }}
-              >
+            <div className="col w50 start">
+              <div className="row middle">
+                <IonIcon
+                  name="person-circle"
+                  className="h2Icon mr2"
+                />
+                <h2 className="textLeft pl1">Event Admins</h2>
+              </div>
+              <div className="">
                 <div>
                   {adminProfiles?.map((profile, i) => (
                     <div
                       key={i}
                       className="boxed row p2 between mb2 middle"
                     >
-                      <p>{profile.profiles.name}</p>
+                      <div className="row middle start">
+                        <IonIcon name="person" className="mr2" />
+                        <p>{profile.profiles.name}</p>
+                      </div>
                       <div className="row end middle">
-                        
                         <IonIcon
                           onClick={() =>
                             removeUserFromOrg(profile.profiles.id)
                           }
-                          name="remove-circle"
+                          name="person-remove"
                           className="clickable"
                           style={{
                             height: 20,
@@ -304,6 +390,7 @@ export default function EditEventMenu({
               >
                 <div className="row mb2">
                   <input
+                    placeholder="Enter a user name"
                     value={newAdminName || ""}
                     onChange={(e) => setNewAdminName(e.target.value)}
                     className="w75 mr2"
@@ -317,33 +404,46 @@ export default function EditEventMenu({
                   active={error.selector == "name"}
                 />
               </form>
-              <div>
-                <h2 className="textLeft pl1">Your event rally types</h2>
-                  <button
-                  className="p2 mb2 accentButton w100"
-                  onClick={() => setAddRallyTypeActive(true)}
-                >
-                  + Rally Type
-                </button>
-                <div
-                  style={{
-                    maxHeight: "50%",
-                    overflow: "scroll",
-                    overflowX: "hidden",
-                  }}
-                >
-                  
-                  {eventRallyTypes?.map((e, i) => (
-                    <div
-                      onClick={() => setSelectedType(e)}
-                      key={i}
-                      className={`${
-                        e.id == selectedType?.id
-                          ? "boxedAccent"
-                          : "boxed"
-                      } textLeft mb1 p2 col between start clickable`}
-                    >
-                      <div className="row between middle w100">
+            </div>
+            <div style={{ height: 10, width: 10 }} />
+            <div className="w50">
+              <div className="row middle">
+                <IonIcon name="medal" className="h2Icon mr2" />
+                <h2 className="textLeft pl1">
+                  Your event rally types
+                </h2>
+              </div>
+              <button
+                className="p2 mb2 accentButton w100"
+                onClick={() => setAddRallyTypeActive(true)}
+              >
+                + Rally Type
+              </button>
+              <div
+                style={{
+                  overflowX: "hidden",
+                }}
+              >
+                {eventRallyTypes?.map((e, i) => (
+                  <div
+                    onClick={() => {
+                      selectedType?.id != e.id
+                        ? setSelectedType(e)
+                        : setSelectedType(undefined);
+                    }}
+                    key={i}
+                    className={`${
+                      e.id == selectedType?.id
+                        ? "boxedAccent"
+                        : "boxed"
+                    } textLeft mb1 p2 col between start clickable`}
+                  >
+                    <div className="row between middle w100">
+                      <div className="row middle">
+                        <IonIcon
+                          name="trophy-sharp"
+                          className="mr2"
+                        />
                         <h3
                           style={{
                             textTransform: "capitalize",
@@ -351,26 +451,25 @@ export default function EditEventMenu({
                         >
                           {e.name}
                         </h3>
-                        <IonIcon
-                          onClick={() => onRemoveClick(e.id)}
-                          name="remove-circle"
-                          className="clickable"
-                          style={{
-                            height: 20,
-                            width: 20,
-                            color: "var(--dangerColor)",
-                          }}
-                        />
                       </div>
-                      <RallyTypeInformation
-                        active={e.id == selectedType?.id}
-                        onClose={() => setSelectedType(undefined)}
-                        type={selectedType}
+                      <IonIcon
+                        onClick={() => onRemoveClick(e.id)}
+                        name="remove-circle"
+                        className="clickable"
+                        style={{
+                          height: 20,
+                          width: 20,
+                          color: "var(--dangerColor)",
+                        }}
                       />
                     </div>
-                  ))}
-                </div>
-              
+                    <RallyTypeInformation
+                      active={e.id == selectedType?.id}
+                      onClose={() => setSelectedType(undefined)}
+                      type={selectedType}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>

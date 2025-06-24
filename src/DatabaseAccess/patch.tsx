@@ -1,4 +1,4 @@
-import { RallyObject } from "../Types";
+import { EventObject, RallyObject } from "../Types";
 import { supabase } from "./SupabaseClient";
 
 /**********************************
@@ -32,4 +32,26 @@ export async function blockUser(orgId: number, userId: string) {
     throw error;
 
   return data;
+}
+
+/**********************************
+ * Update an attribute of an event
+ * @param id The id of the event to update
+ * @param attribute The attribute to change
+ * @param value The value to change the attr to
+ */
+export async function patchEvent(
+  id: string,
+  attribute: keyof EventObject,
+  value: any
+) {
+
+  const { error } = await supabase
+    .from("events")
+    .update({ [attribute]: value })
+    .eq("id", id);
+
+  if (error) throw error;
+
+  return true;
 }

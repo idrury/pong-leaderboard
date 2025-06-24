@@ -208,17 +208,17 @@ textarea:focus {
 .headerInput {
   font-family: "Poppins", sans-serif;
   font-weight: 600;
-  line-height: 1;
+  line-height: 0;
   font-size: 4em;
-  text-transform: uppercase;
-  width: 95%;
   height: 1em;
-  padding: 0.2em;
+  margin: 0px 0 0 0;
   border-radius: 5px;
-
-  margin: 0.5em 0 0.3em 0;
-
+  color: var(--text);
   background-color: #00000000;
+}
+
+.headerInput:focus {
+  background: var(--smallAccent)
 }
 
 .invisibleTextArea {

@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { ActivatableElement, RallyTypeObject } from "../../Types";
 
 interface RallyTypeInformation extends ActivatableElement {
@@ -11,21 +12,28 @@ export default function RallyTypeInformation({
   return (
     <div>
       {type && active && (
-        <div className="col start w100 pt2" style={{ height: "100%" }}>
+        <div
+          className="col start w100 pt2"
+          style={{ height: "100%" }}
+        >
+          <p className="boxedDark mb2">
+            Created{" "}
+            {DateTime.fromJSDate(new Date(type.created_at)).toFormat(
+              "MMM d y"
+            )}
+          </p>
+
           <div className="textLeft">
-              <p className="boxedDark" style={{ height: 100 }}>
+            <p className="boxedDark" style={{ height: 100 }}>
               {type.description}
             </p>
             <p className="mt2">
-              <strong>
-                {type.min_people == type.max_people
-                  ? `Must have ${type.min_people} player(s)`
-                  : `Must have ${type.min_people} - ${type.max_people} players`}
-              </strong>
+              {type.min_people == type.max_people
+                ? `Must have ${type.min_people} player(s)`
+                : `Must have ${type.min_people} - ${type.max_people} players`}
             </p>
           </div>
-          <div className="pt2 row center">
-          </div>
+          <div className="pt2 row center"></div>
         </div>
       )}
     </div>

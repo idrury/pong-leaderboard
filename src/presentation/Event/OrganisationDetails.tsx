@@ -52,6 +52,17 @@ export default function OrganisationDetails({
     navigate(`events/${event.id}`);
   }
 
+  /**************************************************
+   * Update an item in the events list with a new value
+   */
+  function replaceEvent(event: EventObject) {
+    if(!events) return;
+    let allEvents = events.filter(e => e.id != event.id);
+    allEvents.push(event);
+
+    setEvents(allEvents.reverse());
+  }
+
   return (
     <div className="w50 pt2 pb2">
       <EditEventMenu
@@ -59,6 +70,7 @@ export default function OrganisationDetails({
         onClose={() => setEditEventActive(undefined)}
         event={events?.find((e) => e.id == editEventActive)}
         org={organisations && organisations[0]}
+        setEvent={(evt) => replaceEvent(evt)}
         popModal={popModal}
       />
 
