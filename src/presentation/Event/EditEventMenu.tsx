@@ -27,9 +27,9 @@ import {
   deleteUserAdmin,
 } from "../../DatabaseAccess/delete";
 import ErrorLabel from "../ErrorLabel";
+import RallyTypeInformation from "./RallyTypeInformation";
 
-interface EditEventMenuProps
-  extends ActivatableElement {
+interface EditEventMenuProps extends ActivatableElement {
   event: EventObject | undefined;
   org: UserAdminOrgsObject | undefined;
   popModal: PopSavedModalFn;
@@ -46,20 +46,18 @@ export default function EditEventMenu({
     useState<CampaignRallyTypeObject[]>();
   const [allRallyTypes, setAllRallyTypes] =
     useState<RallyTypeObject[]>();
-  const [
-    addRallyTypeActive,
-    setAddRallyTypeActive,
-  ] = useState(false);
-  const [adminProfiles, setAdminProfiles] =
-    useState<{ profiles: ProfileObject }[]>([]);
-  const [newAdminName, setNewAdminName] =
-    useState<string>();
-  const [error, setError] =
-    useState<ErrorLabelType>({
-      active: false,
-    });
+  const [addRallyTypeActive, setAddRallyTypeActive] = useState(false);
+  const [adminProfiles, setAdminProfiles] = useState<
+    { profiles: ProfileObject }[]
+  >([]);
+  const [newAdminName, setNewAdminName] = useState<string>();
+  const [error, setError] = useState<ErrorLabelType>({
+    active: false,
+  });
+  const [selectedType, setSelectedType] = useState<RallyTypeObject>();
   useEffect(() => {
     getData();
+    setSelectedType(undefined);
   }, [active]);
 
   /**
@@ -72,11 +70,7 @@ export default function EditEventMenu({
       await getAllRallyTypes();
       org?.id && (await getOrgAdmins(org.id));
     } catch (error) {
-      popModal(
-        "An error occured getting the event",
-        undefined,
-        true
-      );
+      popModal("An error occured getting the event", undefined, true);
     }
   }
 
@@ -85,15 +79,9 @@ export default function EditEventMenu({
    */
   async function getAllRallyTypes() {
     try {
-      setAllRallyTypes(
-        await fetchAllRallyTypes()
-      );
+      setAllRallyTypes(await fetchAllRallyTypes());
     } catch (error) {
-      popModal(
-        "An error occured getting the event",
-        undefined,
-        true
-      );
+      popModal("An error occured getting the event", undefined, true);
     }
   }
 
@@ -103,16 +91,10 @@ export default function EditEventMenu({
   async function getEventRallyTypes() {
     if (!event) return;
     try {
-      const data = await fetchRallyTypes(
-        event.id
-      );
+      const data = await fetchRallyTypes(event.id);
       setEventRallyTypes(data);
     } catch (error) {
-      popModal(
-        "An error occured getting the event",
-        undefined,
-        true
-      );
+      popModal("An error occured getting the event", undefined, true);
     }
   }
   async function getOrgAdmins(orgId: number) {
@@ -136,52 +118,26 @@ export default function EditEventMenu({
   async function onRemoveClick(typeId: number) {
     if (!event?.id) return;
     try {
-      await deleteEventRallyType(
-        event.id,
-        typeId
-      );
+      await deleteEventRallyType(event.id, typeId);
       popModal("Rally type removed!");
       setEventRallyTypes(
-        eventRallyTypes?.filter(
-          (t) => t.id != typeId
-        )
+        eventRallyTypes?.filter((t) => t.id != typeId)
       );
 
       await getAllRallyTypes();
     } catch (error) {
-      popModal(
-        "An error removing this rally type",
-        undefined,
-        true
-      );
+      popModal("An error removing this rally type", undefined, true);
     }
   }
 
-  async function onAddClick(
-    e: React.MouseEvent,
-    typeId: number
-  ) {
-    if (
-      !event ||
-      !allRallyTypes ||
-      !eventRallyTypes
-    )
-      return;
+  async function onAddClick(e: React.MouseEvent, typeId: number) {
+    if (!event || !allRallyTypes || !eventRallyTypes) return;
     e.stopPropagation();
 
     try {
-      await insertRallyTypeForEvent(
-        typeId,
-        event?.id
-      );
-      popModal(
-        "New rally type added to your event!"
-      );
-      setAllRallyTypes(
-        allRallyTypes?.filter(
-          (t) => t.id != typeId
-        )
-      );
+      await insertRallyTypeForEvent(typeId, event?.id);
+      popModal("New rally type added to your event!");
+      setAllRallyTypes(allRallyTypes?.filter((t) => t.id != typeId));
 
       await getEventRallyTypes();
     } catch (error) {
@@ -198,9 +154,7 @@ export default function EditEventMenu({
    * Handle removing user as admin
    * @param userId
    */
-  async function removeUserFromOrg(
-    userId: string
-  ) {
+  async function removeUserFromOrg(userId: string) {
     if (!org) return;
 
     try {
@@ -223,10 +177,7 @@ export default function EditEventMenu({
   async function addNewAdmin() {
     if (!org) return;
     // Validate form
-    if (
-      !newAdminName ||
-      newAdminName.length < 2
-    ) {
+    if (!newAdminName || newAdminName.length < 2) {
       setError({
         active: true,
         selector: "name",
@@ -234,11 +185,7 @@ export default function EditEventMenu({
       });
       return;
     }
-    if (
-      adminProfiles.some(
-        (p) => p.profiles.name == newAdminName
-      )
-    ) {
+    if (adminProfiles.some((p) => p.profiles.name == newAdminName)) {
       setError({
         active: true,
         selector: "name",
@@ -251,9 +198,7 @@ export default function EditEventMenu({
 
     // Try fetch user
     try {
-      user = await fetchProfileByName(
-        newAdminName
-      );
+      user = await fetchProfileByName(newAdminName);
     } catch (error) {
       setError({
         active: true,
@@ -289,9 +234,7 @@ export default function EditEventMenu({
     <div>
       <AddRallyTypeMenu
         active={addRallyTypeActive}
-        onClose={() =>
-          setAddRallyTypeActive(false)
-        }
+        onClose={() => setAddRallyTypeActive(false)}
         allTypes={allRallyTypes}
         eventTypes={eventRallyTypes}
         onTypeAdded={() => getAllRallyTypes()}
@@ -306,57 +249,52 @@ export default function EditEventMenu({
         onClose={onClose}
         disableClickOff
       >
-        <div className="col w100 m0 p0">
-          <h2 className="p0 m0">{event.name}</h2>
-          <div className="row w100">
+        <div
+          className="col w100 m0 p0"
+          style={{ overflow: "scroll" }}
+        >
+          <h2 className="m0 boxed p2">{event.name}</h2>
+          <div className="row w100 shrinkWrap">
             <div
-              className="col w50 between h100"
+              className="col w50 between"
               style={{ maxHeight: "80vh" }}
             >
+              <h2 className="textLeft pl1">Event Admins</h2>
               <div
                 className=""
                 style={{
                   overflow: "scroll",
                   overflowX: "hidden",
+                  minHeight: "20%",
                 }}
               >
-                <h3>Admins</h3>
                 <div>
-                  {adminProfiles?.map(
-                    (profile, i) => (
-                      <div
-                        key={i}
-                        className="boxed row p2 between mb2 middle"
-                      >
-                        <p>
-                          {profile.profiles.name}
-                        </p>
-                        <div className="row end middle">
-                          <p className="mr2">
-                            {profile.profiles.id}
-                          </p>
-                          <IonIcon
-                            onClick={() =>
-                              removeUserFromOrg(
-                                profile.profiles
-                                  .id
-                              )
-                            }
-                            name="remove-circle"
-                            className="clickable"
-                            style={{
-                              height: 20,
-                              width: 20,
-                              color:
-                                "var(--dangerColor)",
-                            }}
-                          />
-                        </div>
+                  {adminProfiles?.map((profile, i) => (
+                    <div
+                      key={i}
+                      className="boxed row p2 between mb2 middle"
+                    >
+                      <p>{profile.profiles.name}</p>
+                      <div className="row end middle">
+                        
+                        <IonIcon
+                          onClick={() =>
+                            removeUserFromOrg(profile.profiles.id)
+                          }
+                          name="remove-circle"
+                          className="clickable"
+                          style={{
+                            height: 20,
+                            width: 20,
+                            color: "var(--dangerColor)",
+                          }}
+                        />
                       </div>
-                    )
-                  )}
+                    </div>
+                  ))}
                 </div>
               </div>
+
               <form
                 action="submit"
                 onSubmit={(f) => {
@@ -367,72 +305,73 @@ export default function EditEventMenu({
                 <div className="row mb2">
                   <input
                     value={newAdminName || ""}
-                    onChange={(e) =>
-                      setNewAdminName(
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => setNewAdminName(e.target.value)}
                     className="w75 mr2"
                   />
-                  <button
-                    type="submit"
-                    className="accentButton w25"
-                  >
+                  <button type="submit" className="accentButton w25">
                     + Admin
                   </button>
                 </div>
                 <ErrorLabel
                   text={error.text}
-                  active={
-                    error.selector == "name"
-                  }
+                  active={error.selector == "name"}
                 />
               </form>
-
-              <h3>Your rally types are</h3>
-              <div
-                style={{
-                  overflow: "scroll",
-                  overflowX: "hidden",
-                }}
-              >
-                {eventRallyTypes?.map((e, i) => (
-                  <div
-                    key={i}
-                    className="textLeft mb1 boxed p2 row between middle"
-                  >
-                    <p
-                      style={{
-                        textTransform:
-                          "capitalize",
-                      }}
+              <div>
+                <h2 className="textLeft pl1">Your event rally types</h2>
+                  <button
+                  className="p2 mb2 accentButton w100"
+                  onClick={() => setAddRallyTypeActive(true)}
+                >
+                  + Rally Type
+                </button>
+                <div
+                  style={{
+                    maxHeight: "50%",
+                    overflow: "scroll",
+                    overflowX: "hidden",
+                  }}
+                >
+                  
+                  {eventRallyTypes?.map((e, i) => (
+                    <div
+                      onClick={() => setSelectedType(e)}
+                      key={i}
+                      className={`${
+                        e.id == selectedType?.id
+                          ? "boxedAccent"
+                          : "boxed"
+                      } textLeft mb1 p2 col between start clickable`}
                     >
-                      {e.name}
-                    </p>
-                    <IonIcon
-                      onClick={() =>
-                        onRemoveClick(e.id)
-                      }
-                      name="remove-circle"
-                      className="clickable"
-                      style={{
-                        height: 20,
-                        width: 20,
-                        color:
-                          "var(--dangerColor)",
-                      }}
-                    />
-                  </div>
-                ))}
+                      <div className="row between middle w100">
+                        <h3
+                          style={{
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          {e.name}
+                        </h3>
+                        <IonIcon
+                          onClick={() => onRemoveClick(e.id)}
+                          name="remove-circle"
+                          className="clickable"
+                          style={{
+                            height: 20,
+                            width: 20,
+                            color: "var(--dangerColor)",
+                          }}
+                        />
+                      </div>
+                      <RallyTypeInformation
+                        active={e.id == selectedType?.id}
+                        onClose={() => setSelectedType(undefined)}
+                        type={selectedType}
+                      />
+                    </div>
+                  ))}
+                </div>
+              
               </div>
-              <button
-                className="p2 mt1 accentButton w100"
-                onClick={() =>
-                  setAddRallyTypeActive(true)
-                }
-              >
-                + Rally Type
-              </button>
             </div>
           </div>
         </div>

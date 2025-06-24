@@ -8,23 +8,18 @@ import {
 } from "../../Types";
 import BasicMenu from "../BasicMenu";
 import ErrorLabel from "../ErrorLabel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChecknewRallyTypeForm } from "./EventBL";
 import { insertNewRallyType } from "../../DatabaseAccess/insert";
 import { isMobileBrowser } from "../../common/CommonFunctions";
+import RallyTypeInformation from "./RallyTypeInformation";
 
-interface AddRallyTypeMenuProps
-  extends ActivatableElement {
+interface AddRallyTypeMenuProps extends ActivatableElement {
   allTypes: RallyTypeObject[] | undefined;
-  eventTypes:
-    | CampaignRallyTypeObject[]
-    | undefined;
+  eventTypes: CampaignRallyTypeObject[] | undefined;
   popModal?: PopSavedModalFn;
   onTypeAdded?: () => void;
-  onAddClick: (
-    e: React.MouseEvent,
-    rallyId: number
-  ) => void;
+  onAddClick: (e: React.MouseEvent, rallyId: number) => void;
 }
 
 export default function AddRallyTypeMenu({
@@ -36,24 +31,22 @@ export default function AddRallyTypeMenu({
   onTypeAdded,
   onClose,
 }: AddRallyTypeMenuProps) {
-  const [error, setError] =
-    useState<ErrorLabelType>({
-      active: false,
-    });
+  const [error, setError] = useState<ErrorLabelType>({
+    active: false,
+  });
   const [name, setName] = useState<string>();
-  const [description, setDescription] =
-    useState<string>();
+  const [description, setDescription] = useState<string>();
   const [min, setMin] = useState<string>("1");
   const [max, setMax] = useState<string>("1");
 
-  const [createActive, setCreateActive] =
-    useState(false);
-  const [activeEvent, setActiveEvent] =
-    useState<RallyTypeObject>();
+  const [createActive, setCreateActive] = useState(false);
+  const [activeEvent, setActiveEvent] = useState<RallyTypeObject>();
 
-  async function createNewRally(
-    f: React.FormEvent
-  ) {
+  useEffect(() => {
+    setActiveEvent(undefined);
+  }, [active]);
+
+  async function createNewRally(f: React.FormEvent) {
     f.preventDefault();
     const parsedMin = parseInt(min);
     const parsedMax = parseInt(max);
@@ -95,6 +88,7 @@ export default function AddRallyTypeMenu({
         );
     }
   }
+
   return (
     <div>
       <BasicMenu
@@ -104,74 +98,68 @@ export default function AddRallyTypeMenu({
         onClose={onClose}
         disableClickOff
       >
-        <div className="col w100 m0 p0">
-          <h2 className="p0 m0 pb2">
-            Add rally type
-          </h2>
+        <div
+          className="col w100 m0 p0"
+          style={{ height: "80vh", overflow: "scroll" }}
+        >
+          <h2 className="p0 m0 pb2">Add rally type</h2>
           <div className="row w100 shrinkWrap">
-            {(!isMobileBrowser() ||
-              (isMobileBrowser() &&
-                !createActive)) && (
+            {(!isMobileBrowser() || !createActive) && (
               <div
-                className="col w50 mt2 between"
-                style={{
-                  maxHeight: `${
-
-                       "70vh"
-                  }`,
-                }}
+                className="col w50 mt2 between h100"
+                style={{maxHeight: "65vh"}}
               >
                 <div
+                className="col between"
                   style={{
                     height: "100%",
-                    overflow: "auto",
+                    overflow: "scroll",
                     overflowX: "hidden",
                   }}
                 >
                   {allTypes
                     ?.filter(
                       (at) =>
-                        !eventTypes?.find(
-                          (et) => et.id == at.id
-                        )
+                        !eventTypes?.find((et) => et.id == at.id)
                     )
                     ?.map((t) => (
                       <div
                         key={t.id}
-                        onClick={() =>
-                          setActiveEvent(t)
-                        }
-                        className="textLeft mb1 boxed p2 row between middle clickable"
+                        onClick={() => setActiveEvent(t)}
+                        className="textLeft mb1 boxed p2 col between start clickable"
                       >
-                        <p
-                          style={{
-                            textTransform:
-                              "capitalize",
-                          }}
-                        >
-                          {t.name}
-                        </p>
-                        <IonIcon
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onAddClick(e, t.id);
-                          }}
-                          name="add-circle"
-                          className="clickable"
-                          style={{
-                            color:
-                              "var(--primaryColor)",
-                            height: 20,
-                            width: 20,
-                          }}
+                        <div className="row middle between w100">
+                          <h3
+                            style={{
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {t.name}
+                          </h3>
+                          <IonIcon
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onAddClick(e, t.id);
+                            }}
+                            name="add-circle"
+                            className="clickable"
+                            style={{
+                              color: "var(--primaryColor)",
+                              height: 20,
+                              width: 20,
+                            }}
+                          />
+                        </div>
+                        <RallyTypeInformation
+                          active={activeEvent?.id == t.id}
+                          onClose={() => setActiveEvent(undefined)}
+                          type={t}
                         />
                       </div>
                     ))}
                 </div>
                 <button
-                  onClick={() =>
-                    setCreateActive(true)
-                  }
+                  onClick={() => setCreateActive(true)}
                   className="p2 accentButton"
                   disabled={createActive}
                 >
@@ -184,20 +172,19 @@ export default function AddRallyTypeMenu({
 
             <div className="boxed w50 mt2 outline">
               {createActive == true ? (
-                <div className="w100  h100">
+                <div
+                  className="w100  h100"
+                  style={{ minHeight: "70vh" }}
+                >
                   <form
                     className="p2"
                     action="submit"
-                    onSubmit={(f) =>
-                      createNewRally(f)
-                    }
+                    onSubmit={(f) => createNewRally(f)}
                   >
                     <div className="col h100">
                       <div className="row middle between">
                         <button
-                          onClick={() =>
-                            setCreateActive(false)
-                          }
+                          onClick={() => setCreateActive(false)}
                           className="row middle center p1 mb2 accentButton"
                         >
                           <IonIcon
@@ -207,42 +194,29 @@ export default function AddRallyTypeMenu({
                           <p>Cancel</p>
                         </button>
                       </div>
-                      <label className="mb2">
-                        Name
-                      </label>
+                      <label className="mb2">Name</label>
                       <input
                         className="mb2"
                         autoFocus
                         autoComplete="rally-name"
                         value={name || ""}
-                        onChange={(e) =>
-                          setName(e.target.value)
-                        }
+                        onChange={(e) => setName(e.target.value)}
                       />
                       <ErrorLabel
-                        active={
-                          error.selector == "name"
-                        }
+                        active={error.selector == "name"}
                         text={error.text}
                       />
-                      <label className="mb2">
-                        Description
-                      </label>
+                      <label className="mb2">Description</label>
                       <input
                         className="mb2"
                         autoComplete="rally-description"
                         value={description || ""}
                         onChange={(e) =>
-                          setDescription(
-                            e.target.value
-                          )
+                          setDescription(e.target.value)
                         }
                       />
                       <ErrorLabel
-                        active={
-                          error.selector ==
-                          "description"
-                        }
+                        active={error.selector == "description"}
                         text={error.text}
                       />
                       <label className="mb2">
@@ -255,14 +229,10 @@ export default function AddRallyTypeMenu({
                         type="number"
                         min={1}
                         max={10}
-                        onChange={(e) =>
-                          setMin(e.target.value)
-                        }
+                        onChange={(e) => setMin(e.target.value)}
                       />
                       <ErrorLabel
-                        active={
-                          error.selector == "min"
-                        }
+                        active={error.selector == "min"}
                         text={error.text}
                       />
                       <label className="mb2">
@@ -275,14 +245,10 @@ export default function AddRallyTypeMenu({
                         min={0}
                         max={10}
                         value={max || ""}
-                        onChange={(e) =>
-                          setMax(e.target.value)
-                        }
+                        onChange={(e) => setMax(e.target.value)}
                       />
                       <ErrorLabel
-                        active={
-                          error.selector == "max"
-                        }
+                        active={error.selector == "max"}
                         text={error.text}
                       />
                     </div>
@@ -294,34 +260,20 @@ export default function AddRallyTypeMenu({
                     </button>
                   </form>
                 </div>
-              ) : activeEvent ? (
-                <div className="p2 textLeft">
-                  <h3
-                    style={{
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {activeEvent.name}
-                  </h3>
-                  <p>{activeEvent.description}</p>
-                  <p className="boxedDark mt2">
-                    <strong>
-                      {activeEvent.min_people ==
-                      activeEvent.max_people
-                        ? `Must have ${activeEvent.min_people} player(s)`
-                        : `Must have ${activeEvent.min_people} - ${activeEvent.max_people} players`}
-                    </strong>
-                  </p>
-                </div>
               ) : (
-                <div
-                  className={`col middle w100 h100 center`}
-                >
-                  <p className="p2">
-                    Click the plus button to add a
-                    rally to your event!
-                  </p>
-                </div>
+                !isMobileBrowser() && (
+                  <div className={`col middle w100 h100 center`}>
+                    <RallyTypeInformation
+                      active={true}
+                      onClose={() => setActiveEvent(undefined)}
+                      type={activeEvent}
+                    />
+                    <p className="p2">
+                      Click the plus button to add a rally to your
+                      event!
+                    </p>
+                  </div>
+                )
               )}
             </div>
           </div>
