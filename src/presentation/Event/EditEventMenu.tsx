@@ -26,10 +26,10 @@ import {
   deleteEventRallyType,
   deleteUserAdmin,
 } from "../../DatabaseAccess/delete";
-import ErrorLabel from "../ErrorLabel";
 import RallyTypeInformation from "./RallyTypeInformation";
 import { patchEvent } from "../../DatabaseAccess/patch";
 import { isMobileBrowser } from "../../common/CommonFunctions";
+import { UserSelectionInput } from "../UserSelectionInput";
 
 interface EditEventMenuProps extends ActivatableElement {
   event: EventObject | undefined;
@@ -168,8 +168,9 @@ export default function EditEventMenu({
       await deleteUserAdmin(org.id, userId);
       await getOrgAdmins(org.id);
       popModal("User is no longer an admin");
+      console.info(error)
     } catch (error) {
-      console.log(error);
+      console.error(error);
       popModal(
         "An error occurred removing the user",
         "Refresh the page and try again",
@@ -185,11 +186,6 @@ export default function EditEventMenu({
     if (!org) return;
     // Validate form
     if (!newAdminName || newAdminName.length < 2) {
-      setError({
-        active: true,
-        selector: "name",
-        text: "Enter a valid user name",
-      });
       return;
     }
     if (adminProfiles.some((p) => p.profiles.name == newAdminName)) {
@@ -381,29 +377,11 @@ export default function EditEventMenu({
                 </div>
               </div>
 
-              <form
-                action="submit"
-                onSubmit={(f) => {
-                  f.preventDefault();
-                  addNewAdmin();
-                }}
-              >
-                <div className="row mb2">
-                  <input
-                    placeholder="Enter a user name"
-                    value={newAdminName || ""}
-                    onChange={(e) => setNewAdminName(e.target.value)}
-                    className="w75 mr2"
-                  />
-                  <button type="submit" className="accentButton w25">
-                    + Admin
-                  </button>
-                </div>
-                <ErrorLabel
-                  text={error.text}
-                  active={error.selector == "name"}
-                />
-              </form>
+              <UserSelectionInput
+            name={newAdminName}
+            setName={setNewAdminName}
+            onSelect={() => addNewAdmin()}
+          />
             </div>
             <div style={{ height: 10, width: 10 }} />
             <div className="w50">

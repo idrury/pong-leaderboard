@@ -44,6 +44,7 @@ export default function ConfirmMenu({
         <form action="submit" onSubmit={f => {f.preventDefault(), onConfirm()}}>
           <div className="row middle center w100 pt2 mt2">
             <button autoFocus
+            type="button"
               onClick={onClose}
               className="row middle center w100 mr1"
             >
@@ -54,7 +55,7 @@ export default function ConfirmMenu({
               <p>Cancel</p>
             </button>
             <button
-              onClick={onConfirm}
+            type="submit"
               className="accentButton row middle center w100 ml1"
             >
               <IonIcon

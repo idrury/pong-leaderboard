@@ -24,9 +24,9 @@ import gsap from "gsap";
 import { createAnonProfile } from "../../DatabaseAccess/authentication";
 import { validateNewRallyForm } from "../Event/EventBL";
 import ConfirmMenu from "./ConfirmMenu";
+import { UserSelectionInput } from "../UserSelectionInput";
 
-interface AddRallyMenuProps
-  extends ActivatableElement {
+interface AddRallyMenuProps extends ActivatableElement {
   currentRallyTypes?: CampaignRallyTypeObject[];
   activateSaved: PopSavedModalFn;
   profile: ProfileObject;
@@ -42,25 +42,17 @@ export default function AddRallyMenu({
   profile,
   eventId,
 }: AddRallyMenuProps) {
-  const [rallyOptions, setRallyOptions] =
-    useState<InputOption[]>();
+  const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
-  const [rallyType, setRallyType] =
-    useState<number>();
-  const [people, setPeople] = useState<
-    ProfileObject[]
-  >([]);
-  const [personSearch, setPersonSearch] =
-    useState<string>();
+  const [rallyType, setRallyType] = useState<number>();
+  const [people, setPeople] = useState<ProfileObject[]>([]);
+  const [personSearch, setPersonSearch] = useState<string>();
 
-  const [error, setError] =
-    useState<ErrorLabelType>({
-      active: false,
-    });
-  const [
-    createConfirmActive,
-    setCreateConfirmActive,
-  ] = useState(false);
+  const [error, setError] = useState<ErrorLabelType>({
+    active: false,
+  });
+  const [createConfirmActive, setCreateConfirmActive] =
+    useState(false);
 
   useEffect(() => {
     getData();
@@ -68,22 +60,23 @@ export default function AddRallyMenu({
 
   // Reset the component
   useEffect(() => {
-    setError({ active: false });
-    setPeople([]);
-    setHits(undefined);
-    setRallyType(undefined);
+    if (active == false) {
+      setError({ active: false });
+      setPeople([]);
+      setHits(undefined);
+      setRallyType(undefined);
+      return;
+    }
+
     if (profile) addPersonToRally(profile);
   }, [active]);
 
   useGSAP(() => {
     gsap.registerPlugin(SplitText);
 
-    const titleSplit = SplitText.create(
-      ".titleTransition",
-      {
-        type: "words",
-      }
-    );
+    const titleSplit = SplitText.create(".titleTransition", {
+      type: "words",
+    });
 
     gsap.from(titleSplit.words, {
       opacity: 0,
@@ -107,9 +100,7 @@ export default function AddRallyMenu({
   async function getData() {
     console.info("Fetching rally types");
     try {
-      setRallyOptions(
-        createRallyTypes(currentRallyTypes || [])
-      );
+      setRallyOptions(createRallyTypes(currentRallyTypes || []));
     } catch (error) {}
   }
 
@@ -119,9 +110,7 @@ export default function AddRallyMenu({
    * @param types The raw list of types
    * @returns A new InputOption array
    */
-  function createRallyTypes(
-    types: CampaignRallyTypeObject[]
-  ) {
+  function createRallyTypes(types: CampaignRallyTypeObject[]) {
     const returnArray = new Array<InputOption>();
     types.forEach((type) => {
       returnArray.push({
@@ -138,28 +127,19 @@ export default function AddRallyMenu({
    */
   async function addRally() {
     let isHighScore = false;
-    let error = validateNewRallyForm(
-      rallyType,
-      hits,
-      people
-    );
+    let error = validateNewRallyForm(rallyType, hits, people);
     if (error) {
       setError(error);
       return;
     }
     if (!hits || !rallyType) return;
     //Get the previous highest score
-    const prevHighRally = currentRallyTypes?.find(
-      (t) => {
-        return t.id == rallyType;
-      }
-    );
+    const prevHighRally = currentRallyTypes?.find((t) => {
+      return t.id == rallyType;
+    });
 
     //Check if high score
-    if (
-      hits < 30000 &&
-      hits > (prevHighRally?.num_hits || 100)
-    ) {
+    if (hits < 30000 && hits > (prevHighRally?.num_hits || 100)) {
       isHighScore = true;
     }
     if (hits >= 30000) {
@@ -180,21 +160,13 @@ export default function AddRallyMenu({
         eventId
       );
 
-      if (id)
-        await insertPeopleForRally(
-          id,
-          people,
-        );
+      if (id) await insertPeopleForRally(id, people);
       activateSaved("New rally added!");
       onClose();
       setHits(undefined);
     } catch (error: any) {
       if (error.code == "P0002") {
-        activateSaved(
-          "Could not add your rally",
-          error.hint,
-          true
-        );
+        activateSaved("Could not add your rally", error.hint, true);
       }
       console.error(error as QueryError);
     }
@@ -202,44 +174,30 @@ export default function AddRallyMenu({
 
   /*****************************************************
    * Fetch a person from the database and add them to the rally
-   * @param form
    */
-  async function getPerson(
-    form: React.FormEvent
-  ) {
-    form.preventDefault();
-
-    if (!personSearch) {
-      setError({
-        text: "Please enter a name",
-        selector: "people",
-        active: true,
-      });
-      return;
-    }
-
-    const formattedSearch =
-      personSearch?.toUpperCase();
+  async function getPerson() {
+    if (!personSearch) return;
+    // Search for person in the database
+    const formattedSearch = personSearch.toUpperCase();
     let person: ProfileObject | null = null;
     try {
-      person =
-        (await fetchProfileByName(
-          formattedSearch
-        )) || null;
+      person = (await fetchProfileByName(formattedSearch)) || null;
 
+      // Add them to the rally if they exist
       if (person) {
         addPersonToRally(person);
         setError({ active: false });
         setPersonSearch(undefined);
       }
     } catch (error: any) {
+      // Promt user to create a new profile
+      // If no user has been found
       if (error.code != "PGRST116") {
         console.error(error);
         return;
       }
     }
 
-    // Create a new profile based on search
     if (!person) {
       setCreateConfirmActive(true);
     }
@@ -274,12 +232,10 @@ export default function AddRallyMenu({
    * @param profile The profile to add
    * @returns True if success, else false
    */
-  function addPersonToRally(
-    profile: ProfileObject
-  ): boolean {
-    if (people.find((p) => p.id == profile.id))
-      return false;
+  function addPersonToRally(profile: ProfileObject): boolean {
+    if (people.find((p) => p.id == profile.id)) return false;
     setPeople(people.concat(profile));
+
     return true;
   }
 
@@ -295,9 +251,7 @@ export default function AddRallyMenu({
     <div>
       <ConfirmMenu
         active={createConfirmActive}
-        onClose={() =>
-          setCreateConfirmActive(false)
-        }
+        onClose={() => setCreateConfirmActive(false)}
         onConfirm={() => {
           setCreateConfirmActive(false);
           createNewProfile(personSearch || "");
@@ -319,18 +273,13 @@ export default function AddRallyMenu({
             name="add-circle"
             className="h2Icon spinTransition"
           />
-          <h2 className="textCenter titleTransition">
-            Add a rally
-          </h2>
+          <h2 className="textCenter titleTransition">Add a rally</h2>
         </div>
         <br />
         <div>
           <div className="mb2">
             <div className="row mb1 middle">
-              <IonIcon
-                name="bowling-ball"
-                className="mr1"
-              />
+              <IonIcon name="bowling-ball" className="mr1" />
               <label>Rally type</label>
             </div>
             <TypeInput
@@ -344,21 +293,14 @@ export default function AddRallyMenu({
             />
           </div>
           <ErrorLabel
-            active={
-              error.selector == "rally_type"
-            }
+            active={error.selector == "rally_type"}
             text={error.text || ""}
             color="var(--dangerColor)"
           />
           <div className="mb2">
             <div className="row mb1 middle">
-              <IonIcon
-                name="stats-chart"
-                className="mr1"
-              />
-              <label className="">
-                Number of hits
-              </label>
+              <IonIcon name="stats-chart" className="mr1" />
+              <label className="">Number of hits</label>
             </div>
             <div className="">
               <input
@@ -378,10 +320,7 @@ export default function AddRallyMenu({
             color="var(--dangerColor)"
           />
           <div className="row mb1 middle">
-            <IonIcon
-              name="person-circle"
-              className="mr1"
-            />
+            <IonIcon name="person-circle" className="mr1" />
             <label>
               Your group (
               {people.length == 1
@@ -392,25 +331,19 @@ export default function AddRallyMenu({
           </div>
           {people &&
             people.map((person) => (
-              <div
-                key={person.id}
-                className="row middle"
-              >
+              <div key={person.id} className="row middle">
                 <div
                   key={person.id}
                   className="boxed p2 w100 mb1 row middle"
                 >
                   <p>
                     {person.name}{" "}
-                    {person.id == profile?.id &&
-                      "(you)"}{" "}
+                    {person.id == profile?.id && "(you)"}{" "}
                   </p>
                 </div>
                 {person.id != profile?.id && (
                   <IonIcon
-                    onClick={() =>
-                      removePerson(person.id)
-                    }
+                    onClick={() => removePerson(person.id)}
                     name="close-circle"
                     className="ml1 m0 h2Icon clickable"
                     style={{
@@ -420,48 +353,19 @@ export default function AddRallyMenu({
                 )}
               </div>
             ))}
-          <form
-            action="submit"
-            onSubmit={(f) => getPerson(f)}
-          >
-            <div className="row">
-              <input
-                value={personSearch || ""}
-                onChange={(e) =>
-                  setPersonSearch(e.target.value)
-                }
-                disabled={false}
-                placeholder="Enter username"
-              />
-              <button
-                type="submit"
-                className="m0 p0"
-              >
-                <IonIcon
-                  name="add-circle"
-                  className="h2Icon m0"
-                  style={{
-                    color: "var(--danger)",
-                  }}
-                />
-              </button>
-            </div>
-          </form>
-          <div className="mt2">
-            <ErrorLabel
-              active={error.selector == "people"}
-              text={error.text || ""}
-              color="var(--dangerColor)"
-            />
-          </div>
+
+          <UserSelectionInput
+            name={personSearch}
+            setName={setPersonSearch}
+            onSelect={() => getPerson()}
+            onCreate={() => setCreateConfirmActive(true)}
+
+          />
           <button
             onClick={() => addRally()}
             className="row center middle w100 accentButton p0 mt2"
           >
-            <IonIcon
-              name="add-circle"
-              className="mr1 pt2 pb2"
-            />
+            <IonIcon name="add-circle" className="mr1 pt2 pb2" />
             Rally
           </button>
         </div>

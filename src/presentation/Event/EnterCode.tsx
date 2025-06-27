@@ -19,12 +19,15 @@ export default function EnterCode({ }: EnterCodeProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    
     // Handle event ID submission logic here
     const localEvent = toString(eventId).toUpperCase();
     setError({active: false})
     try {
       const event = await fetchEvent(localEvent);
-      if (event) navigate(`events/${localEvent}`);
+      if (event) {
+        navigate(`events/${localEvent}`)
+      };
     } catch (error) {
       setError({
         text: "Looks like that event doesn't exist!",

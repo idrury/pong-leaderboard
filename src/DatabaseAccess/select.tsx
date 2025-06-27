@@ -31,7 +31,7 @@ export async function fetchRallyTypes(
   eventId: string
 ): Promise<CampaignRallyTypeObject[]> {
   const { data, error } = await supabase
-    .rpc("get_rally_types", {evt_id: eventId})
+    .rpc("get_rally_types", { evt_id: eventId })
     .select();
 
   if (error) {
@@ -253,11 +253,12 @@ export async function fetchUsersOrganisations(
  * Get the profiles of admins of the organisation
  * @param orgId Organisations ID
  */
-export async function fetchOrgAdmins(orgId: number):Promise<any> {
+export async function fetchOrgAdmins(orgId: number): Promise<any> {
   const { data, error } = await supabase
     .from("users_to_orgs")
-    .select('profiles(*)')
-    .eq("org_id", orgId);
+    .select("profiles(*)")
+    .eq("org_id", orgId)
+    .eq("is_admin", true);
 
   if (error) throw error;
 
@@ -270,6 +271,23 @@ export async function fetchAllRallyTypes() {
   if (error) {
     throw error;
   }
+
+  return data;
+}
+
+/**
+ * Get a list of users (limit 10) with a matching name
+ * @param name The name to search for
+ */
+export async function fetchUsersByName(name: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .ilike("name", `%${name}%`)
+    .order("name", { ascending: true })
+    .limit(10);
+
+  if (error) throw error;
 
   return data;
 }

@@ -25,7 +25,12 @@ export async function insertRallyTypeForEvent(
 export async function insertUserAdmin(orgId: number, userId: string) {
   const { data, error } = await supabase
     .from("users_to_orgs")
-    .insert({ org_id: orgId, user_id: userId, profile_id: userId });
+    .insert({
+      org_id: orgId,
+      user_id: userId,
+      profile_id: userId,
+      is_admin: true,
+    });
 
   if (error) throw error;
 
@@ -54,6 +59,24 @@ export async function insertNewRallyType(
       max_people: max,
     })
     .select();
+
+  if (error) throw error;
+
+  return data;
+}
+
+/******************************************
+ * Add a user to an organisation as a player
+ * @param orgId The org to add them to
+ * @param userId The user to add
+ */
+export async function insert_user_to_org(
+  orgId: number,
+  userId: string
+) {
+  const { data, error } = await supabase
+    .from("users_to_orgs")
+    .insert({ org_id: orgId, user_id: userId, profile_id: userId });
 
   if (error) throw error;
 

@@ -119,16 +119,18 @@ interface CreatableTypeInputProps {
  options: any[],
   defaultValue?: string,
   onChange: (val: any) => void,
-  disabled:boolean,
+  onInputChange: (val: string) => void,
+  disabled?:boolean,
   placeholder: string,
   onCreate: (val: any) => void,
-  width: number,
+  width?: number,
 }
 
 export function CreatableTypeInput({
   options,
   defaultValue,
   onChange,
+  onInputChange,
   disabled = false,
   placeholder = "select...",
   onCreate,
@@ -151,6 +153,7 @@ export function CreatableTypeInput({
       <Creatable
         options={options}
         onChange={(val) => onChange(val)}
+        onInputChange={(val) => onInputChange(val)}
         onCreateOption={(val) => onCreate(val)}
         isDisabled={disabled}
         components={{
