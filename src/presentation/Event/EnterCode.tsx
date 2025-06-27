@@ -9,7 +9,7 @@ interface EnterCodeProps {
   popModal?: PopSavedModalFn;
 }
 
-export default function EnterCode({ }: EnterCodeProps) {
+export default function EnterCode ({ }: EnterCodeProps) {
   const [eventId, setEventId] = useState("");
   const [error, setError] = useState<ErrorLabelType>({
     active: false,
@@ -17,12 +17,12 @@ export default function EnterCode({ }: EnterCodeProps) {
 
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit (e: React.FormEvent) {
     e.preventDefault();
     
     // Handle event ID submission logic here
     const localEvent = toString(eventId).toUpperCase();
-    setError({active: false})
+    setError({ active: false })
     try {
       const event = await fetchEvent(localEvent);
       if (event) {
@@ -38,9 +38,9 @@ export default function EnterCode({ }: EnterCodeProps) {
     }
   }
   return (
-    <div className="w50 col middle">
+    <div className="col middle">
       <div style={{ height: "15vh" }} />
-      <div className="col center middle w50">
+      <div className="col center middle">
         <IonIcon
           name="trophy-sharp"
           style={{ fontSize: 80, color: "var(--secondaryColor)" }}
@@ -69,7 +69,7 @@ export default function EnterCode({ }: EnterCodeProps) {
           )}
           <form onSubmit={handleSubmit} className="w100">
             <input
-            autoFocus
+              autoFocus
               className="w100 mb2 textCenter"
               type="text"
               value={eventId}

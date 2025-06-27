@@ -1,11 +1,13 @@
 import "./PlayerHome.css";
 import { PopSavedModalFn, ProfileObject } from "../../Types";
 
-import Header from "../../presentation/Header/Header";
+import HeaderOrganisation from "../../presentation/Header/HeaderOrganisation";
 import { Session } from "@supabase/supabase-js";
 
 import EnterCode from "../../presentation/Event/EnterCode";
-import OrganisationDetails from "../../presentation/Event/OrganisationDetails";
+import PlayerLatestScores from "../../presentation/PlayerHome/PlayerLatestScores";
+import PlayerBestScores from "../../presentation/PlayerHome/PlayerBestScores";
+import GlobalScores from "../../presentation/PlayerHome/GlobalScores";
 import { useEffect, useState } from "react";
 
 interface PlayerHomeProps {
@@ -14,7 +16,7 @@ interface PlayerHomeProps {
   session: Session;
 }
 
-export function PlayerHome({
+export function PlayerHome ({
   popModal,
   profile,
   session,
@@ -26,15 +28,22 @@ export function PlayerHome({
   });
   return (
     <div>
-      <Header
+      <HeaderOrganisation
         profile={profileObj}
         session={session || undefined}
         activeSavedModal={popModal}
       />
-      <div className="col w100 middle">
-        <EnterCode popModal={popModal} />
-        <div style={{ height: 50 }} />
-        <OrganisationDetails profile={profileObj} popModal={popModal} />
+      <div className="row w100" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div className="col" style={{ flex: 1, marginRight: '20px' }}>
+          <PlayerBestScores profile={profileObj} popModal={popModal} />
+          <PlayerLatestScores profile={profileObj} popModal={popModal} />
+        </div>
+        <div className="col middle" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '50px', margin: '0 20px' }}>
+          <EnterCode popModal={popModal} />
+        </div>
+        <div className="col" style={{ flex: 1, marginLeft: '20px' }}>
+          <GlobalScores profile={profileObj} popModal={popModal} />
+        </div>
       </div>
     </div>
   );
