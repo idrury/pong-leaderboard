@@ -13,7 +13,7 @@ interface AuthProps {
   profile: ProfileObject | undefined;
 }
 
-export default function Auth({
+export default function Auth ({
   popModal,
   session,
   profile,
@@ -21,7 +21,7 @@ export default function Auth({
   const [isSignUp, setIsSignUp] = useState(false);
   const [active, setActive] = useState(false);
 
-  async function handleSignOut() {
+  async function handleSignOut () {
     if (session) {
       await supabase.auth.signOut();
     }

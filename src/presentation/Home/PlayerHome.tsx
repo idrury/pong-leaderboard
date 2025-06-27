@@ -1,7 +1,7 @@
 import "./PlayerHome.css";
 import { PopSavedModalFn, ProfileObject } from "../../Types";
 
-import Header from "../../presentation/Header/Header";
+import HeaderOrganisation from "../../presentation/Header/HeaderOrganisation";
 import { Session } from "@supabase/supabase-js";
 
 import EnterCode from "../../presentation/Event/EnterCode";
@@ -28,7 +28,7 @@ export function PlayerHome ({
   });
   return (
     <div>
-      <Header
+      <HeaderOrganisation
         profile={profileObj}
         session={session || undefined}
         activeSavedModal={popModal}

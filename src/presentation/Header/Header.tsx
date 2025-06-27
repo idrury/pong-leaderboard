@@ -21,7 +21,7 @@ interface HeaderProps {
   organisation?: OrganisationSummaryObject;
 }
 
-export default function Header({
+export default function Header ({
   session,
   activeSavedModal,
   activateEditModal,
