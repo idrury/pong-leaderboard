@@ -1,7 +1,7 @@
 import IonIcon from "@reacticons/ionicons";
 import ErrorLabel from "../ErrorLabel";
 import TypeInput from "../TypeInput";
-import { act, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import {
   ActivatableElement,
   CampaignRallyTypeObject,
