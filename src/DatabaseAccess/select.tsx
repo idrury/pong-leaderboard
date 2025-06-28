@@ -275,11 +275,11 @@ export async function fetchAllRallyTypes() {
   return data;
 }
 
-/**
+/****************************************************
  * Get a list of users (limit 10) with a matching name
  * @param name The name to search for
  */
-export async function fetchUsersByName(name: string) {
+export async function fetchUsersByName(name: string):Promise<ProfileObject[]> {
   const { data, error } = await supabase
     .from("profiles")
     .select()

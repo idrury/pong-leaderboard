@@ -1,7 +1,7 @@
 import IonIcon from "@reacticons/ionicons";
 import ErrorLabel from "../ErrorLabel";
 import TypeInput from "../TypeInput";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import {
   ActivatableElement,
   CampaignRallyTypeObject,
@@ -175,10 +175,10 @@ export default function AddRallyMenu({
   /*****************************************************
    * Fetch a person from the database and add them to the rally
    */
-  async function getPerson() {
-    if (!personSearch) return;
+  async function getPerson(name?: string) {
     // Search for person in the database
-    const formattedSearch = personSearch.toUpperCase();
+    const formattedSearch = (name || personSearch)?.toLowerCase();
+    if (!formattedSearch) return;
     let person: ProfileObject | null = null;
     try {
       person = (await fetchProfileByName(formattedSearch)) || null;
@@ -224,6 +224,7 @@ export default function AddRallyMenu({
         true
       );
     }
+    setPersonSearch(undefined);
   }
 
   /***************************************
@@ -247,6 +248,10 @@ export default function AddRallyMenu({
     setPeople(people.filter((p) => p.id != id));
   }
 
+  async function onCreateClick(name: string) {
+    await getPerson(name);
+  }
+
   return (
     <div>
       <ConfirmMenu
@@ -256,7 +261,9 @@ export default function AddRallyMenu({
           setCreateConfirmActive(false);
           createNewProfile(personSearch || "");
         }}
-        header={`We can't find a player called ${personSearch}`}
+        header={`We can't find a player called ${
+          personSearch || "that name"
+        }`}
         body="Create a new player?"
         icon="alert-circle"
         width={400}
@@ -358,8 +365,8 @@ export default function AddRallyMenu({
             name={personSearch}
             setName={setPersonSearch}
             onSelect={() => getPerson()}
-            onCreate={() => setCreateConfirmActive(true)}
-
+            onCreate={(name) => onCreateClick(name)}
+            selectedPeople={people}
           />
           <button
             onClick={() => addRally()}

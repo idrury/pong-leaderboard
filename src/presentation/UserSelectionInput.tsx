@@ -7,6 +7,7 @@ import { fetchUsersByName } from "../DatabaseAccess/select";
 
 export interface UserSelectionInputProps {
   name: string | undefined;
+  selectedPeople?: ProfileObject[];
   setName: (name: string | undefined) => void;
   onSelect: (name: string) => void;
   onCreate?: (name: string) => void;
@@ -18,6 +19,7 @@ export interface UserSelectionInputProps {
  */
 export function UserSelectionInput({
   name,
+  selectedPeople,
   setName,
   onSelect,
   onCreate,
@@ -83,6 +85,7 @@ export function UserSelectionInput({
       });
       return;
     }
+    if (isPersonSelected()) return;
     setName(localName);
     onSelect(localName);
   }
@@ -101,7 +104,7 @@ export function UserSelectionInput({
       });
       return;
     }
-
+    if (isPersonSelected()) return;
     setName(name);
     inputOptions.find((opt) => opt.label == name.toLowerCase())
       ? onSelect(name)
@@ -113,8 +116,21 @@ export function UserSelectionInput({
    * @param name
    */
   function onChangeName(name: string | undefined) {
-    if (!name || name.trim().length <= 0) return;
     setName(name);
+  }
+
+  function isPersonSelected(): boolean {
+    // Return if person is already in rally
+    if (!!selectedPeople?.find((p) => p.lower_name == name)) {
+      setError({
+        active: true,
+        selector: "people",
+        text: "This person is already in your rally",
+      });
+      return true;
+    }
+    setError({ active: false });
+    return false;
   }
 
   return (
@@ -122,6 +138,7 @@ export function UserSelectionInput({
       <div className="row">
         <div className="w100">
           <CreatableTypeInput
+            value={name || ""}
             placeholder="Enter a username"
             onChange={(val) => {
               onAddClick(val.label);
@@ -130,7 +147,9 @@ export function UserSelectionInput({
             onCreate={(val) => {
               onCreateClick(val);
             }}
-            onInputChange={(val) => onChangeName(val)}
+            onInputChange={(val, meta) => {
+              meta.action == "input-change" && onChangeName(val);
+            }}
           />
         </div>
 

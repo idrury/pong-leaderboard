@@ -1,5 +1,5 @@
 // @ts-nocheck
-import Select from "react-select";
+import Select, { InputActionMeta } from "react-select";
 import Creatable, {
 } from "react-select/creatable";
 
@@ -117,9 +117,10 @@ export default function TypeInput({
 
 interface CreatableTypeInputProps {
  options: any[],
+ value,
   defaultValue?: string,
   onChange: (val: any) => void,
-  onInputChange: (val: string) => void,
+  onInputChange: (val: string, meta: InputActionMeta) => void,
   disabled?:boolean,
   placeholder: string,
   onCreate: (val: any) => void,
@@ -128,6 +129,7 @@ interface CreatableTypeInputProps {
 
 export function CreatableTypeInput({
   options,
+  value,
   defaultValue,
   onChange,
   onInputChange,
@@ -152,8 +154,10 @@ export function CreatableTypeInput({
     <div style={{ minWidth: width }}>
       <Creatable
         options={options}
+        inputValue={value}
+        value={value}
         onChange={(val) => onChange(val)}
-        onInputChange={(val) => onInputChange(val)}
+        onInputChange={(val, meta) => onInputChange(val, meta)}
         onCreateOption={(val) => onCreate(val)}
         isDisabled={disabled}
         components={{
