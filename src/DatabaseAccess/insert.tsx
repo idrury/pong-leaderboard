@@ -1,3 +1,4 @@
+import { playerOrgObject } from "../Types";
 import { supabase } from "./SupabaseClient";
 
 /*******************************************
@@ -66,7 +67,7 @@ export async function insertNewRallyType(
 }
 
 /******************************************
- * Add a user to an organisation as a player
+ * Add a user to an organisation as an ADMIN
  * @param orgId The org to add them to
  * @param userId The user to add
  */
@@ -80,5 +81,39 @@ export async function insert_user_to_org(
 
   if (error) throw error;
 
+  return data;
+}
+
+/******************************************
+ * Add a user to an organisation as a player
+ * @param orgId The org to add them to
+ * @param userId The user to add
+ */
+export async function insertPlayerToOrg(
+  orgId: number,
+  playerId: string
+): Promise<boolean> {
+  const { error } = await supabase
+    .from("players_to_orgs")
+    .insert({ org_id: orgId, profile_id: playerId });
+
+  if (error) throw error;
+
+  return true;
+}
+
+/***********************
+ * Create a new profile not linked to a user
+ * @param name The name of the profile to create
+ */
+export async function createAnonProfile(
+  name: string,
+  orgId: number
+):Promise<playerOrgObject> {
+  const { data, error } = await supabase
+    .rpc("create_anon_user", { nm: name, oid: orgId })
+    .select().single();
+
+  if (error) throw error;
   return data;
 }

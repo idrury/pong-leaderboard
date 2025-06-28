@@ -64,8 +64,8 @@ export function groupRalliesById(
       (current.profiles as ProfileObject[]).push({
         id: pr.profile_id,
         created_at: new Date(),
-        name: pr.user_name,
-        lower_name: pr.user_name?.toLowerCase(),
+        name: pr.profile_name || pr.anon_name,
+        lower_name: (pr.profile_name || pr.anon_name)?.toLowerCase(),
 
         blocked_event_ids: [],
       });
@@ -79,9 +79,9 @@ export function groupRalliesById(
           {
             id: pr.profile_id,
             created_at: new Date(),
-            name: pr.user_name,
+            name: pr.profile_name || pr.anon_name,
             lower_name:
-              pr.user_name?.toLowerCase(),
+             ( pr.profile_name || pr.anon_name)?.toLowerCase(),
 
             blocked_event_ids: [],
           },
@@ -89,7 +89,7 @@ export function groupRalliesById(
         rally_types: {
           id: 0,
           created_at: new Date(),
-          name: pr.type_name,
+          name: pr.type,
           tags: [],
           min_people: 0,
           max_people: 1,

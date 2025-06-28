@@ -118,11 +118,11 @@ function HighscoreCard({
                         rallyType.profiles as ProfileObject[]
                       )?.map((p, i) => (
                         <p key={i} className="pr1 wrap">
-                          {p.name}{" "}
+                          {p.name || p.anon_name}{" "}
                           {i ==
                             rallyType.profiles
                               .length -
-                              1 || ""}
+                              1 || " |"}
                         </p>
                       ))}
                     </div>

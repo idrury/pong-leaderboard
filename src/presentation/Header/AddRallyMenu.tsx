@@ -1,17 +1,19 @@
 import IonIcon from "@reacticons/ionicons";
 import ErrorLabel from "../ErrorLabel";
 import TypeInput from "../TypeInput";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivatableElement,
   CampaignRallyTypeObject,
   ErrorLabelType,
   InputOption,
   OrganisationSummaryObject,
+  playerOrgObject,
   PopSavedModalFn,
   ProfileObject,
 } from "../../Types";
 import {
+  fetchPlayerByName,
   fetchProfileByName,
   insertPeopleForRally,
   insertRally,
@@ -21,10 +23,11 @@ import BasicMenu from "../BasicMenu";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
-import { createAnonProfile } from "../../DatabaseAccess/authentication";
 import { validateNewRallyForm } from "../Event/EventBL";
 import ConfirmMenu from "./ConfirmMenu";
 import { UserSelectionInput } from "../UserSelectionInput";
+import { createAnonProfile } from "../../DatabaseAccess/insert";
+import { UUID } from "crypto";
 
 interface AddRallyMenuProps extends ActivatableElement {
   currentRallyTypes?: CampaignRallyTypeObject[];
@@ -39,13 +42,14 @@ export default function AddRallyMenu({
   currentRallyTypes,
   onClose,
   activateSaved,
+  organisation,
   profile,
   eventId,
 }: AddRallyMenuProps) {
   const [rallyOptions, setRallyOptions] = useState<InputOption[]>();
   const [hits, setHits] = useState<number>();
   const [rallyType, setRallyType] = useState<number>();
-  const [people, setPeople] = useState<ProfileObject[]>([]);
+  const [people, setPeople] = useState<playerOrgObject[]>([]);
   const [personSearch, setPersonSearch] = useState<string>();
 
   const [error, setError] = useState<ErrorLabelType>({
@@ -68,7 +72,14 @@ export default function AddRallyMenu({
       return;
     }
 
-    if (profile) addPersonToRally(profile);
+    if (profile)
+      addPersonToRally([{
+        player_id: profile.id,
+        created_at: profile.created_at,
+        org_id: organisation.org_id,
+        profile_id: profile.name,
+        anon_name: null,
+      }]);
   }, [active]);
 
   useGSAP(() => {
@@ -160,7 +171,7 @@ export default function AddRallyMenu({
         eventId
       );
 
-      if (id) await insertPeopleForRally(id, people);
+      if (id) await insertPeopleForRally(id, people, organisation.org_id);
       activateSaved("New rally added!");
       onClose();
       setHits(undefined);
@@ -179,16 +190,23 @@ export default function AddRallyMenu({
     // Search for person in the database
     const formattedSearch = (name || personSearch)?.toLowerCase();
     if (!formattedSearch) return;
-    let person: ProfileObject | null = null;
+    let person: playerOrgObject[] | null = null;
     try {
-      person = (await fetchProfileByName(formattedSearch)) || null;
-
+      person =
+        (await fetchPlayerByName(
+          formattedSearch,
+          organisation.org_id
+        )) || null;
+        console.log("PER",person)
       // Add them to the rally if they exist
-      if (person) {
+      if (person && person.length >0) {
+        /*@ts-ignore*/
         addPersonToRally(person);
         setError({ active: false });
         setPersonSearch(undefined);
+        return;
       }
+      setCreateConfirmActive(true);
     } catch (error: any) {
       // Promt user to create a new profile
       // If no user has been found
@@ -196,10 +214,6 @@ export default function AddRallyMenu({
         console.error(error);
         return;
       }
-    }
-
-    if (!person) {
-      setCreateConfirmActive(true);
     }
   }
 
@@ -211,9 +225,10 @@ export default function AddRallyMenu({
     if (!name || name.length <= 1) return;
 
     try {
-      let person = await createAnonProfile(name);
+      let person = await createAnonProfile(name.toLowerCase(), organisation.org_id);
+      console.log("CREATED PERSON", person)
       if (person) {
-        addPersonToRally(person);
+        addPersonToRally([person]);
         setError({ active: false });
         setPersonSearch(undefined);
       }
@@ -233,9 +248,13 @@ export default function AddRallyMenu({
    * @param profile The profile to add
    * @returns True if success, else false
    */
-  function addPersonToRally(profile: ProfileObject): boolean {
-    if (people.find((p) => p.id == profile.id)) return false;
-    setPeople(people.concat(profile));
+  function addPersonToRally(playerArray: playerOrgObject[]): boolean {
+    console.log("ARR",playerArray)
+    const player = playerArray[0]
+    console.log(player)
+    if (people.find((p) => p.player_id == player.player_id) || !player?.player_id) return false;
+    setPeople(people.concat({player_id: player.player_id, created_at: player.created_at, org_id: player.org_id, profile_id: player.profile_id, anon_name: player.anon_name}));
+    console.log("PEOPLE", people)
 
     return true;
   }
@@ -244,8 +263,8 @@ export default function AddRallyMenu({
    * Remove a person from the local rally list
    * @param id The id of the person to remove
    */
-  function removePerson(id: string) {
-    setPeople(people.filter((p) => p.id != id));
+  function removePerson(id: UUID) {
+    setPeople(people.filter((p) => p.player_id != id));
   }
 
   async function onCreateClick(name: string) {
@@ -337,20 +356,20 @@ export default function AddRallyMenu({
             </label>
           </div>
           {people &&
-            people.map((person) => (
-              <div key={person.id} className="row middle">
+            people.map((person, id) => (
+              <div key={id} className="row middle">
                 <div
-                  key={person.id}
+                  key={person.player_id}
                   className="boxed p2 w100 mb1 row middle"
                 >
                   <p>
-                    {person.name}{" "}
-                    {person.id == profile?.id && "(you)"}{" "}
+                    {person.profile_id || person.anon_name}{" "}
+                    {person.player_id == profile?.id && "(you)"}
                   </p>
                 </div>
-                {person.id != profile?.id && (
+                {person.player_id != profile?.id && (
                   <IonIcon
-                    onClick={() => removePerson(person.id)}
+                    onClick={() => removePerson(person.player_id)}
                     name="close-circle"
                     className="ml1 m0 h2Icon clickable"
                     style={{
@@ -364,8 +383,9 @@ export default function AddRallyMenu({
           <UserSelectionInput
             name={personSearch}
             setName={setPersonSearch}
-            onSelect={() => getPerson()}
+            onSelect={(name) => getPerson(name)}
             onCreate={(name) => onCreateClick(name)}
+            organisation={organisation}
             selectedPeople={people}
           />
           <button

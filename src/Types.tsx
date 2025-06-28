@@ -1,3 +1,5 @@
+import { UUID } from "crypto";
+
 /**A table from the supabase database */
 interface SupabaseTable {
   id: number;
@@ -26,10 +28,11 @@ export interface RallyTypeObject extends SupabaseTable {
 }
 
 export interface ProfileObject {
-  id: string;
+  id: UUID;
   created_at: Date;
   name: string;
   lower_name: string;
+  anon_name?: string,
   blocked_event_ids: string[];
 }
 
@@ -52,9 +55,10 @@ export interface EventObject {
 export interface UserRalliesObject {
   rally_id: number;
   created_at: string; // Using string for timestamptz as it's typically handled as ISO strings in JS/TS
-  profile_id: string; // Using string for uuid as it's a string representation in JS/TS
-  user_name: string;
-  type_name: string;
+  profile_id: UUID; // Using string for uuid as it's a string representation in JS/TS
+  profile_name: string;
+  anon_name: string;
+  type: string;
   num_hits: number;
   is_high_score: boolean;
   event_id: string;
@@ -72,6 +76,14 @@ export interface OrganisationObject extends SupabaseTable {
  */
 export interface UserAdminOrgsObject extends OrganisationObject {
   events: EventObject[]; // Corresponds to PostgreSQL 'jsonb' (a generic JSON object)
+}
+
+export interface playerOrgObject {
+  player_id: UUID;
+  org_id: number;
+  created_at: Date;
+  profile_id: string | UUID | null
+  anon_name: string | null;
 }
 
 export interface OrganisationSummaryObject {

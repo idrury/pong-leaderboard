@@ -1,8 +1,10 @@
+import { UUID } from "crypto";
 import type {
   CampaignRallyTypeObject,
   EventObject,
   OrganisationObject,
   OrganisationSummaryObject,
+  playerOrgObject,
   ProfileObject,
   UserAdminOrgsObject,
   UserRalliesObject,
@@ -18,7 +20,7 @@ export async function fetchRallies(
   const { data, error } = await supabase.rpc("get_user_rallies", {
     evt_id: eventId,
   });
-
+console.log("D", data)
   if (error) throw error;
   return data;
 }
@@ -124,10 +126,12 @@ export async function insertRally(
  */
 export async function insertPeopleForRally(
   id: number,
-  people: ProfileObject[]
+  people: playerOrgObject[],
+  orgId: number
 ) {
-  const values = new Array<{ rally_id: number; user_id: string }>();
-  people.forEach((p) => values.push({ user_id: p.id, rally_id: id }));
+  const values = new Array<{ rally_id: number; player_id: string }>();
+  people.forEach((p) => values.push({ player_id: p.player_id, rally_id: id }));
+  console.log(people)
   const { error } = await supabase
     .from("users_to_rallys")
     .insert(values);
@@ -279,15 +283,56 @@ export async function fetchAllRallyTypes() {
  * Get a list of users (limit 10) with a matching name
  * @param name The name to search for
  */
-export async function fetchUsersByName(name: string):Promise<ProfileObject[]> {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select()
-    .ilike("name", `%${name}%`)
-    .order("name", { ascending: true })
-    .limit(10);
+export async function fetchUsersByName(
+  name: string,
+  orgId: number
+): Promise<playerOrgObject[]> {
+  const { data, error } = await supabase.rpc("match_user_search", {
+    nm: name,
+    oid: orgId,
+  });
 
   if (error) throw error;
-
+  console.log(data);
   return data;
+}
+
+/****************************************************
+ * Get a list of users (limit 10) with a matching name
+ * @param name The name to search for
+ */
+export async function fetchPlayerByName(
+  name: string,
+  orgId: number
+): Promise<playerOrgObject[]> {
+  const { data, error } = await supabase.rpc("find_user_in_org", {
+    nm: name,
+    oid: orgId,
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+
+/*************************************
+ * Check if a player exists in an organisation
+ * @param orgId The organisation to check
+ * @param playerId The id of the player
+ * @returns True if exists, else false
+ */
+export async function checkPlayerInOrg(
+  orgId: number,
+  playerId: UUID
+): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("players_to_orgs")
+    .select()
+    .eq("org_id", orgId)
+    .eq("profile_id", playerId)
+    .maybeSingle();
+
+  if (error) throw error;
+  else if (data) return true;
+  else return false;
 }

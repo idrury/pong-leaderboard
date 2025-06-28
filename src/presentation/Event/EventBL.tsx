@@ -1,5 +1,6 @@
 import {
   ErrorLabelType,
+  playerOrgObject,
   ProfileObject,
 } from "../../Types";
 
@@ -79,7 +80,7 @@ export function ChecknewRallyTypeForm(
 export function validateNewRallyForm(
   rallyType: number | undefined,
   hits: number | undefined,
-  people: ProfileObject[] | undefined
+  people: playerOrgObject[] | undefined
 ) {
   if (!rallyType) {
     return {

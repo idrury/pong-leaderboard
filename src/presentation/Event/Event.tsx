@@ -11,13 +11,14 @@ import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {
+  checkPlayerInOrg,
   fetchOrganisationFromEvent,
   fetchRallies,
   fetchRallyTypes,
 } from "../../DatabaseAccess/select";
 import { getHighestMins } from "../App/AppFunctions";
 import RecentScores from "../RecentScores/RecentScores";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../Header/Header";
 import { Session } from "@supabase/supabase-js";
 import AddRallyMenu from "../Header/AddRallyMenu";
@@ -26,6 +27,8 @@ import EditRallyMenu from "./EditRallyMenu";
 import Banner from "../Banner";
 import IonIcon from "@reacticons/ionicons";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
+import { insertPlayerToOrg } from "../../DatabaseAccess/insert";
+import { JoinOrgMenu } from "./JoinOrgMenu";
 
 interface EventProps {
   profile: ProfileObject;
@@ -38,6 +41,7 @@ export default function Event({
   session,
   popSavedModal,
 }: EventProps) {
+  const navigate = useNavigate();
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
   const [rallies, setRallies] = useState<RallyObject[]>();
@@ -48,6 +52,8 @@ export default function Event({
   const [selectedRally, setSelectedRally] = useState<RallyObject>();
   const [org, setOrg] = useState<OrganisationSummaryObject>();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isPlayer, setIsPlayer] = useState(false);
+  const [joinMenuActive, setJoinMenuActive] = useState(false);
   const eventId = useParams().eventId;
 
   useEffect(() => {
@@ -76,6 +82,7 @@ export default function Event({
       setOrg(organisation);
       setIsAdmin(organisation.admin_ids.includes(profile?.id));
       await joinChannel(organisation);
+      await isUserInOrg(organisation);
     } catch (error) {
       console.error(error);
       popSavedModal(
@@ -84,6 +91,43 @@ export default function Event({
         true
       );
     }
+  }
+
+  /***********************************
+   * Check if a user has been added to an org
+   * @param org The id of the org
+   */
+  async function isUserInOrg(org: OrganisationSummaryObject) {
+    if (!profile) return;
+    try {
+      const exists = await checkPlayerInOrg(org.org_id, profile.id);
+      setIsPlayer(exists);
+      if (!exists) setJoinMenuActive(true);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /*****************************************
+   * Add user as a player in the organisation
+   */
+  async function addUserToOrg() {
+    if (!org) return;
+
+    try {
+      await insertPlayerToOrg(org.org_id, profile.id);
+      popSavedModal(`Joined ${org.org_name}`);
+      setIsPlayer(true);
+    } catch (error) {
+      console.error(error);
+      popSavedModal(
+        "An error occurred while joining the organisation",
+        "Refresh the page and try again!",
+        true
+      );
+    }
+    setJoinMenuActive(false)
+
   }
 
   /*******************************
@@ -118,7 +162,7 @@ export default function Event({
 
   /**********************************************************
    * Join the supabase realtime channel and listen for changes
-   * @param org The organisation 
+   * @param org The organisation
    */
   async function joinChannel(org: OrganisationSummaryObject) {
     // Get the schema changes channel
@@ -176,6 +220,15 @@ export default function Event({
     setEditMenuActive(true);
   }
 
+  /*****************************************************
+   * Handle the process of displaying the add rally interface
+   */
+  function onAddClick() {
+    if(profile && !isPlayer) {setJoinMenuActive(true); return;}
+    
+    setAddMenuActive(true);
+  }
+
   if (!eventId || !org) return <div>none</div>;
   return (
     <div>
@@ -190,8 +243,8 @@ export default function Event({
         profile={profile}
         session={session || undefined}
         activeSavedModal={popSavedModal}
-        activateEditModal={() => setAddMenuActive(true)}
-        organisation={org}
+        activateEditModal={() => onAddClick()}
+        organisation={undefined}
       />
       <AddRallyMenu
         profile={profile}
@@ -209,6 +262,13 @@ export default function Event({
         isAdmin={isAdmin}
         popModal={popSavedModal}
         organisation={org}
+      />
+
+      <JoinOrgMenu
+        active={joinMenuActive}
+        onClose={() => setJoinMenuActive(false)}
+        organisation={org}
+        onConfirm={() => addUserToOrg()}
       />
       <div className="row shrinkWrap">
         <div className="w100">

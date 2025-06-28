@@ -2,12 +2,18 @@ import IonIcon from "@reacticons/ionicons";
 import { useEffect, useState } from "react";
 import ErrorLabel from "./ErrorLabel";
 import { CreatableTypeInput } from "./TypeInput";
-import { InputOption, ProfileObject } from "../Types";
+import {
+  InputOption,
+  OrganisationSummaryObject,
+  playerOrgObject,
+  ProfileObject,
+} from "../Types";
 import { fetchUsersByName } from "../DatabaseAccess/select";
 
 export interface UserSelectionInputProps {
   name: string | undefined;
-  selectedPeople?: ProfileObject[];
+  selectedPeople?: playerOrgObject[];
+  organisation: OrganisationSummaryObject;
   setName: (name: string | undefined) => void;
   onSelect: (name: string) => void;
   onCreate?: (name: string) => void;
@@ -20,6 +26,7 @@ export interface UserSelectionInputProps {
 export function UserSelectionInput({
   name,
   selectedPeople,
+  organisation,
   setName,
   onSelect,
   onCreate,
@@ -50,7 +57,7 @@ export function UserSelectionInput({
     if (!name || name.trim().length <= 3) return;
 
     try {
-      const names = await fetchUsersByName(name);
+      const names = await fetchUsersByName(name, organisation.org_id);
       setInputOptions(namesToInputOptions(names));
     } catch (error) {
       console.error("Error fetching users by name:", error);
@@ -61,12 +68,12 @@ export function UserSelectionInput({
    * Convert an array of ProfileObjects to InputOptions
    */
   function namesToInputOptions(
-    names: ProfileObject[]
+    names: playerOrgObject[]
   ): InputOption[] {
     if (!names || names.length == 0) return [];
     return names.map((p) => ({
-      value: p.id,
-      label: p.lower_name,
+      value: p.player_id,
+      label: p.profile_id || p.anon_name,
     }));
   }
 
@@ -77,6 +84,7 @@ export function UserSelectionInput({
    */
   function onAddClick(nm?: string) {
     const localName = nm || name;
+    console.log("ON SELECT", localName);
     if (!localName) {
       setError({
         text: "Please enter a name",
@@ -105,6 +113,7 @@ export function UserSelectionInput({
       return;
     }
     if (isPersonSelected()) return;
+    console.log("ON CREATE", name);
     setName(name);
     inputOptions.find((opt) => opt.label == name.toLowerCase())
       ? onSelect(name)
@@ -121,7 +130,11 @@ export function UserSelectionInput({
 
   function isPersonSelected(): boolean {
     // Return if person is already in rally
-    if (!!selectedPeople?.find((p) => p.lower_name == name)) {
+    if (
+      !!selectedPeople?.find(
+        (p) => (p.profile_id || p.anon_name)?.toLowerCase() == name
+      )
+    ) {
       setError({
         active: true,
         selector: "people",
@@ -141,7 +154,10 @@ export function UserSelectionInput({
             value={name || ""}
             placeholder="Enter a username"
             onChange={(val) => {
-              onAddClick(val.label);
+              {
+                onAddClick(val.label);
+                console.log(val);
+              }
             }}
             options={inputOptions}
             onCreate={(val) => {
