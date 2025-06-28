@@ -13,7 +13,7 @@ import { fetchUsersByName } from "../DatabaseAccess/select";
 export interface UserSelectionInputProps {
   name: string | undefined;
   selectedPeople?: playerOrgObject[];
-  organisation: OrganisationSummaryObject;
+  organisation?: OrganisationSummaryObject;
   setName: (name: string | undefined) => void;
   onSelect: (name: string) => void;
   onCreate?: (name: string) => void;
@@ -54,7 +54,7 @@ export function UserSelectionInput({
    * Search the database for users by name
    */
   async function getProfileMatches() {
-    if (!name || name.trim().length <= 3) return;
+    if (!name || name.trim().length < 3 || !organisation) return;
 
     try {
       const names = await fetchUsersByName(name, organisation.org_id);
