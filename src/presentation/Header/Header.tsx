@@ -10,6 +10,7 @@ import { isMobileBrowser } from "../../common/CommonFunctions";
 import { Session } from "@supabase/supabase-js";
 import Auth from "../Authentication/Auth";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   rallyTypesState?: CampaignRallyTypeObject[];
@@ -21,8 +22,9 @@ interface HeaderProps {
   organisation?: OrganisationSummaryObject;
 }
 
-export default function Header ({
+export default function Header({
   session,
+  organisation,
   activeSavedModal,
   activateEditModal,
   profile,
@@ -30,6 +32,7 @@ export default function Header ({
 }: HeaderProps) {
   const [mobileBrowser, setMobileBrowser] =
     useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setMobileBrowser(isMobileBrowser());
@@ -103,6 +106,17 @@ export default function Header ({
           className="row middle"
           style={{ minWidth: 0 }}
         >
+          {organisation && (
+            <div>
+              <button
+                onClick={() =>
+                  navigate("/organisation")
+                }
+              >
+                My organisation
+              </button>
+            </div>
+          )}
           {!mobileBrowser && gameCode && (
             <button
               className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"

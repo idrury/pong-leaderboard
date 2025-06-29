@@ -38,14 +38,14 @@ export default function EnterCode ({ }: EnterCodeProps) {
     }
   }
   return (
-    <div className="col middle">
-      <div style={{ height: "15vh" }} />
-      <div className="col center middle">
+    <div className="col middle w100">
+      <div />
+      <div className="col center middle w100">
         <IonIcon
           name="trophy-sharp"
           style={{ fontSize: 80, color: "var(--secondaryColor)" }}
         />
-        <div className="ml2 mr2">
+        <div className="w100 ml2 mr2">
           <h1>Event code</h1>
           <h4>
             Please enter your event ID to access the leaderboard
@@ -67,7 +67,7 @@ export default function EnterCode ({ }: EnterCodeProps) {
               </p>
             </div>
           )}
-          <form onSubmit={handleSubmit} className="w100">
+          <form onSubmit={handleSubmit} className="ml1 mr1">
             <input
               autoFocus
               className="w100 mb2 textCenter"

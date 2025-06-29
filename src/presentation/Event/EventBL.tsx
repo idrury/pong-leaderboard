@@ -103,4 +103,4 @@ export function validateNewRallyForm(
       selector: "people",
     };
   }
-}
+}1

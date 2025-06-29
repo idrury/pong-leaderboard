@@ -16,8 +16,8 @@ export default function PlayerLatestScores ({
 }: PlayerLatestScoresProps) {
 
   return (
-    <div className="w100 pt2 pb2">
-      <div className="m2 p2 boxed outline">
+    <div className="w100">
+      <div className="p2 boxed outline m1">
         <div className="row center middle">
           <h2 className="m0">Your Latest Scores</h2>
         </div>

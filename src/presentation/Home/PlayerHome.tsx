@@ -1,5 +1,8 @@
 import "./PlayerHome.css";
-import { PopSavedModalFn, ProfileObject } from "../../Types";
+import {
+  PopSavedModalFn,
+  ProfileObject,
+} from "../../Types";
 
 import HeaderOrganisation from "../../presentation/Header/HeaderOrganisation";
 import { Session } from "@supabase/supabase-js";
@@ -9,6 +12,7 @@ import PlayerLatestScores from "../../presentation/PlayerHome/PlayerLatestScores
 import PlayerBestScores from "../../presentation/PlayerHome/PlayerBestScores";
 import GlobalScores from "../../presentation/PlayerHome/GlobalScores";
 import { useEffect, useState } from "react";
+import Header from "../Header/Header";
 
 interface PlayerHomeProps {
   popModal: PopSavedModalFn;
@@ -16,33 +20,49 @@ interface PlayerHomeProps {
   session: Session;
 }
 
-export function PlayerHome ({
+export function PlayerHome({
   popModal,
   profile,
   session,
 }: PlayerHomeProps) {
-  const [profileObj, setProfileObj] = useState<ProfileObject>();
+  const [profileObj, setProfileObj] =
+    useState<ProfileObject>();
 
   useEffect(() => {
     setProfileObj(profile);
   });
   return (
     <div>
-      <HeaderOrganisation
+      <Header
         profile={profileObj}
         session={session || undefined}
         activeSavedModal={popModal}
       />
-      <div className="row w100" style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div className="col" style={{ flex: 1, marginRight: '20px' }}>
-          <PlayerBestScores profile={profileObj} popModal={popModal} />
-          <PlayerLatestScores profile={profileObj} popModal={popModal} />
-        </div>
-        <div className="col middle" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '50px', margin: '0 20px' }}>
+      <div className="col w100 middle between" style={{height: '90vh'}}>
+        <div style={{minHeight: '1vh'}}/>
+        <div className="col middle w33">
           <EnterCode popModal={popModal} />
         </div>
-        <div className="col" style={{ flex: 1, marginLeft: '20px' }}>
-          <GlobalScores profile={profileObj} popModal={popModal} />
+        <div
+          className="row w100 mt2"
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(350px, 1fr))",
+          }}
+        >
+          <PlayerBestScores
+            profile={profileObj}
+            popModal={popModal}
+          />
+          <PlayerLatestScores
+            profile={profileObj}
+            popModal={popModal}
+          />
+          <GlobalScores
+            profile={profileObj}
+            popModal={popModal}
+          />
         </div>
       </div>
     </div>

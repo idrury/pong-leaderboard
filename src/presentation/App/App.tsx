@@ -18,6 +18,7 @@ import EventId from "../Home/EventId";
 import Event from "../Event/Event";
 import Aurora from "../Animations/Aurora";
 import Noise from "../Animations/Noise";
+import OrganisationDetails from "../Event/OrganisationDetails";
 
 function App() {
   const [session, setSession] =
@@ -139,6 +140,9 @@ function App() {
               />
             }
           />
+          <Route path="/organisation">
+          <Route index element={<OrganisationDetails profile={profile} popModal={popSavedModal}/>}/>
+          </Route>
         </Routes>
       </div>
       <div
