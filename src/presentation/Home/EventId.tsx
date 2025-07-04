@@ -18,7 +18,9 @@ const EventId: React.FC<EventIdProps> = ({ popModal }) => {
       <div
         className="col w100 middle center"
       >
-        <EnterCode popModal={popModal} />
+        <div className="w33">
+          <EnterCode popModal={popModal} />
+        </div>
       </div>
     </div>
   );

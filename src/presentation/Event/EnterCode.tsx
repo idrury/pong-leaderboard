@@ -55,7 +55,7 @@ export default function EnterCode({}: EnterCodeProps) {
       <div className="col center middle w100">
         <div className="w100 ml2 mr2 col middle">
           <h3
-            style={{ zIndex: 20 }}
+            style={{ zIndex: 10 }}
             className="textCenter pb2"
           >
             Please enter your event ID to access
@@ -63,16 +63,16 @@ export default function EnterCode({}: EnterCodeProps) {
           </h3>
           <form
             onSubmit={handleSubmit}
-            className="ml2 mr2 w100"
+            className="w100"
           >
             <div
-              className="w100 neonGlow"
+              className="w100 neonGlow m0"
               style={{
                 borderRadius: 50,
               }}
             >
               <div
-                className="row w100 m0 p0 middle"
+                className="row w100 middle"
                 style={{
                   background: "#FFFFFFCC",
                   borderRadius: 50,
