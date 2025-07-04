@@ -1,7 +1,6 @@
 :root {
-  font-family: "Inter", sans-serif;
+  font-family: "poppins", sans-serif;
   line-height: 1;
-  font-weight: 400;
 
   margin: 0 !important;
   padding: 0 !important;
@@ -11,10 +10,18 @@
   color-scheme: dark;
   --text: #dddddd;
   --background: #111111;
-  --smallAccent: #444444;
+  --smallAccent: #1b292e;
   --mediumAccent: #aaaaaa;
-  --lightBackground: #181818;
+  --lightBackground: #525252;
   --primaryColor: #0097b2;
+  --backgroundGradient: linear-gradient(
+    to left,
+    rgb(92, 175, 190),
+    rgb(37, 114, 128),
+    rgba(59, 161, 179),
+    rgba(59, 161, 179),
+    rgb(92, 175, 190)
+  );
   --secondaryColor: #d9b759;
   --warningColor: #d98f53;
   --safeColor: #7fe06c;
@@ -53,29 +60,46 @@
 }
 
 body {
-  margin: 0
+  margin: 0;
 }
 
 /** text */
 p {
   margin: 0px;
   font-size: 10pt;
+  font-weight: 100 !important;
   color: var(--text);
 }
 
+h1 {
+  font-family: "pacifico", sans-serif;
+  font-size: 60pt;
+  line-height: 2;
+  -webkit-text-stroke-color: transparent;
+  -webkit-text-stroke-width: 7px;
+  -webkit-text-fill-color: #ffffffcc;
+}
+
 h2 {
+  font-family: "poppins", sans-serif;
+  font-weight: 400 !important;
+
   font-size: 25pt;
   color: var(--text);
 }
 
 h3 {
-  font-size: 10pt;
+  font-family: "poppins", sans-serif;
+  font-weight: 400;
+  font-size: 12pt;
   color: var(--text);
 }
 
 h4 {
-  font-size: 12pt;
-  font-weight: 400;
+  font-family: "poppins", sans-serif;
+
+  font-size: 10pt;
+  font-weight: bold;
   color: var(--text);
 }
 
@@ -109,6 +133,54 @@ label {
   font-size: 10pt;
 }
 
+.neonTextGlow {
+  background-color: var(--primaryColor);
+
+  background-clip: text;
+  text-shadow: 0 0 7px #fff, 0 0 10px #fff,
+    0 0 21px #fff, 0 0 42px rgba(0, 151, 178, 1),
+    0 0 82px rgb(1, 19, 23),
+    0 0 92px rgb(108, 142, 148),
+    0 0 102px rgba(59, 161, 179, 1),
+    0 0 151px rgba(59, 161, 179, 1);
+}
+
+.neonGlow {
+  backdrop-filter: blur(10px);
+  background: linear-gradient(
+    to left,
+    rgb(92, 175, 190),
+    rgb(37, 114, 128),
+    rgba(59, 161, 179, 1),
+    rgba(59, 161, 179, 1),
+    rgb(92, 175, 190)
+  );
+  background-blend-mode: exclusion;
+  backdrop-filter: blur(10px);
+  transition: 0.5s;
+}
+.neonGlow:hover {
+  background: linear-gradient(
+    to left,
+    rgb(92, 175, 190),
+    rgb(37, 114, 128),
+    rgba(59, 161, 179, 1),
+    rgba(59, 161, 179, 1),
+    rgb(92, 175, 190)
+  );
+
+  box-shadow: 0 0 7px rgba(59, 161, 179, 1),
+    0 0 10px rgba(59, 161, 179, 1),
+    0 0 21px rgba(59, 161, 179, 1),
+    0 0 42px rgba(0, 151, 178, 1),
+    0 0 82px rgb(1, 19, 23),
+    0 0 92px rgb(108, 142, 148),
+    0 0 102px rgba(59, 161, 179, 1),
+    0 0 151px rgba(59, 161, 179, 1);
+
+  transition: 0.5s;
+}
+
 .number {
   color: var(--text) !important;
   margin: 0 0 0 0;
@@ -129,17 +201,18 @@ h3 {
 }
 
 input {
-  font-family: "Inter", sans-serif;
-  color: var(--background);
-  background-color: var(--mediumAccent);
+  font-family: "poppins", sans-serif;
+  color: var(--text);
+  background: var(--lightBackground);
+  height: 50px;
+  border-bottom: 2px solid var(--background);
+  height: 3em;
 
   border: none;
-  border-radius: 0.2em;
+  border-radius: 50px;
 
-  box-shadow: 0 0 5px 2px var(--background);
-
-  text-indent: 5px;
-  padding: 10px 0;
+  text-indent: 15px;
+  padding: 0;
   margin: 0;
 
   width: 100%;
@@ -149,13 +222,13 @@ input {
 
 input:focus {
   outline: none;
-  background-color: var(--text);
-
+  color: var(--background);
+  background-color: var(--mediumAccent);
   transition: 0.25s;
 }
 
 input:disabled {
-  color: var(--background)
+  color: var(--background);
 }
 
 input.noBorder {
@@ -179,9 +252,10 @@ input.noBorder:focus {
   transition: 0.2s;
 }
 
+input.invisible {
+  background: transparent;
+}
 textarea {
-  font-family: "Inter", sans-serif;
-
   background-color: var(--lightBackground);
 
   resize: vertical;
@@ -206,7 +280,6 @@ textarea:focus {
 }
 
 .headerInput {
-  font-family: "Poppins", sans-serif;
   font-weight: 600;
   line-height: 0;
   font-size: 4em;
@@ -218,7 +291,7 @@ textarea:focus {
 }
 
 .headerInput:focus {
-  background: var(--smallAccent)
+  background: var(--smallAccent);
 }
 
 .invisibleTextArea {
@@ -395,7 +468,9 @@ span:focus {
 }
 
 .dark:hover {
-  background-color: var(--lightBackground) !important;
+  background-color: var(
+    --lightBackground
+  ) !important;
   color: var(--text) !important;
 }
 
@@ -405,7 +480,9 @@ span:focus {
 }
 
 .highlight {
-  background-color: var(--primaryColor) !important;
+  background-color: var(
+    --primaryColor
+  ) !important;
   color: #222222 !important;
 }
 
@@ -445,21 +522,20 @@ th {
 /* --- BUTTON ---*/
 button {
   color: var(--text);
-
-  font-family: "Inter", sans-serif;
   font-weight: 500;
   font-size: 10pt;
   text-wrap: "wrap";
+  border-radius: 50px;
   line-height: 1.2em;
+  height: 50px;
 
   background-color: var(--lightBackground);
-  border-radius: 5px;
   padding: 10px;
 
   cursor: pointer;
 
+  border-radius: 50px;
   border: 0px solid var(--smallAccent);
-
   transition: 0.5s;
 }
 
@@ -514,7 +590,6 @@ button:disabled {
 }
 
 select {
-  font-family: "Poppins", sans-serif;
   font-weight: 400;
   display: flex;
   flex-direction: row;
@@ -543,7 +618,6 @@ select[data-chosen] {
 }
 
 option {
-  font-family: "Poppins", sans-serif;
   font-weight: 400;
 }
 .displayButton {
@@ -565,7 +639,6 @@ option {
   background-color: var(--text);
   box-shadow: 0 0 0 2px var(--dangerColor) inset;
   color: var(--dangerColor);
-  font-family: "Inter", sans-serif;
 }
 
 .actionableButton:hover {
@@ -583,9 +656,9 @@ option {
 }
 
 .boxed {
-  background: var(--lightBackground);
+  background: var(--smallAccent);
 
-  border-radius: 3px;
+  border-radius: 25px;
 
   transition: 0.2s;
 }
@@ -614,7 +687,9 @@ option {
 }
 
 .boxedAccent:hover {
-  background-color: var(--primaryColor) !important;
+  background-color: var(
+    --primaryColor
+  ) !important;
 }
 
 .boxedSecondary {
@@ -628,13 +703,14 @@ option {
 }
 
 .boxedSecondary:hover {
-  background-color: var(--secondaryColor) !important;
+  background-color: var(
+    --secondaryColor
+  ) !important;
 }
 
 .outline {
-  border-radius: 3px;
-  box-shadow: 0px 0px 0 2px #ffffff55 inset;
-
+  border-radius: 25px;
+  border: 1px solid var(--mediumAccent);
   transition: 0.2s;
 }
 
@@ -731,7 +807,7 @@ input[type="checkbox"]:disabled {
   position: fixed;
   cursor: auto;
 
-  overflow:hidden;
+  overflow: hidden;
 
   top: 0;
   left: 0;
@@ -742,15 +818,20 @@ input[type="checkbox"]:disabled {
   z-index: 15;
 }
 
-.moveableMenu {
+.menu {
   position: fixed;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 50px 1px var(--background);
 
-  background-color: var(--background);
+  background: linear-gradient(
+    225deg,
+    var(--smallAccent),
+    var(--background),
+    var(--background)
+  );
+  backdrop-filter: 10px;
 
-  border-radius: 5px;
+  border-radius: 25px;
 }
 
 .lowPriorityIcon {

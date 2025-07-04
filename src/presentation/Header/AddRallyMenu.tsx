@@ -357,10 +357,11 @@ export default function AddRallyMenu({
           </div>
           {people &&
             people.map((person, id) => (
-              <div key={id} className="row middle">
+              <div key={id} className="row middle boxed p0 pr2 mt1">
                 <div
                   key={person.player_id}
-                  className="boxed p2 w100 mb1 row middle"
+                  style={{height:50}}
+                  className="boxed pl2 w100 row middle"
                 >
                   <p>
                     {person.profile_id || person.anon_name}{" "}
@@ -370,8 +371,8 @@ export default function AddRallyMenu({
                 {person.player_id != profile?.id && (
                   <IonIcon
                     onClick={() => removePerson(person.player_id)}
-                    name="close-circle"
-                    className="ml1 m0 h2Icon clickable"
+                    name="person-remove"
+                    className="ml1 mt1 m0 clickable"
                     style={{
                       color: "var(--danger)",
                     }}
@@ -379,7 +380,7 @@ export default function AddRallyMenu({
                 )}
               </div>
             ))}
-
+<div className="mt1">
           <UserSelectionInput
             name={personSearch}
             setName={setPersonSearch}
@@ -388,6 +389,7 @@ export default function AddRallyMenu({
             organisation={organisation}
             selectedPeople={people}
           />
+          </div>
           <button
             onClick={() => addRally()}
             className="row center middle w100 accentButton p0 mt2"

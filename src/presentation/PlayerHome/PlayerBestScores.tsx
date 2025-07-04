@@ -17,14 +17,14 @@ export default function PlayerBestScores ({
 
   return (
     <div className="w100">
-      <div className="p2 boxed outline m1">
+      <div className="p2 boxed m1">
         <div className="row center middle">
-          <h2 className="m0">Your Best Scores</h2>
+          <h3 className="m0">Your Best Scores</h3>
         </div>
         <div>
-          <h4 className="mb2">
+          <h2 className="mb2">
             Score 1
-          </h4>
+          </h2>
         </div>
       </div>
     </div>

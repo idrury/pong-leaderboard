@@ -38,7 +38,8 @@ export function UserSelectionInput({
   }>({
     active: false,
   });
-  const [inputOptions, setInputOptions] = useState<InputOption[]>([]);
+  const [inputOptions, setInputOptions] =
+    useState<InputOption[]>([]);
 
   useEffect(() => {
     // Fetch users on timer
@@ -54,13 +55,24 @@ export function UserSelectionInput({
    * Search the database for users by name
    */
   async function getProfileMatches() {
-    if (!name || name.trim().length < 3 || !organisation) return;
+    if (
+      !name ||
+      name.trim().length < 3 ||
+      !organisation
+    )
+      return;
 
     try {
-      const names = await fetchUsersByName(name, organisation.org_id);
+      const names = await fetchUsersByName(
+        name,
+        organisation.org_id
+      );
       setInputOptions(namesToInputOptions(names));
     } catch (error) {
-      console.error("Error fetching users by name:", error);
+      console.error(
+        "Error fetching users by name:",
+        error
+      );
     }
   }
 
@@ -115,7 +127,9 @@ export function UserSelectionInput({
     if (isPersonSelected()) return;
     console.log("ON CREATE", name);
     setName(name);
-    inputOptions.find((opt) => opt.label == name.toLowerCase())
+    inputOptions.find(
+      (opt) => opt.label == name.toLowerCase()
+    )
       ? onSelect(name)
       : onCreate && onCreate(name);
   }
@@ -124,7 +138,9 @@ export function UserSelectionInput({
    * Triggered when user types into input field
    * @param name
    */
-  function onChangeName(name: string | undefined) {
+  function onChangeName(
+    name: string | undefined
+  ) {
     setName(name);
   }
 
@@ -132,7 +148,10 @@ export function UserSelectionInput({
     // Return if person is already in rally
     if (
       !!selectedPeople?.find(
-        (p) => (p.profile_id || p.anon_name)?.toLowerCase() == name
+        (p) =>
+          (
+            p.profile_id || p.anon_name
+          )?.toLowerCase() == name
       )
     ) {
       setError({
@@ -148,7 +167,7 @@ export function UserSelectionInput({
 
   return (
     <div className="col">
-      <div className="row">
+      <div className="row middle boxed pr2" style={{background: 'var(--lightBackground)'}}>
         <div className="w100">
           <CreatableTypeInput
             value={name || ""}
@@ -164,24 +183,21 @@ export function UserSelectionInput({
               onCreateClick(val);
             }}
             onInputChange={(val, meta) => {
-              meta.action == "input-change" && onChangeName(val);
+              meta.action == "input-change" &&
+                onChangeName(val);
             }}
           />
         </div>
 
-        <button
-          type="button"
-          className="m0 p0"
+        <IonIcon
           onClick={() => onAddClick()}
-        >
-          <IonIcon
-            name="add-circle"
-            className="h2Icon m0"
-            style={{
-              color: "var(--danger)",
-            }}
-          />
-        </button>
+          name="person-add"
+          className="m0 ml1 clickable"
+          style={{
+            color: "var(--text)",
+            width: 25, height: 23
+          }}
+        />
       </div>
       <div className="mt2">
         <ErrorLabel

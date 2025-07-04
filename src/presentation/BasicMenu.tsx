@@ -5,10 +5,15 @@ import gsap from "gsap";
 import { Transition } from "react-transition-group";
 import { useRef } from "react";
 
-interface BasicMenuProps extends ActivatableElement {
+interface BasicMenuProps
+  extends ActivatableElement {
   children: any;
   width: number | string;
-  icon?: { name: IoniconName; color?: string; size: number };
+  icon?: {
+    name: IoniconName;
+    color?: string;
+    size: number;
+  };
   zIndex?: number;
   disableClickOff?: boolean;
 }
@@ -22,7 +27,8 @@ const BasicMenu = ({
   zIndex = 20,
   disableClickOff = false,
 }: BasicMenuProps) => {
-  const transitionRef = useRef<HTMLDivElement>(null);
+  const transitionRef =
+    useRef<HTMLDivElement>(null);
 
   const handleEnter = () => {
     gsap.from(transitionRef?.current, {
@@ -39,14 +45,14 @@ const BasicMenu = ({
       opacity: 0,
       y: 300,
       duration: 0.5,
-            rotate: 20,
+      rotate: 20,
       ease: "back.inOut",
     });
   };
 
   return (
     <div>
-       {active && (
+      {active && (
         <div className="moveableMenuBackground mediumFade" />
       )}
       <Transition
@@ -66,11 +72,15 @@ const BasicMenu = ({
           }}
         >
           <div
-            className="boxedDark s2 p0 boxedOutline"
-            style={{ width: width, height: "auto" }}
+            className="menu s2 p2 outline"
+            style={{
+              width: width,
+              height: "auto",
+            }}
           >
             <div
-              className="rightRow boxed m0"
+              onClick={() => onClose()}
+              className="rightRow m0"
               style={{
                 width: "90%",
                 margin: "0 0 10px 0",
@@ -78,9 +88,8 @@ const BasicMenu = ({
               }}
             >
               <IonIcon
-                className="buttonIcon"
+                className="buttonIcon clickable"
                 name="close"
-                onClick={() => onClose()}
               />
             </div>
             <div style={{ padding: 10 }}>

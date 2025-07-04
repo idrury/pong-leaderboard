@@ -1,8 +1,8 @@
 // @ts-nocheck
-import Select, { InputActionMeta } from "react-select";
-import Creatable, {
-} from "react-select/creatable";
-
+import Select, {
+  InputActionMeta,
+} from "react-select";
+import Creatable from "react-select/creatable";
 
 const colorStyles = {
   control: (
@@ -11,31 +11,48 @@ const colorStyles = {
   ) => ({
     ...baseStyles,
     boxShadow: "none",
-    border: "1px solid var(--smallAccent)",
+    border: "none",
     fontSize: 13,
-    borderRadius: 2,
-    backgroundColor: isDisabled
+    borderRadius: 25,
+    height: 50,
+    textIndent: "10px",
+    color: "var(--text)",
+    backgroundColor: isFocused
+      ? "var(--background)"
+      : "var(--text)"
       ? "var(--lightBackground)"
       : isFocused
-      ? "var(--smallAccent)"
+      ? "var(--mediumAccent)"
       : "var(--lightBackground)",
+  }),
+  placeholder: (  baseStyles,
+    { isDisabled, isFocused, isSelected }) => ({
+    gridArea: '1 / 1 / 1 / 1',
+    display: 'flex',
+    color: 'var(--mediumAccent)',
+    padding: '0 5px'
   }),
 
   singleValue: (baseStyles) => ({
     ...baseStyles,
     borderWidth: 0,
     fontSize: 13,
-    padding: "5px 0",
-    borderRadius: 2,
+    padding: "0px 0",
+    margin: 0,
+    borderRadius: 25,
+    lineHeight: 2,
+    textIndent: "15px",
     color: "var(--text)",
+    display: "flex",
+    justifyContent: "start",
   }),
 
   valueContainer: (baseStyles) => ({
     ...baseStyles,
     borderWidth: 0,
-    padding: 5,
+    padding: 0,
     fontSize: 13,
-    borderRadius: 2,
+    borderRadius: 25,
     color: "var(--text)",
   }),
 
@@ -56,8 +73,13 @@ const colorStyles = {
     { isDisabled, isFocused, isSelected }
   ) => ({
     ...baseStyles,
-    borderRadius: 2,
+    borderRadius: 25,
     fontSize: 13,
+        padding: '15px 10px',
+        display: 'flex',
+        justifyContent: 'start',
+        alignItems: 'center',
+
     color: isDisabled
       ? undefined
       : isSelected
@@ -116,15 +138,18 @@ export default function TypeInput({
 }
 
 interface CreatableTypeInputProps {
- options: any[],
- value,
-  defaultValue?: string,
-  onChange: (val: any) => void,
-  onInputChange: (val: string, meta: InputActionMeta) => void,
-  disabled?:boolean,
-  placeholder: string,
-  onCreate: (val: any) => void,
-  width?: number,
+  options: any[];
+  value;
+  defaultValue?: string;
+  onChange: (val: any) => void;
+  onInputChange: (
+    val: string,
+    meta: InputActionMeta
+  ) => void;
+  disabled?: boolean;
+  placeholder: string;
+  onCreate: (val: any) => void;
+  width?: number;
 }
 
 export function CreatableTypeInput({
@@ -137,7 +162,7 @@ export function CreatableTypeInput({
   placeholder = "select...",
   onCreate,
   width = 150,
-}:CreatableTypeInputProps) {
+}: CreatableTypeInputProps) {
   if (disabled) {
     return (
       <div>
@@ -157,7 +182,9 @@ export function CreatableTypeInput({
         inputValue={value}
         value={value}
         onChange={(val) => onChange(val)}
-        onInputChange={(val, meta) => onInputChange(val, meta)}
+        onInputChange={(val, meta) =>
+          onInputChange(val, meta)
+        }
         onCreateOption={(val) => onCreate(val)}
         isDisabled={disabled}
         components={{
