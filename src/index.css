@@ -14,6 +14,12 @@
   --mediumAccent: #aaaaaa;
   --lightBackground: #525252;
   --primaryColor: #0097b2;
+  --darkGradient:linear-gradient(
+    225deg,
+    var(--smallAccent),
+    var(--background),
+    var(--background)
+  );
   --primaryGradient: linear-gradient(
     to left,
     #0097b2,
@@ -91,7 +97,7 @@ h2 {
 h3 {
   font-family: "Noto", sans-serif;
   font-weight: 400;
-  font-size: 12pt;
+  font-size: 10pt;
   color: var(--text);
 }
 
@@ -656,7 +662,7 @@ option {
 }
 
 .boxed {
-  background: var(--smallAccent);
+  background: var(--darkGradient);
 
   border-radius: 25px;
 
@@ -693,7 +699,7 @@ option {
 }
 
 .boxedSecondary {
-  border-radius: 3px;
+  border-radius: 25px;
   padding: 10px;
 
   background: var(--secondaryColor);
@@ -710,7 +716,7 @@ option {
 
 .outline {
   border-radius: 25px;
-  border: 1px solid var(--mediumAccent);
+  border: 1px solid var(--lightBackground);
   transition: 0.2s;
 }
 
@@ -924,7 +930,7 @@ input[type="checkbox"]:disabled {
 }
 
 .clickable {
-  border-radius: 5px;
+  border-radius: 25px;
   transition: 0.3s;
   cursor: pointer;
 }

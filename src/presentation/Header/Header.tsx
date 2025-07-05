@@ -129,6 +129,7 @@ export default function Header({
                 <IonIcon
                   name="add-circle"
                   className="h2Icon"
+                  style={{marginTop: -2}}
                 />
                 Add rally
               </div>

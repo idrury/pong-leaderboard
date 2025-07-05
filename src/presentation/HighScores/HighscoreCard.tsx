@@ -37,7 +37,7 @@ function HighscoreCard({
   return (
     <div
       ref={nodeRef}
-      className="col center "
+      className="col center m1 outline"
       style={{
         background: timeToHex(
           time,
@@ -45,6 +45,7 @@ function HighscoreCard({
           true
         ),
         maxWidth: "100vw",
+        borderRadius: 25
       }}
     >
       <div>

@@ -41,7 +41,6 @@ export default function Event({
   session,
   popSavedModal,
 }: EventProps) {
-  const navigate = useNavigate();
   const [maxHits, setMaxHits] = useState(0);
   const highScoreRefs = useRef<HTMLDivElement[]>([]);
   const [rallies, setRallies] = useState<RallyObject[]>();

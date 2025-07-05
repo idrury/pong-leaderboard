@@ -85,16 +85,16 @@ export default function AddRallyMenu({
   useGSAP(() => {
     gsap.registerPlugin(SplitText);
 
-    const titleSplit = SplitText.create(".titleTransition", {
-      type: "words",
-    });
+    // const titleSplit = SplitText.create(".titleTransition", {
+    //   type: "words",
+    // });
 
-    gsap.from(titleSplit.words, {
-      opacity: 0,
-      y: -30,
-      stagger: 0.05,
-      delay: 0.5,
-    });
+    // gsap.from(titleSplit.words, {
+    //   opacity: 0,
+    //   y: -30,
+    //   stagger: 0.05,
+    //   delay: 0.5,
+    // });
 
     // gsap.from('.spinTransition', {
     //   opacity: 0,

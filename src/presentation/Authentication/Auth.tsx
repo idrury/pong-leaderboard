@@ -35,7 +35,7 @@ export default function Auth ({
           className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
         >
           <div className="row middle center">
-            <IonIcon name="person-circle" className="h2Icon" />
+            <IonIcon name="person-circle" className="h2Icon" style={{marginTop: -2}}/>
             {profile?.name || "Signed in"}
           </div>
         </button>
