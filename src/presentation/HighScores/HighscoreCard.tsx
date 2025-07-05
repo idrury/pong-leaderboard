@@ -48,7 +48,7 @@ function HighscoreCard({
       }}
     >
       <div>
-        <Card.Body className="w100 col middle p2">
+        <div className="w100 col middle p2">
           <div
             className="row middle center bold mt2 mb2"
             style={{
@@ -133,7 +133,7 @@ function HighscoreCard({
               )}
             </div>
           </div>
-        </Card.Body>
+        </div>
       </div>
     </div>
   );

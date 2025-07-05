@@ -1,5 +1,5 @@
 import IonIcon from "@reacticons/ionicons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchEvent } from "../../DatabaseAccess/select";
 import {
   ErrorLabelType,
@@ -7,6 +7,8 @@ import {
 } from "../../Types";
 import { useNavigate } from "react-router-dom";
 import toString from "../../common/CommonFunctions";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap/all";
 
 interface EnterCodeProps {
   popModal?: PopSavedModalFn;
@@ -48,9 +50,7 @@ export default function EnterCode({}: EnterCodeProps) {
     <div className="col middle w100">
       <div />
       <div className="">
-        <h1 className="neonTextGlow">
-          Pong Leaderboard
-        </h1>
+        <h1 className="">Ping-pong-a-thon</h1>
       </div>
       <div className="col center middle w100">
         <div className="w100 ml2 mr2 col middle">
@@ -58,12 +58,11 @@ export default function EnterCode({}: EnterCodeProps) {
             style={{ zIndex: 10 }}
             className="textCenter pb2"
           >
-            Please enter your event ID to access
-            the leaderboard
+            Enter your event code
           </h3>
           <form
             onSubmit={handleSubmit}
-            className="w100"
+            className="w33"
           >
             <div
               className="w100 neonGlow m0"
@@ -87,6 +86,7 @@ export default function EnterCode({}: EnterCodeProps) {
                     setEventId(e.target.value)
                   }
                   placeholder="XY3F"
+                  style={{ fontWeight: 400 }}
                   required
                 />
                 <button
@@ -103,8 +103,13 @@ export default function EnterCode({}: EnterCodeProps) {
               </div>
             </div>
             {error.selector == "code" && (
-              <div className="mt2 boxedLight mb2 row middle center" style={{   height: 25,
-                    borderRadius: 25}}>
+              <div
+                className="mt2 boxedLight mb2 row middle center"
+                style={{
+                  height: 25,
+                  borderRadius: 25,
+                }}
+              >
                 <IonIcon
                   name="alert-circle"
                   className="mr2"
