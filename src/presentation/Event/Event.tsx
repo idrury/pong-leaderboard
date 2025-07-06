@@ -18,7 +18,7 @@ import {
 } from "../../DatabaseAccess/select";
 import { getHighestMins } from "../App/AppFunctions";
 import RecentScores from "../RecentScores/RecentScores";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Header from "../Header/Header";
 import { Session } from "@supabase/supabase-js";
 import AddRallyMenu from "../Header/AddRallyMenu";
@@ -60,13 +60,13 @@ export default function Event({
   }, [profile]);
 
   useGSAP(() => {
-    gsap.from(highScoreRefs.current, {
-      opacity: 0,
-      rotate: 20,
-      zoom: 0.1,
-      duration: 0.5,
-      stagger: 0.2,
-    });
+    // gsap.from(highScoreRefs.current, {
+    //   opacity: 0,
+    //   rotate: 20,
+    //   zoom: 0.1,
+    //   duration: 0.5,
+    //   stagger: 0.2,
+    // });
   }, [rallyTypes?.length]);
 
   /********************************

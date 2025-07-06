@@ -8,7 +8,7 @@ import { DateTime } from "luxon";
 import { timeToHex } from "./HsBusinessLogic";
 import ShinyText from "../Animations/ShinyText";
 import Counter from "../Animations/Counter";
-import { getPlaces } from "../../common/CommonFunctions";
+import toString, { getPlaces } from "../../common/CommonFunctions";
 import { Ref } from "react";
 interface HighscoreCardProps {
   rallyType: CampaignRallyTypeObject;
@@ -34,6 +34,31 @@ function HighscoreCard({
       .as("minutes") + 1
   );
 
+  function parseNames(): string {
+    let returnNames = "";
+
+    if (rallyType.profiles.length > 2) {
+      returnNames = returnNames.concat(
+        rallyType.profiles[0].name ||
+          rallyType.profiles[0].anon_name || "anonymous"
+      ).concat(" +").concat(toString(rallyType.profiles.length-2));
+    } else {
+      (
+        rallyType.profiles as ProfileObject[]
+      )?.forEach((p, i) => {
+        returnNames = returnNames.concat(
+          p.name || p.anon_name || "anonymous"
+        );
+        i != rallyType.profiles.length - 1
+          ? (returnNames =
+              returnNames.concat(" | "))
+          : "";
+      });
+    }
+
+    return returnNames;
+  }
+
   return (
     <div
       ref={nodeRef}
@@ -45,7 +70,7 @@ function HighscoreCard({
           true
         ),
         maxWidth: "100vw",
-        borderRadius: 25
+        borderRadius: 25,
       }}
     >
       <div>
@@ -115,17 +140,7 @@ function HighscoreCard({
                     className="bold"
                   >
                     <div className="row">
-                      {(
-                        rallyType.profiles as ProfileObject[]
-                      )?.map((p, i) => (
-                        <p key={i} className="pr1 wrap">
-                          {p.name || p.anon_name}{" "}
-                          {i ==
-                            rallyType.profiles
-                              .length -
-                              1 || " |"}
-                        </p>
-                      ))}
+                      {parseNames()}
                     </div>
                   </div>
                 </div>

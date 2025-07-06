@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import toString from "../../common/CommonFunctions";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap/all";
+import { SplitText } from "gsap/SplitText";
 
 interface EnterCodeProps {
   popModal?: PopSavedModalFn;
@@ -20,8 +21,24 @@ export default function EnterCode({}: EnterCodeProps) {
     useState<ErrorLabelType>({
       active: false,
     });
-
+  const [enterHovered, setEnterHovered] =
+    useState(false);
   const navigate = useNavigate();
+
+  gsap.registerEffect(SplitText);
+
+  useGSAP(() => {
+    const titleSplit = SplitText.create(
+      "#title",
+      { type: "chars" }
+    );
+
+    gsap.from(titleSplit.chars, {
+      opacity: 0,
+      y: -50,
+      stagger: 0.05,
+    });
+  }, []);
 
   async function handleSubmit(
     e: React.FormEvent
@@ -46,16 +63,39 @@ export default function EnterCode({}: EnterCodeProps) {
       return;
     }
   }
+
+  async function onEnterOver() {
+    if(!eventId) return;
+    await gsap.to("#enterButton", {
+      width: 200,
+      duration: 0.1,
+      ease: "bounce",
+    });
+    setEnterHovered(true);
+  }
+
+  async function onEnterOut() {
+        if(!eventId) return;
+
+    await gsap.to("#enterButton", {
+      width: 'auto',
+      duration: 0.1,
+      ease: "bounce",
+    });
+
+    setEnterHovered(false);
+  }
+
   return (
     <div className="col middle w100">
       <div />
       <div className="">
-        <h1 className="">Ping-pong-a-thon</h1>
+        <h1 id="title">Ping-pong-a-thon</h1>
       </div>
       <div className="col center middle w100">
         <div className="w100 ml2 mr2 col middle">
           <h3
-            style={{ zIndex: 10 }}
+            style={{ zIndex: 10, fontSize: 20 }}
             className="textCenter pb2"
           >
             Enter your event code
@@ -86,15 +126,29 @@ export default function EnterCode({}: EnterCodeProps) {
                     setEventId(e.target.value)
                   }
                   placeholder="XY3F"
-                  style={{ fontWeight: 400 }}
+                  style={{
+                    fontWeight: 400,
+                    fontSize: 20,
+                  }}
                   required
                 />
                 <button
                   type="submit"
+                  id="enterButton"
+                  onMouseOver={onEnterOver}
+                  onMouseOut={onEnterOut}
                   disabled={!eventId}
-                  className="accentButton middle center m1"
-                  style={{ fontSize: "12pt" }}
+                  className="accentButton middle end m1"
+                  style={{ fontSize: "12pt"}}
                 >
+                  {enterHovered && (
+                    <h3
+                      style={{ fontSize: 20 }}
+                      className="mr2"
+                    >
+                      Submit
+                    </h3>
+                  )}
                   <IonIcon
                     name="arrow-forward"
                     className="m0 h2Icon"
