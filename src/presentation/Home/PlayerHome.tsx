@@ -42,8 +42,10 @@ export function PlayerHome({
         className="col w100 middle between"
         style={{ height: "90vh" }}
       >
-        <div className="col middle w100">
-          <EnterCode popModal={popModal} />
+        <div className="w100">
+          <div className="m2">
+            <EnterCode popModal={popModal} />
+          </div>
         </div>
         <div
           className="row w100 mt2"

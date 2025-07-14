@@ -17,9 +17,12 @@ const EventId: React.FC<EventIdProps> = ({ popModal }) => {
       <Header activeSavedModal={popModal} />
       <div
         className="col w100 middle center"
+        style={{marginTop: '20vh'}}
       >
-        <div className="w33">
-          <EnterCode popModal={popModal} />
+        <div className="w100">
+          <div className="m2">
+            <EnterCode popModal={popModal} />
+          </div>
         </div>
       </div>
     </div>
