@@ -1,15 +1,16 @@
 import IonIcon from "@reacticons/ionicons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fetchEvent } from "../../DatabaseAccess/select";
 import {
   ErrorLabelType,
   PopSavedModalFn,
 } from "../../Types";
 import { useNavigate } from "react-router-dom";
-import toString from "../../common/CommonFunctions";
+import toString, { isMobileBrowser } from "../../common/CommonFunctions";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap/all";
 import { SplitText } from "gsap/SplitText";
+
 
 interface EnterCodeProps {
   popModal?: PopSavedModalFn;
@@ -90,19 +91,14 @@ export default function EnterCode({}: EnterCodeProps) {
     <div className="col middle w100">
       <div />
       <div className="">
-        <h1 id="title">Ping-pong-a-thon</h1>
+        <h1 id="title" style={{fontSize: `${isMobileBrowser() ? 40 : undefined}px`}}>Ping-pong-a-thon</h1>
       </div>
       <div className="col center middle w100">
         <div className="w100 ml2 mr2 col middle">
-          <h3
-            style={{ zIndex: 10, fontSize: 20 }}
-            className="textCenter pb2"
-          >
-            Enter your event code
-          </h3>
+
           <form
             onSubmit={handleSubmit}
-            className="w33"
+            className="w25"
           >
             <div
               className="w100 neonGlow m0"
@@ -119,7 +115,7 @@ export default function EnterCode({}: EnterCodeProps) {
               >
                 <input
                   autoFocus
-                  className="w100 ml2  pl2 h100 invisible"
+                  className="w100 ml2 pl2 h100 invisible"
                   type="text"
                   value={eventId}
                   onChange={(e) =>
@@ -127,7 +123,7 @@ export default function EnterCode({}: EnterCodeProps) {
                   }
                   placeholder="XY3F"
                   style={{
-                    fontWeight: 400,
+                    fontWeight: 600,
                     fontSize: 20,
                   }}
                   required
