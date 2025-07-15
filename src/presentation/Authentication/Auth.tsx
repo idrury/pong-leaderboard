@@ -6,6 +6,7 @@ import Login from "./Login";
 import { Session } from "@supabase/supabase-js";
 import IonIcon from "@reacticons/ionicons";
 import { supabase } from "../../DatabaseAccess/SupabaseClient";
+import { useNavigate } from "react-router-dom";
 
 interface AuthProps {
   session: Session | undefined;
@@ -20,11 +21,16 @@ export default function Auth ({
 }: AuthProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [active, setActive] = useState(false);
+  const navigate = useNavigate(); // Add this line
 
   async function handleSignOut () {
     if (session) {
       await supabase.auth.signOut();
     }
+  }
+
+  function GoToOrganisation () {
+    navigate("/organisation");
   }
 
   return (
@@ -35,7 +41,7 @@ export default function Auth ({
           className="accentButton mr2 p0 pt2 pb2 pl2 pr2 outline"
         >
           <div className="row middle center">
-            <IonIcon name="person-circle" className="h2Icon" style={{marginTop: -2}}/>
+            <IonIcon name="person-circle" className="h2Icon" style={{ marginTop: -2 }} />
             {profile?.name || "Signed in"}
           </div>
         </button>
@@ -60,6 +66,12 @@ export default function Auth ({
           <div>
             <div className="mb2">Signed in as</div>
             <h2>{profile?.name}</h2>
+            <button
+              className="w100 row center middle mb2 outline"
+              onClick={() => GoToOrganisation()}
+            >
+              <IonIcon name="log-out" className="mr1" /> My Organisation
+            </button>
             <button
               className="w100 row center middle accentButton"
               onClick={() => handleSignOut()}
